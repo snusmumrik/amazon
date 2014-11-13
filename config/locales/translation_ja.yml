@@ -1,0 +1,52 @@
+ja:
+  activerecord:
+    models:
+      product: product  #g
+      search_index: search_index  #g
+      sort_value: sort_value  #g
+
+    attributes:
+      product:
+        asin: asin  #g
+        color: color  #g
+        cost: cost  #g
+        currency: currency  #g
+        deleted_at: deleted_at  #g
+        features: features  #g
+        group: group  #g
+        image_url1: image_url1  #g
+        image_url2: image_url2  #g
+        image_url3: image_url3  #g
+        image_url4: image_url4  #g
+        image_url5: image_url5  #g
+        manufacturer: manufacturer  #g
+        model: model  #g
+        price: price  #g
+        sales_rank: sales_rank  #g
+        size: size  #g
+        title: title  #g
+        url: url  #g
+        url_jp: url_jp  #g
+
+      search_index:
+        deleted_at: deleted_at  #g
+        name: name  #g
+        sort_values: sort_values  #g
+
+      sort_value:
+        deleted_at: deleted_at  #g
+        name: name  #g
+        search_index: :activerecord.models.search_index  #g
+  views:
+    index: 一覧
+    new: 新規作成
+    show: 詳細
+    edit: 編集
+    error: エラー
+
+    pagination:
+    #   first: "&laquo; 最初"
+    #   last: "最後 &raquo;"
+    #   previous: "&lsaquo; 前"
+    #   next: "次 &rsaquo;"
+      truncate: "..."

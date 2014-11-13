@@ -13,3 +13,23 @@
  *= require_tree .
  *= require_self
  */
+
+.center {
+    text-align: center !important;
+}
+
+.middle {
+    vertical-align: middle !important;
+}
+
+.blue {
+    color:blue;
+}
+
+.red {
+    color:red;
+}
+
+.green {
+    color:green;
+}

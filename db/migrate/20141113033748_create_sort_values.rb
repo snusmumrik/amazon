@@ -1,0 +1,337 @@
+class CreateSortValues < ActiveRecord::Migration
+  def change
+    create_table :sort_values do |t|
+      t.references :search_index, index: true
+      t.string :name
+
+      t.datetime :deleted_at
+    end
+
+    sort_values = {
+      "Apparel" =>
+      ["relevancerank",
+       "salesrank",
+       "pricerank",
+       "inverseprice",
+       "-launch-date",
+       "sale-flag"],
+      "Appliances" =>
+      ["salesrank",
+       "pmrank",
+       "price",
+       "-price",
+       "relevancerank",
+       "reviewrank"],
+      "ArtsAndCrafts" =>
+      ["pmrank",
+       "price",
+       "-price",
+       "relevancerank",
+       "reviewrank"],
+      "Automotive" =>
+      ["salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank"],
+      "Baby" =>
+      ["psrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank"],
+      "Beauty" =>
+      ["pmrank",
+       "salesrank",
+       "price",
+       "-price",
+       "-launch-date",
+       "sale-flag"],
+      "Books" =>
+      ["relevancerank",
+       "salesrank",
+       "reviewrank",
+       "pricerank",
+       "inverse-pricerank",
+       "daterank",
+       "titlerank",
+       "-titlerank"],
+      "Classical" =>
+      ["psrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank",
+       "orig-rel-date",
+       "-orig-rel-date",
+       "releasedate",
+       "-releasedate"],
+      "Collectibles" =>
+      ["price",
+       "-price",
+       "relevancerank",
+       "reviewrank",
+       "salesrank"],
+      "DigitalMusic" =>
+      ["songtitlerank",
+       "uploaddaterank"],
+      "DVD" =>
+      ["relevancerank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-video-release-date",
+       "releasedate"],
+      "Electronics" =>
+      ["pmrank",
+       "salesrank",
+       "reviewrank",
+       "price",
+       "-price",
+       "titlerank"],
+      "Grocery" =>
+      ["relevancerank",
+       "salesrank",
+       "pricerank",
+       "inverseprice",
+       "launch-date",
+       "sale-flag"],
+      "HealthPersonalCare" =>
+      ["pmrank",
+       "salesrank",
+       "pricerank",
+       "inverseprice",
+       "launch-date",
+       "sale-flag"],
+      "HomeGarden" =>
+      ["salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank"],
+      "Industrial" =>
+      ["pmrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank"],
+      "Jewelry" =>
+      ["pmrank",
+       "salesrank",
+       "pricerank",
+       "inverseprice",
+       "launch-date"],
+      "KindleStore" =>
+      ["daterank",
+       "-edition-sales-velocity",
+       "price",
+       "-price",
+       "relevancerank",
+       "reviewrank"],
+      "Kitchen" =>
+      ["pmrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank"],
+      "LawnGarden" =>
+      ["relevancerank",
+       "reviewrank",
+       "salesrank",
+       "price",
+       "-price"],
+      "Magazines" =>
+      ["subslot-salesrank",
+       "reviewrank",
+       "price",
+       "-price",
+       "daterank",
+       "titlerank",
+       "-titlerank"],
+      "Marketplace" =>
+      ["salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank",
+       "-launch-date"],
+      "Merchants" =>
+      ["relevancerank",
+       "salesrank",
+       "pricerank",
+       "inverseprice",
+       "-launch-date",
+       "sale-flag"],
+      "Miscellaneous" =>
+      ["pmrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank"],
+      "MobileApps" =>
+      ["pmrank",
+       "price",
+       "-price",
+       "relevancerank",
+       "reviewrank"],
+      "MP3Downloads" =>
+      ["price",
+       "-price",
+       "-releasedate",
+       "relevancerank",
+       "salesrank"],
+      "Music" =>
+      ["psrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank",
+       "artistrank",
+       "orig-rel-date",
+       "release-date",
+       "releasedate",
+       "-releasedate",
+       "relevancerank"],
+      "MusicalInstruments" =>
+      ["pmrank",
+       "salesrank",
+       "price",
+       "-price",
+       "-launch-date",
+       "sale-flag"],
+      "MusicTracks" =>
+      ["titlerank",
+       "-titlerank"],
+      "OfficeProducts" =>
+      ["pmrank",
+       "salesrank",
+       "reviewrank",
+       "price",
+       "-price",
+       "titlerank"],
+      "OutdoorLiving" =>
+      ["psrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank"],
+      "PCHardware" =>
+      ["psrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank"],
+      "PetSupplies" =>
+      ["+pmrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank",
+       "relevancerank",
+       "reviewrank"],
+      "Photo" =>
+      ["pmrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank"],
+      "Shoes" =>
+      ["-launch-date",
+       "pmrank",
+       "price",
+       "-price",
+       "relevancerank",
+       "reviewrank"],
+      "Software" =>
+      ["pmrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank"],
+      "SportingGoods" =>
+      ["relevancerank",
+       "salesrank",
+       "pricerank",
+       "inverseprice",
+       "launch-date",
+       "sale-flag"],
+      "Tools" =>
+      ["pmrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-titlerank"],
+      "Toys" =>
+      ["pmrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-age-min"],
+      "UnboxVideo" =>
+      ["relevancerank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-video-release-date"],
+      "VHS" =>
+      ["relevancerank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-video-release-date",
+       "-releasedate"],
+      "Video" =>
+      ["relevancerank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank",
+       "-video-release-date",
+       "-releasedate"],
+      "VideoGames" =>
+      ["pmrank",
+       "salesrank",
+       "price",
+       "-price",
+       "titlerank"],
+      "Watches" =>
+      ["price",
+       "-price",
+       "relevancerank",
+       "reviewrank",
+       "salesrank"],
+      "Wireless" =>
+      ["daterank",
+       "pricerank",
+       "inverse-pricerank",
+       "reviewrank",
+       "salesrank",
+       "titlerank",
+       "-titlerank"],
+      "WirelessAccessories" =>
+      ["psrank",
+       "salesrank",
+       "titlerank",
+       "-titlerank"]
+    }
+    sort_values.each do |hash|
+      search_index = SearchIndex.where(["name = ?", hash[0]]).first
+      hash[1].each do |sort_value|
+        SortValue.create(:search_index_id => search_index.id, :name => sort_value)
+      end
+    end
+  end
+end

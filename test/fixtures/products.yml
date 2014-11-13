@@ -1,0 +1,45 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  asin: MyString
+  group: MyString
+  manufacturer: MyString
+  model: MyString
+  title: MyString
+  color: MyString
+  size: MyString
+  features: MyString
+  sales_rank: 1
+  url: MyString
+  url_jp: MyString
+  image_url1: MyString
+  image_url2: MyString
+  image_url3: MyString
+  image_url4: MyString
+  image_url5: MyString
+  currency: MyString
+  price: 1.5
+  cost: 1
+  deleted_at: 2014-11-13 16:20:25
+
+two:
+  asin: MyString
+  group: MyString
+  manufacturer: MyString
+  model: MyString
+  title: MyString
+  color: MyString
+  size: MyString
+  features: MyString
+  sales_rank: 1
+  url: MyString
+  url_jp: MyString
+  image_url1: MyString
+  image_url2: MyString
+  image_url3: MyString
+  image_url4: MyString
+  image_url5: MyString
+  currency: MyString
+  price: 1.5
+  cost: 1
+  deleted_at: 2014-11-13 16:20:25
