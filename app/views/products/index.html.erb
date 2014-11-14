@@ -1,11 +1,23 @@
 <h1>Listing products</h1>
 
+<%= form_tag("/products", :method => :get) do %>
+  <div class="field">
+    <%= label_tag :category %><br>
+    <%= select_tag :category, options_for_select(@categories, :selected => params[:category]), :include_blank => true, :class => "form-control" %>
+  </div>
+  <div class="actions">
+    <%= submit_tag "Search", :class => "btn btn-default" %>
+  </div>
+<% end %>
+
+<p><%= link_to 'New Product', new_product_path, :class => "btn btn-default" %></p>
+
 <%= paginate @products %>
 
 <table class="table table-condensed table-striped">
   <thead>
     <tr>
-      <th>Group</th>
+      <th>Category</th>
       <th>Manufacturer</th>
       <th>
         Asin/<br>
@@ -39,7 +51,7 @@
   <tbody>
     <% @products.each do |product| %>
       <tr>
-        <td><%= product.group %></td>
+        <td><%= product.category %></td>
         <td><%= product.manufacturer %></td>
         <td>
           <p><%= product.asin %></p>
@@ -83,9 +95,9 @@
           <% end %>
         </td>
         <td>
-          <%= link_to 'Show', product %><br>
-          <%= link_to 'Edit', edit_product_path(product) %><br>
-          <%= link_to 'Destroy', product, method: :delete, data: { confirm: 'Are you sure?' } %>
+          <%= link_to 'Show', product, :class => "btn btn-default" %><br>
+          <%= link_to 'Edit', edit_product_path(product), :class => "btn btn-default" %><br>
+          <%= link_to 'Destroy', product, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger" %>
         </td>
       </tr>
     <% end %>
@@ -96,4 +108,4 @@
 
 <br>
 
-<%= link_to 'New Product', new_product_path %>
+<%= link_to 'New Product', new_product_path, :class => "btn btn-default" %>

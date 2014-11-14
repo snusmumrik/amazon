@@ -18,7 +18,7 @@ class ProductsControllerTest < ActionController::TestCase
 
   test "should create product" do
     assert_difference('Product.count') do
-      post :create, product: { asin: @product.asin, color: @product.color, cost: @product.cost, currency: @product.currency, deleted_at: @product.deleted_at, features: @product.features, group: @product.group, image_url1: @product.image_url1, image_url2: @product.image_url2, image_url3: @product.image_url3, image_url4: @product.image_url4, image_url5: @product.image_url5, manufacturer: @product.manufacturer, model: @product.model, price: @product.price, sales_rank: @product.sales_rank, size: @product.size, title: @product.title, url: @product.url, url_jp: @product.url_jp }
+      post :create, product: { asin: @product.asin, category: @product.category, color: @product.color, cost: @product.cost, currency: @product.currency, deleted_at: @product.deleted_at, features: @product.features, image_url1: @product.image_url1, image_url2: @product.image_url2, image_url3: @product.image_url3, image_url4: @product.image_url4, image_url5: @product.image_url5, manufacturer: @product.manufacturer, model: @product.model, price: @product.price, profit: @product.profit, sales_rank: @product.sales_rank, shipping_cost: @product.shipping_cost, size: @product.size, title: @product.title, url: @product.url, url_jp: @product.url_jp }
     end
 
     assert_redirected_to product_path(assigns(:product))
@@ -35,7 +35,7 @@ class ProductsControllerTest < ActionController::TestCase
   end
 
   test "should update product" do
-    patch :update, id: @product, product: { asin: @product.asin, color: @product.color, cost: @product.cost, currency: @product.currency, deleted_at: @product.deleted_at, features: @product.features, group: @product.group, image_url1: @product.image_url1, image_url2: @product.image_url2, image_url3: @product.image_url3, image_url4: @product.image_url4, image_url5: @product.image_url5, manufacturer: @product.manufacturer, model: @product.model, price: @product.price, sales_rank: @product.sales_rank, size: @product.size, title: @product.title, url: @product.url, url_jp: @product.url_jp }
+    patch :update, id: @product, product: { asin: @product.asin, category: @product.category, color: @product.color, cost: @product.cost, currency: @product.currency, deleted_at: @product.deleted_at, features: @product.features, image_url1: @product.image_url1, image_url2: @product.image_url2, image_url3: @product.image_url3, image_url4: @product.image_url4, image_url5: @product.image_url5, manufacturer: @product.manufacturer, model: @product.model, price: @product.price, profit: @product.profit, sales_rank: @product.sales_rank, shipping_cost: @product.shipping_cost, size: @product.size, title: @product.title, url: @product.url, url_jp: @product.url_jp }
     assert_redirected_to product_path(assigns(:product))
   end
 

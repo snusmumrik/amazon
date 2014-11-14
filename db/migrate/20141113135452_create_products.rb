@@ -2,7 +2,7 @@ class CreateProducts < ActiveRecord::Migration
   def change
     create_table :products do |t|
       t.string :asin
-      t.string :group
+      t.string :category
       t.string :manufacturer
       t.string :model
       t.string :title
@@ -20,9 +20,11 @@ class CreateProducts < ActiveRecord::Migration
       t.string :currency
       t.float :price
       t.integer :cost
-      t.datetime :deleted_at
+      t.integer :shipping_cost
+      t.integer :profit
 
       t.timestamps
+      t.datetime :deleted_at
     end
   end
 end

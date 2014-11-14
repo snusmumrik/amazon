@@ -2,7 +2,7 @@
 
 one:
   asin: MyString
-  group: MyString
+  category: MyString
   manufacturer: MyString
   model: MyString
   title: MyString
@@ -20,11 +20,13 @@ one:
   currency: MyString
   price: 1.5
   cost: 1
-  deleted_at: 2014-11-13 16:20:25
+  shipping_cost: 1
+  profit: 1
+  deleted_at: 2014-11-13 22:54:52
 
 two:
   asin: MyString
-  group: MyString
+  category: MyString
   manufacturer: MyString
   model: MyString
   title: MyString
@@ -42,4 +44,6 @@ two:
   currency: MyString
   price: 1.5
   cost: 1
-  deleted_at: 2014-11-13 16:20:25
+  shipping_cost: 1
+  profit: 1
+  deleted_at: 2014-11-13 22:54:52

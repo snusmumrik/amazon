@@ -11,11 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141113105330) do
+ActiveRecord::Schema.define(version: 20141113135452) do
 
   create_table "products", force: true do |t|
     t.string   "asin"
-    t.string   "group"
+    t.string   "category"
     t.string   "manufacturer"
     t.string   "model"
     t.string   "title"
@@ -35,9 +35,9 @@ ActiveRecord::Schema.define(version: 20141113105330) do
     t.integer  "cost"
     t.integer  "shipping_cost"
     t.integer  "profit"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   create_table "search_indices", force: true do |t|
