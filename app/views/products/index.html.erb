@@ -64,11 +64,11 @@
         </td>
         <td><%= product.features %></td>
         <td><%= number_with_delimiter product.sales_rank %></td>
-        <td><%= image_tag product.image_url1, :height => 100, :width => 100 %></td>
-        <td><%= image_tag product.image_url2, :height => 100, :width => 100 %></td>
-        <td><%= image_tag product.image_url3, :height => 100, :width => 100 %></td>
-        <td><%= image_tag product.image_url4, :height => 100, :width => 100 %></td>
-        <td><%= image_tag product.image_url5, :height => 100, :width => 100 %></td>
+        <td><%= link_to image_tag(product.image_url1), product.image_url1, "data-lightbox" => product.image_url1 %></td>
+        <td><%= link_to image_tag(product.image_url2), product.image_url2, "data-lightbox" => product.image_url2 %></td>
+        <td><%= link_to image_tag(product.image_url3), product.image_url3, "data-lightbox" => product.image_url3 %></td>
+        <td><%= link_to image_tag(product.image_url4), product.image_url4, "data-lightbox" => product.image_url4 %></td>
+        <td><%= link_to image_tag(product.image_url5), product.image_url5, "data-lightbox" => product.image_url5 %></td>
         <!-- <td><%= product.currency %></td> -->
         <td>
           <% if product.price && product.currency == "USD"%>
