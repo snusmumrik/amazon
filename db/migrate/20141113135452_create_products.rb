@@ -5,7 +5,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string :category
       t.string :manufacturer
       t.string :model
-      t.string :title
+      t.text :title
       t.string :color
       t.string :size
       t.string :features

@@ -14,6 +14,11 @@
  *= require_self
  */
 
+body {
+    width: 95%;
+    margin: 0 auto;
+}
+
 .center {
     text-align: center !important;
 }

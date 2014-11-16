@@ -4,6 +4,20 @@
   <div class="field">
     <%= label_tag :category %><br>
     <%= select_tag :category, options_for_select(@categories, :selected => params[:category]), :include_blank => true, :class => "form-control" %>
+
+    <% if params[:profit] == "0" %>
+      <%= check_box_tag :profit, 1 %>
+    <% else %>
+      <%= check_box_tag :profit, 1, :checked => true %>
+    <% end %>
+    <%= label_tag :profit %>
+
+    <% if params[:sales_rank] %>
+      <%= check_box_tag :sales_rank, 1, :checked => true %>
+    <% else %>
+      <%= check_box_tag :sales_rank, 1 %>
+    <% end %>
+    <%= label_tag :sales_rank %>
   </div>
   <div class="actions">
     <%= submit_tag "Search", :class => "btn btn-default" %>
@@ -72,25 +86,25 @@
         <!-- <td><%= product.currency %></td> -->
         <td>
           <% if product.price && product.currency == "USD"%>
-            <%= link_to number_to_currency(product.price, :locale => "en"), product.url %>
+            <%= link_to number_to_currency(product.price, :locale => :en), product.url %>
           <% end %>
         </td>
         <td>
           <% if product.cost %>
-            <p><%= link_to number_to_currency(product.cost, :locale => "ja"), product.url_jp %></p>
+            <p><%= link_to number_to_currency(product.cost), product.url_jp %></p>
           <% else %>
             <div class="center"><p>-</p></div>
           <% end %>
           <p><%= number_to_currency product.shipping_cost %></p>
         </td>
         <td>
-          <% if product.price && product.cost %>
-            <% if (product.price*@exchange_rate - @shipping_cost - product.cost)/(product.price*@exchange_rate.to_f) > 0.1 %>
+          <% if product.profit %>
+            <% if product.profit/(product.price*@exchange_rate.to_f) > 0.1 %>
               <span class="green">
-            <% elsif product.price*@exchange_rate - @shipping_cost - product.cost < 0%>
+            <% elsif product.profit < 0%>
               <span class="red">
             <% end %>
-            <%= number_to_currency(product.price*@exchange_rate - @shipping_cost - product.cost) %>
+            <%= number_to_currency product.profit %>
             </span>
           <% end %>
         </td>
