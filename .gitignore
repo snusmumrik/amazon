@@ -18,9 +18,9 @@
 */.DS_Store
 
 config/database.yml
-config/environments/development.rb
-config/environments/production.rb
-config/initializers/secret_token.rb
-config/initializers/devise.rb
+# config/environments/development.rb
+# config/environments/production.rb
+# config/initializers/secret_token.rb
+# config/initializers/devise.rb
 
 public/assets
