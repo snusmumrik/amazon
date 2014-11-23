@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :ebay_items
+
   resources :products do
     collection do
       get 'search'

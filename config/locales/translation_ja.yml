@@ -1,17 +1,40 @@
 ja:
   activerecord:
     models:
+      ebay_item: ebay_item  #g
       product: product  #g
       search_index: search_index  #g
       sort_value: sort_value  #g
 
     attributes:
+      ebay_item:
+        best_offer_enabled: best_offer_enabled  #g
+        buy_it_now_available: buy_it_now_available  #g
+        category_name: category_name  #g
+        condition_display_name: condition_display_name  #g
+        current_price_value: current_price_value  #g
+        deleted_at: deleted_at  #g
+        end_time: end_time  #g
+        gallery_url: gallery_url  #g
+        handling_time: handling_time  #g
+        listing_type: listing_type  #g
+        product: :activerecord.models.product  #g
+        returns_accepted: returns_accepted  #g
+        selling_state: selling_state  #g
+        shipping_service_cost_value: shipping_service_cost_value  #g
+        shipping_type: shipping_type  #g
+        start_time: start_time  #g
+        title: title  #g
+        view_item_url: view_item_url  #g
+
       product:
         asin: asin  #g
+        category: category  #g
         color: color  #g
         cost: cost  #g
         currency: currency  #g
         deleted_at: deleted_at  #g
+        ebay_items: ebay_items  #g
         features: features  #g
         group: group  #g
         image_url1: image_url1  #g
@@ -22,7 +45,9 @@ ja:
         manufacturer: manufacturer  #g
         model: model  #g
         price: price  #g
+        profit: profit  #g
         sales_rank: sales_rank  #g
+        shipping_cost: shipping_cost  #g
         size: size  #g
         title: title  #g
         url: url  #g
@@ -37,6 +62,7 @@ ja:
         deleted_at: deleted_at  #g
         name: name  #g
         search_index: :activerecord.models.search_index  #g
+
   views:
     index: 一覧
     new: 新規作成
@@ -44,7 +70,11 @@ ja:
     edit: 編集
     error: エラー
 
+    product:
+      average: 平均
+
     pagination:
+
     #   first: "&laquo; 最初"
     #   last: "最後 &raquo;"
     #   previous: "&lsaquo; 前"
