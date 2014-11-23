@@ -1,0 +1,93 @@
+%p#notice= notice
+%table.table.table-bordered
+  %tr
+    %th
+      %strong Product:
+    %td= link_to @ebay_item.product.title, product_url(@ebay_item.product)
+  %tr
+    %th
+      %strong Item:
+    %td= @ebay_item.item_id
+  %tr
+    %th
+      %strong Title:
+    %td= @ebay_item.title
+  %tr
+    %th
+      %strong Global:
+    %td= @ebay_item.global_id
+  %tr
+    %th
+      %strong Category name:
+    %td= @ebay_item.category_name
+  %tr
+    %th
+      %strong Gallery url:
+    %td= link_to image_tag(@ebay_item.gallery_url), @ebay_item.gallery_url, "data-lightbox" => @ebay_item.gallery_url
+  %tr
+    %th
+      %strong View item url:
+    %td= link_to @ebay_item.view_item_url, @ebay_item.view_item_url
+  %tr
+    %th
+      %strong Shipping service cost currency:
+    %td= @ebay_item.shipping_service_cost_currency_id
+  %tr
+    %th
+      %strong Shipping service cost value:
+    %td= @ebay_item.shipping_service_cost_value
+  %tr
+    %th
+      %strong Shipping type:
+    %td= @ebay_item.shipping_type
+  %tr
+    %th
+      %strong Handling time:
+    %td= @ebay_item.handling_time
+  %tr
+    %th
+      %strong Current price currency:
+    %td= @ebay_item.current_price_currency_id
+  %tr
+    %th
+      %strong Current price value:
+    %td= @ebay_item.current_price_value
+  %tr
+    %th
+      %strong Bid count:
+    %td= @ebay_item.bid_count
+  %tr
+    %th
+      %strong Selling state:
+    %td= @ebay_item.selling_state
+  %tr
+    %th
+      %strong Best offer enabled:
+    %td= @ebay_item.best_offer_enabled
+  %tr
+    %th
+      %strong Buy it now available:
+    %td= @ebay_item.buy_it_now_available
+  %tr
+    %th
+      %strong Start time:
+    %td= @ebay_item.start_time
+  %tr
+    %th
+      %strong End time:
+    %td= @ebay_item.end_time
+  %tr
+    %th
+      %strong Listing type:
+    %td= @ebay_item.listing_type
+  %tr
+    %th
+      %strong Returns accepted:
+    %td= @ebay_item.returns_accepted
+  %tr
+    %th
+      %strong Condition display name:
+    %td= @ebay_item.condition_display_name
+= link_to 'Edit', edit_ebay_item_path(@ebay_item)
+|
+\#{link_to 'Back', ebay_items_path}

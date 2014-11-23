@@ -1,0 +1,99 @@
+= form_for(@ebay_item) do |f|
+  - if @ebay_item.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@ebay_item.errors.count, "error")
+        prohibited this ebay_item from being saved:
+      %ul
+        - @ebay_item.errors.full_messages.each do |message|
+          %li= message
+  .field
+    = f.label :product_id
+    %br
+      = f.text_field :product_id
+  .field
+    = f.label :item_id
+    %br
+      = f.number_field :item_id
+  .field
+    = f.label :title
+    %br
+      = f.text_field :title
+  .field
+    = f.label :global_id
+    %br
+      = f.text_field :global_id
+  .field
+    = f.label :category_name
+    %br
+      = f.text_field :category_name
+  .field
+    = f.label :gallery_url
+    %br
+      = f.text_field :gallery_url
+  .field
+    = f.label :view_item_url
+    %br
+      = f.text_field :view_item_url
+  .field
+    = f.label :shipping_service_cost_currency_id
+    %br
+      = f.text_field :shipping_service_cost_currency_id
+  .field
+    = f.label :shipping_service_cost_value
+    %br
+      = f.text_field :shipping_service_cost_value
+  .field
+    = f.label :shipping_type
+    %br
+      = f.text_field :shipping_type
+  .field
+    = f.label :handling_time
+    %br
+      = f.number_field :handling_time
+  .field
+    = f.label :current_price_currency_id
+    %br
+      = f.text_field :current_price_currency_id
+  .field
+    = f.label :current_price_value
+    %br
+      = f.text_field :current_price_value
+  .field
+    = f.label :bid_count
+    %br
+      = f.text_field :bid_count
+  .field
+    = f.label :selling_state
+    %br
+      = f.text_field :selling_state
+  .field
+    = f.label :best_offer_enabled
+    %br
+      = f.check_box :best_offer_enabled
+  .field
+    = f.label :buy_it_now_available
+    %br
+      = f.check_box :buy_it_now_available
+  .field
+    = f.label :start_time
+    %br
+      = f.datetime_select :start_time
+  .field
+    = f.label :end_time
+    %br
+      = f.datetime_select :end_time
+  .field
+    = f.label :listing_type
+    %br
+      = f.text_field :listing_type
+  .field
+    = f.label :returns_accepted
+    %br
+      = f.check_box :returns_accepted
+  .field
+    = f.label :condition_display_name
+    %br
+      = f.text_field :condition_display_name
+  .actions
+    = f.submit

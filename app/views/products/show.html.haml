@@ -1,0 +1,96 @@
+%p#notice= notice
+%table.table.table-bordered
+  %tr
+    %th
+      %strong Asin:
+    %td= @product.asin
+  %tr
+    %th
+      %strong Category:
+    %td= @product.category
+  %tr
+    %th
+      %strong Manufacturer:
+    %td= @product.manufacturer
+  %tr
+    %th
+      %strong Model:
+    %td= @product.model
+  %tr
+    %th
+      %strong Title:
+    %td= @product.title
+  %tr
+    %th
+      %strong Color:
+    %td= @product.color
+  %tr
+    %th
+      %strong Size:
+    %td= @product.size
+  %tr
+    %th
+      %strong Features:
+    %td= @product.features
+  %tr
+    %th
+      %strong Sales rank:
+    %td= @product.sales_rank
+  %tr
+    %th
+      %strong Url:
+    %td= link_to @product.url, @product.url
+  %tr
+    %th
+      %strong Url jp:
+    %td= link_to @product.url_jp, @product.url_jp
+  %tr
+    %th
+      %strong Image url1:
+    %td= link_to image_tag(@product.image_url1.sub(/.jpg$/, "._SL160_.jpg")), @product.image_url1, "data-lightbox" => @product.image_url1
+  %tr
+    %th
+      %strong Image url2:
+    %td= link_to image_tag(@product.image_url2.sub(/.jpg$/, "._SL160_.jpg")), @product.image_url2, "data-lightbox" => @product.image_url2
+  %tr
+    %th
+      %strong Image url3:
+    %td= link_to image_tag(@product.image_url3.sub(/.jpg$/, "._SL160_.jpg")), @product.image_url3, "data-lightbox" => @product.image_url3
+  %tr
+    %th
+      %strong Image url4:
+    %td= link_to image_tag(@product.image_url4.sub(/.jpg$/, "._SL160_.jpg")), @product.image_url4, "data-lightbox" => @product.image_url4
+  %tr
+    %th
+      %strong Image url5:
+    %td= link_to image_tag(@product.image_url5.sub(/.jpg$/, "._SL160_.jpg")), @product.image_url5, "data-lightbox" => @product.image_url5
+  %tr
+    %th
+      %strong Currency:
+    %td= @product.currency
+  %tr
+    %th
+      %strong Price:
+    %td= @product.price
+  %tr
+    %th
+      %strong Cost:
+    %td= @product.cost
+  %tr
+    %th
+      %strong Shipping cost:
+    %td= @product.shipping_cost
+  %tr
+    %th
+      %strong Profit:
+    %td= @product.profit
+  %tr
+    %th
+      %strong Ebay Items:
+    %td
+      - @ebay_items.each do |item|
+        %ul
+          %li
+            = link_to "#{item.title} (#{item.current_price_currency_id} #{item.current_price_value})", ebay_item_path(item)
+= link_to 'Edit', edit_product_path(@product), :class => "btn btn-default"
+= link_to 'Back', products_path, :class => "btn btn-default"
