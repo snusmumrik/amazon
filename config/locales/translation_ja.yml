@@ -71,7 +71,10 @@ ja:
     error: エラー
 
     product:
+      all_count: 出品総数
       average: 平均
+      highest: 最高値
+      sold_count: 販売数
 
     pagination:
 

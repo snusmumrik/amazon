@@ -19,6 +19,10 @@ body {
     margin: 0 auto;
 }
 
+li {
+    list-style: none;
+}
+
 .main_container {
     margin-bottom: 20px;
 }
@@ -29,6 +33,26 @@ body {
 
 .middle {
     vertical-align: middle !important;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.clear {
+    clear: both;
 }
 
 .blue {

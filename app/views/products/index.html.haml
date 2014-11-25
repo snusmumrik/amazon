@@ -1,24 +1,33 @@
 %h1 Listing products
 = form_tag("/products", :method => :get) do
-  .field
-    = label_tag :category
-    %br
-      = select_tag :category, options_for_select(@categories, :selected => params[:category]), :include_blank => true, :class => "form-control"
-      - if params[:profit] == "0"
-        = check_box_tag :profit, 1
-      - else
-        = check_box_tag :profit, 1, :checked => true
-      = label_tag :profit
-      - if params[:sales_rank]
-        = check_box_tag :sales_rank, 1, :checked => true
-      - else
-        = check_box_tag :sales_rank, 1
-      = label_tag :sales_rank
-  .actions
-    = submit_tag "Search", :class => "btn btn-default"
-%p= link_to 'New Product', new_product_path, :class => "btn btn-default"
-= paginate @products
-%table.table.table-condensed.table-striped
+  .form-inline
+    .field
+      .float-left
+        %div
+          = label_tag :category
+          = select_tag :category, options_for_select(@categories, :selected => params[:category]), :include_blank => true, :class => "form-control"
+          .checkboxes
+            - if params[:profit] == "0"
+              = check_box_tag :profit, 1
+            - else
+              = check_box_tag :profit, 1, :checked => true
+            = label_tag :profit
+            - if params[:sales_rank]
+              = check_box_tag :sales_rank, 1, :checked => true
+            - else
+              = check_box_tag :sales_rank, 1
+            = label_tag :sales_rank
+            - if params[:ebay]
+              = check_box_tag :ebay, 1, :checked => true
+            - else
+              = check_box_tag :ebay, 1
+            = label_tag :ebay
+      .float-left
+        = submit_tag "Search", :class => "btn btn-default"
+        = link_to 'New Product', new_product_path, :class => "btn btn-default"
+      .float-right= paginate @products
+
+%table.table.table-condensed.table-striped.products
   %thead
     %tr
       %th Category
@@ -34,21 +43,14 @@
           Size
       %th Features
       %th Sales rank
-      / <th>Url</th>
-      / <th>Url jp</th>
-      %th Image
-      -# %th Image url2
-      -# %th Image url3
-      -# %th Image url4
-      -# %th Image url5
-      / <th>Currency</th>
+      %th Images
       %th Price
       %th
         Cost/
         %br
           Shipping Cost
       %th Profit
-      %th Ebay
+      %th.col-sm-1 Ebay
       %th
   %tbody
     - @products.each do |product|
@@ -70,10 +72,11 @@
           = link_to image_tag(product.image_url3.sub(/.jpg$/, "._SL75_.jpg")), product.image_url3, "data-lightbox" => product.image_url3 rescue nil 
           = link_to image_tag(product.image_url4.sub(/.jpg$/, "._SL75_.jpg")), product.image_url4, "data-lightbox" => product.image_url4 rescue nil 
           = link_to image_tag(product.image_url5.sub(/.jpg$/, "._SL75_.jpg")), product.image_url5, "data-lightbox" => product.image_url5 rescue nil 
-        / <td><haml:loud> product.currency </haml:loud></td>
         %td
-          - if product.price && product.currency == "USD"
-            = link_to number_to_currency(product.price, :locale => :en), product.url
+          - if product.price
+            - case product.currency
+            - when "USD"
+              = link_to number_to_currency(product.price, :locale => :en), product.url
         %td
           - if product.cost
             %p= link_to number_to_currency(product.cost), product.url_jp
@@ -90,14 +93,29 @@
             = number_to_currency product.profit
         %td
           - unless @ebay_items[product.id].blank?
-            = link_to "#{@locale} #{@ebay_items[product.id].last}", product_path(product), :class => "btn btn-default"
-            = "#{t('views.product.average')} #{@locale} #{(@ebay_items[product.id].inject{ |sum, el| sum + el }.to_f / @ebay_items[product.id].size).round(1)} (#{@ebay_items[product.id].count})"
+            %p
+              = t("views.product.all_count")
+              = number_with_delimiter @ebay_items[product.id].count
+            - if @ebay_items[product.id].count > 0
+              %p
+                = t("views.product.sold_count")
+                = number_with_delimiter @sold_items[product.id].count
+                - if @sold_items[product.id].count > 0
+                  %br
+                  = t("views.product.highest")
+                  %br
+                  = "#{@locale} #{@sold_items[product.id].last}"
+                  %br
+                  = t("views.product.average")
+                  %br
+                  = "#{@locale} #{(@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(1)}"
         %td
           = link_to 'Show', product, :class => "btn btn-default"
           %br
-            = link_to 'Edit', edit_product_path(product), :class => "btn btn-default"
-            %br
-              = link_to 'Destroy', product, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger"
-= paginate @products
-%br
-  = link_to 'New Product', new_product_path, :class => "btn btn-default"
+          = link_to 'Edit', edit_product_path(product), :class => "btn btn-default"
+          %br
+          = link_to 'Destroy', product, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger"
+
+.float-right= paginate @products
+
+= link_to 'New Product', new_product_path, :class => "btn btn-default"
