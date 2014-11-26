@@ -1,0 +1,9 @@
+%p#notice= notice
+
+%p
+  %b Product:
+  = @product_to_sell.product
+
+= link_to 'Edit', edit_product_to_sell_path(@product_to_sell)
+\|
+= link_to 'Back', product_to_sells_path

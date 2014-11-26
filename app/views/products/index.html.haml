@@ -5,7 +5,7 @@
       .float-left
         %div
           = label_tag :category
-          = select_tag :category, options_for_select(@categories, :selected => params[:category]), :include_blank => true, :class => "form-control"
+          = select_tag :category, options_for_select(@categories, :selected => params[:category]), :include_blank => true, class: "form-control"
           .checkboxes
             - if params[:profit] == "0"
               = check_box_tag :profit, 1
@@ -23,8 +23,8 @@
               = check_box_tag :ebay, 1
             = label_tag :ebay
       .float-left
-        = submit_tag "Search", :class => "btn btn-default"
-        = link_to 'New Product', new_product_path, :class => "btn btn-default"
+        = submit_tag "Search", class: "btn btn-default"
+        = link_to 'New Product', new_product_path, class: "btn btn-default"
       .float-right= paginate @products
 
 %table.table.table-condensed.table-striped.products
@@ -67,11 +67,11 @@
         %td= product.features
         %td= number_with_delimiter product.sales_rank
         %td
-          = link_to image_tag(product.image_url1.sub(/.jpg$/, "._SL75_.jpg")), product.image_url1, "data-lightbox" => product.image_url1 rescue nil 
-          = link_to image_tag(product.image_url2.sub(/.jpg$/, "._SL75_.jpg")), product.image_url2, "data-lightbox" => product.image_url2 rescue nil 
-          = link_to image_tag(product.image_url3.sub(/.jpg$/, "._SL75_.jpg")), product.image_url3, "data-lightbox" => product.image_url3 rescue nil 
-          = link_to image_tag(product.image_url4.sub(/.jpg$/, "._SL75_.jpg")), product.image_url4, "data-lightbox" => product.image_url4 rescue nil 
-          = link_to image_tag(product.image_url5.sub(/.jpg$/, "._SL75_.jpg")), product.image_url5, "data-lightbox" => product.image_url5 rescue nil 
+          = link_to image_tag(product.image_url1.sub(/.jpg$/, "._SL75_.jpg")), product.image_url1, "data-lightbox" => product.image_url1 rescue nil
+          = link_to image_tag(product.image_url2.sub(/.jpg$/, "._SL75_.jpg")), product.image_url2, "data-lightbox" => product.image_url2 rescue nil
+          = link_to image_tag(product.image_url3.sub(/.jpg$/, "._SL75_.jpg")), product.image_url3, "data-lightbox" => product.image_url3 rescue nil
+          = link_to image_tag(product.image_url4.sub(/.jpg$/, "._SL75_.jpg")), product.image_url4, "data-lightbox" => product.image_url4 rescue nil
+          = link_to image_tag(product.image_url5.sub(/.jpg$/, "._SL75_.jpg")), product.image_url5, "data-lightbox" => product.image_url5 rescue nil
         %td
           - if product.price
             - case product.currency
@@ -110,12 +110,14 @@
                   %br
                   = "#{@locale} #{(@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(1)}"
         %td
-          = link_to 'Show', product, :class => "btn btn-default"
+          = link_to 'Show', product, class: "btn btn-default btn-sm"
           %br
-          = link_to 'Edit', edit_product_path(product), :class => "btn btn-default"
+          = link_to 'Edit', edit_product_path(product), class: "btn btn-default btn-sm"
           %br
-          = link_to 'Destroy', product, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger"
+          = link_to 'Add', product_to_sells_path, method: "post", data: { confirm: 'Are you sure?', params: { product_to_sell: { product_id: product.id } } }, remote: true, class: "btn btn-success btn-sm"
+          %br
+          = link_to 'Destroy', product, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm"
 
 .float-right= paginate @products
 
-= link_to 'New Product', new_product_path, :class => "btn btn-default"
+= link_to 'New Product', new_product_path, class: "btn btn-default btn-sm"

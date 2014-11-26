@@ -80,7 +80,7 @@ class ProductsController < ApplicationController
                                  @product.id,
                                  @locale,
                                  "EndedWithSales"])
-    @average = (@sold_items.pluck(:current_price_value).inject{ |sum, el| sum + el }.to_f / @sold_items.size).round(1)
+    @average = (@sold_items.pluck(:current_price_value).inject{ |sum, el| sum + el }.to_f / @sold_items.size).round(1) if @sold_items.count > 0
   end
 
   # GET /products/new
@@ -147,7 +147,7 @@ class ProductsController < ApplicationController
                       associate_tag: ASSOCIATE_TAG
                       )
     SearchIndex.all.each_with_index do |search_index, i|
-      # next if i < 4
+      next if i < 7
 
       search_index.sort_values.each do |sort_value|
         for i in 1..10

@@ -2,7 +2,8 @@ ja:
   activerecord:
     models:
       ebay_item: ebay_item  #g
-      product: product  #g
+      product: Product
+      product_to_sell: Product to sell
       search_index: search_index  #g
       sort_value: sort_value  #g
 

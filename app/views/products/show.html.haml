@@ -85,9 +85,10 @@
         %br
         = t("views.product.sold_count")
         = number_with_delimiter @sold_items.count
-        %br
-        = t("views.product.average")
-        = "#{@locale} #{number_with_delimiter @average}"
+        - if @average
+          %br
+          = t("views.product.average")
+          = "#{@locale} #{number_with_delimiter @average}"
     %td
       %ul
         - @ebay_items.each do |item|

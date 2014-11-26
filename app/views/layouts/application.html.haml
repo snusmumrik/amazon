@@ -14,6 +14,10 @@
             %span.icon-bar
             %span.icon-bar
           %a.navbar-brand{:href => "/"} Vacuum
+        .navbar-collapse.collapse
+          %ul.nav.navbar-nav
+            %li= link_to t("activerecord.models.product"), products_path
+            %li= link_to t("activerecord.models.product_to_sell"), product_to_sells_path
     .container
       - if notice
         .alert.alert-success

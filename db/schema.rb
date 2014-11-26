@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141123091219) do
+ActiveRecord::Schema.define(version: 20141125061620) do
 
   create_table "ebay_items", force: true do |t|
     t.integer  "product_id"
@@ -42,6 +42,15 @@ ActiveRecord::Schema.define(version: 20141123091219) do
   end
 
   add_index "ebay_items", ["product_id"], name: "index_ebay_items_on_product_id", using: :btree
+
+  create_table "product_to_sells", force: true do |t|
+    t.integer  "product_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
+  end
+
+  add_index "product_to_sells", ["product_id"], name: "index_product_to_sells_on_product_id", using: :btree
 
   create_table "products", force: true do |t|
     t.string   "asin"
