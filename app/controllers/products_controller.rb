@@ -14,10 +14,7 @@ class ProductsController < ApplicationController
     @product = Product.new
     @exchange_rate = @@exchange_rate
 
-    @categories = Array.new
-    Product.group(:category).order(:category).all.each do |product|
-      @categories << [product.category, product.category]
-    end
+    @categories = Category.order("name")
 
     @conditions = Array.new
     @orders = Array.new
@@ -274,6 +271,7 @@ class ProductsController < ApplicationController
               else
                 product.save
                 find_ebay_completed_items(product.title, product.id)
+                Category.create(name: product.category) unless Category.where(["name = ?", product.category]).first
               end
 
               sleep 1
