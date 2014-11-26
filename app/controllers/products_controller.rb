@@ -31,12 +31,15 @@ class ProductsController < ApplicationController
       @orders << "profit DESC"
     end
 
+    if params[:manufacturer]
+      @conditions << "manufacturer = '#{params[:manufacturer]}'"
+    end
+
     if params[:ebay].blank?
       @products = Product.where(@conditions.join(" AND ")).order(@orders.join(",")).page params[:page]
     else
       @products = Product.joins(:ebay_items).group("products.id").where(@conditions.join(" AND ")).order(@orders.join(",")).page params[:page]
     end
-
 
     case params[:locale]
     when "USD"

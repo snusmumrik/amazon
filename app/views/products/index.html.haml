@@ -22,6 +22,8 @@
             - else
               = check_box_tag :ebay, 1
             = label_tag :ebay
+          - if params[:manufacture]
+            = hidden_tag :manufacturer, params[:manufacturer]
       .float-left
         = submit_tag "Search", class: "btn btn-default"
         = link_to 'New Product', new_product_path, class: "btn btn-default"
@@ -56,7 +58,7 @@
     - @products.each do |product|
       %tr
         %td= product.category
-        %td= product.manufacturer
+        %td= link_to product.manufacturer, "/products/manufacturers/#{product.manufacturer}"
         %td
           %p= product.asin
           %p= product.model
