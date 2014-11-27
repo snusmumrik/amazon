@@ -3,6 +3,7 @@ require 'open-uri'
 class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
   before_action :read_exchange_rate
+  after_filter :remember_previous_page, only: :index
 
   @@shipping_cost = 1080
   # @@app_id = "Chishaku-8e8f-48de-a23a-e1304518388d" # sandbox
@@ -24,7 +25,9 @@ class ProductsController < ApplicationController
     if params[:sales_rank]
       @conditions << "sales_rank IS NOT NULL"
       @orders << "sales_rank ASC"
-    else
+    end
+
+    if params[:profit]
       @orders << "profit DESC"
     end
 
@@ -32,10 +35,10 @@ class ProductsController < ApplicationController
       @conditions << "manufacturer = '#{params[:manufacturer]}'"
     end
 
-    if params[:ebay].blank?
-      @products = Product.where(@conditions.join(" AND ")).order(@orders.join(",")).page params[:page]
+    if params[:ebay]
+      @products = Product.joins(:ebay_items).where(@conditions.join(" AND ")).group("products.id").order(@orders.join(",")).page params[:page]
     else
-      @products = Product.joins(:ebay_items).group("products.id").where(@conditions.join(" AND ")).order(@orders.join(",")).page params[:page]
+      @products = Product.where(@conditions.join(" AND ")).order(@orders.join(",")).page params[:page]
     end
 
     case params[:locale]
@@ -52,8 +55,7 @@ class ProductsController < ApplicationController
       hash[key] = Array.new
     end
 
-    ebay_items = EbayItem.where(["product_id IN (?)",
-                                 @products.pluck(:id)]).order("current_price_value")
+    ebay_items = EbayItem.where(["product_id IN (?)", @products.pluck(:id)]).order("current_price_value")
     ebay_items.each do |item|
       if item.current_price_currency_id == @locale
         @ebay_items[item.product_id] << item.try(:current_price_value)
@@ -115,7 +117,6 @@ class ProductsController < ApplicationController
   def update
     respond_to do |format|
       if @product.update(product_params)
-        find_ebay_completed_items(@product.title, @product.id)
         format.html { redirect_to @product, notice: 'Product was successfully updated.' }
         format.json { render :show, status: :ok, location: @product }
       else
@@ -362,5 +363,9 @@ class ProductsController < ApplicationController
         puts "EBAY PRICE: #{ebay.current_price_currency_id} #{ebay.current_price_value}"
       end
     end
+  end
+
+  def remember_previous_page
+    session[:previous_page] = request.env['HTTP_REFERER'] || productss_url
   end
 end
