@@ -7,10 +7,10 @@
           = label_tag :category
           = select_tag :category, options_for_select(@categories, :selected => params[:category]), :include_blank => true, class: "form-control"
           .checkboxes
-            - if params[:profit] == "0"
-              = check_box_tag :profit, 1
-            - else
+            - if params[:profit]
               = check_box_tag :profit, 1, :checked => true
+            - else
+              = check_box_tag :profit, 1
             = label_tag :profit
             - if params[:sales_rank]
               = check_box_tag :sales_rank, 1, :checked => true
