@@ -88,6 +88,5 @@
     %th
       %strong Condition display name:
     %td= @ebay_item.condition_display_name
-= link_to 'Edit', edit_ebay_item_path(@ebay_item)
-|
-\#{link_to 'Back', ebay_items_path}
+= link_to 'Edit', edit_ebay_item_path(@ebay_item), :class => "btn btn-default"
+= link_to 'Back', ebay_items_path, :class => "btn btn-default"
