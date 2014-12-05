@@ -1,0 +1,2 @@
+module EbayCategoriesHelper
+end

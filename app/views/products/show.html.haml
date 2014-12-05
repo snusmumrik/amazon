@@ -35,6 +35,10 @@
     %td= @product.size
   %tr
     %th
+      %strong Weight
+    %td= @product.weight
+  %tr
+    %th
       %strong Features
     %td= @product.features
   %tr
@@ -61,7 +65,7 @@
   %tr
     %th
       %strong Cost
-    %td= link_to number_to_currency(@product.cost), @product.url_jp
+    %td= link_to number_to_currency(@product.cost), @product.url_jp if @product.cost
   %tr
     %th
       %strong Shipping cost
@@ -70,12 +74,39 @@
     %th
       %strong Profit
     %td
-      - if @product.profit/(@product.price*@exchange_rate.to_f) > 0.1
-        %span.green= number_to_currency @product.profit
-      - elsif @product.profit < 0
-        %span.red= number_to_currency @product.profit
-      - else
-        = number_to_currency @product.profit
+      - if @product.profit && @product.cost
+        %p
+          [amazon]
+          %br
+          - if @product.profit/@product.cost.to_f > 0.1
+            %span.green
+              = number_to_currency @product.profit
+              %br
+              = "(#{(100*@product.profit/@product.cost).round(0)}%)"
+          - elsif @product.profit < 0
+            %span.red
+              = number_to_currency @product.profit
+          - else
+            = number_to_currency @product.profit
+            %br
+            = "(#{(100*@product.profit/@product.cost).round(0)}%)"
+      - unless @sold_items.blank?
+        %p
+          [ebay]
+          %br
+          - if @product.cost
+            - if (@average*@exchange_rate - @product.cost)/@product.cost.to_f > 0.1
+              %span.green
+                = number_to_currency @average*@exchange_rate - @product.cost
+                %br
+                = "(#{(100*(@average*@exchange_rate - @product.cost)/@product.cost).round(0)}%)"
+            - elsif @average*@exchange_rate - @product.cost < 0
+              %span.red
+                = number_to_currency @average*@exchange_rate - @product.cost
+            - else
+              = number_to_currency @average*@exchange_rate - @product.cost
+              %br
+              = "(#{(100*(@average*@exchange_rate - @product.cost)/@product.cost).round(0)}%)"
   %tr
     %th
       %p

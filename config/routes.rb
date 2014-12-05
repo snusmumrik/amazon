@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :ebay_categories
+
   resources :product_to_sells
 
   resources :ebay_items

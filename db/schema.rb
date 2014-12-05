@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141126091307) do
+ActiveRecord::Schema.define(version: 20141128083714) do
 
   create_table "categories", force: true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "ebay_categories", force: true do |t|
+    t.integer  "category_id"
+    t.integer  "category_level"
+    t.string   "category_name"
+    t.integer  "category_parent_id"
+    t.boolean  "leaf_category"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -51,6 +61,8 @@ ActiveRecord::Schema.define(version: 20141126091307) do
 
   create_table "product_to_sells", force: true do |t|
     t.integer  "product_id"
+    t.integer  "category_id"
+    t.boolean  "listed"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
@@ -66,6 +78,7 @@ ActiveRecord::Schema.define(version: 20141126091307) do
     t.text     "title"
     t.string   "color"
     t.string   "size"
+    t.float    "weight"
     t.string   "features"
     t.integer  "sales_rank"
     t.text     "url"

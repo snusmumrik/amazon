@@ -42,7 +42,9 @@
       %th
         Color/
         %br
-          Size
+        Size/
+        %br
+        Weight
       %th Features
       %th Sales rank
       %th Images
@@ -51,7 +53,7 @@
         Cost/
         %br
           Shipping Cost
-      %th Profit
+      %th.col-sm-1 Profit
       %th.col-sm-1 Ebay
       %th
   %tbody
@@ -66,6 +68,7 @@
         %td
           %p= product.color
           %p= product.size
+          %p= "#{(product.weight.to_f / 100 * 0.454).round(1)} kg"
         %td= product.features
         %td= number_with_delimiter product.sales_rank
         %td
@@ -87,37 +90,61 @@
               %p -
           %p= number_to_currency product.shipping_cost
         %td
-          - if product.profit
-            - if product.profit/(product.price*@exchange_rate.to_f) > 0.1
-              %span.green
-            - elsif product.profit < 0
-              %span.red
-            = number_to_currency product.profit
+          - if product.profit && product.cost
+            %p
+              [amazon]
+              %br
+              - if product.profit/product.cost.to_f > 0.1
+                %span.green
+                  = number_to_currency product.profit
+                  %br
+                  = "(#{(100*product.profit/product.cost).round(0)}%)"
+              - elsif product.profit < 0
+                %span.red
+                  = number_to_currency product.profit
+              - else
+                = number_to_currency product.profit
+                %br
+                = "(#{(100*product.profit/product.cost).round(0)}%)"
+          - unless @sold_items[product.id].blank?
+            %p
+              [ebay]
+              %br
+              - if product.cost
+                - if ((@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(2)*@exchange_rate - product.cost)/product.cost.to_f > 0.1
+                  %span.green
+                    = number_to_currency (@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(2)*@exchange_rate - product.cost
+                    %br
+                    = "(#{(100*((@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(2)*@exchange_rate - product.cost)/product.cost).round(0)}%)"
+                - elsif (@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(2)*@exchange_rate - product.cost < 0
+                  %span.red
+                    = number_to_currency (@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(2)*@exchange_rate - product.cost
+                - else
+                  = number_to_currency (@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(2)*@exchange_rate - product.cost
+                  %br
+                  = "(#{(100*((@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(2)*@exchange_rate - product.cost)/product.cost).round(0)}%)"
         %td
           - unless @ebay_items[product.id].blank?
             %p
               = t("views.product.all_count")
               = number_with_delimiter @ebay_items[product.id].count
-            - if @ebay_items[product.id].count > 0
-              %p
+              - if @ebay_items[product.id].count > 0
+                %br
                 = t("views.product.sold_count")
                 = number_with_delimiter @sold_items[product.id].count
                 - if @sold_items[product.id].count > 0
-                  %br
-                  = t("views.product.highest")
-                  %br
-                  = "#{@locale} #{@sold_items[product.id].last}"
-                  %br
-                  = t("views.product.average")
-                  %br
-                  = "#{@locale} #{(@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(1)}"
+                  %p
+                    = t("views.product.highest")
+                    %br
+                    = "#{@locale} #{@sold_items[product.id].last}"
+                    %br
+                    = t("views.product.average")
+                    %br
+                    = "#{@locale} #{(@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(1)}"
         %td
           = link_to 'Show', product, class: "btn btn-default btn-sm"
-          %br
           = link_to 'Edit', edit_product_path(product), class: "btn btn-default btn-sm"
-          %br
           = link_to 'Add', product_to_sells_path, method: "post", data: { confirm: 'Are you sure?', params: { product_to_sell: { product_id: product.id } } }, remote: true, class: "btn btn-success btn-sm"
-          %br
           = link_to 'Destroy', product, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm"
 
 .float-right= paginate @products

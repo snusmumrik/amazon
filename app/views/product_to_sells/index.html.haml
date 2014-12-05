@@ -22,7 +22,10 @@
       Cost/
       %br
         Shipping Cost
-    %th Profit
+    %th.col-sm-1 Profit
+    %th.col-sm-1 Ebay
+    %th Category ID
+    %th Listed
     %th
     %th
 
@@ -31,11 +34,11 @@
       %td= product_to_sell.product.category
       %td= product_to_sell.product.title
       %td
-        = link_to image_tag(product.image_url1.sub(/.jpg$/, "._SL75_.jpg")), product.image_url1, "data-lightbox" => product.image_url1 rescue nil
-        = link_to image_tag(product.image_url2.sub(/.jpg$/, "._SL75_.jpg")), product.image_url2, "data-lightbox" => product.image_url2 rescue nil
-        = link_to image_tag(product.image_url3.sub(/.jpg$/, "._SL75_.jpg")), product.image_url3, "data-lightbox" => product.image_url3 rescue nil
-        = link_to image_tag(product.image_url4.sub(/.jpg$/, "._SL75_.jpg")), product.image_url4, "data-lightbox" => product.image_url4 rescue nil
-        = link_to image_tag(product.image_url5.sub(/.jpg$/, "._SL75_.jpg")), product.image_url5, "data-lightbox" => product.image_url5 rescue nil
+        = link_to image_tag(product_to_sell.product.image_url1.sub(/.jpg$/, "._SL75_.jpg")), product_to_sell.product.image_url1, "data-lightbox" => product_to_sell.product.image_url1 rescue nil
+        = link_to image_tag(product_to_sell.product.image_url2.sub(/.jpg$/, "._SL75_.jpg")), product_to_sell.product.image_url2, "data-lightbox" => product_to_sell.product.image_url2 rescue nil
+        = link_to image_tag(product_to_sell.product.image_url3.sub(/.jpg$/, "._SL75_.jpg")), product_to_sell.product.image_url3, "data-lightbox" => product_to_sell.product.image_url3 rescue nil
+        = link_to image_tag(product_to_sell.product.image_url4.sub(/.jpg$/, "._SL75_.jpg")), product_to_sell.product.image_url4, "data-lightbox" => product_to_sell.product.image_url4 rescue nil
+        = link_to image_tag(product_to_sell.product.image_url5.sub(/.jpg$/, "._SL75_.jpg")), product_to_sell.product.image_url5, "data-lightbox" => product_to_sell.product.image_url5 rescue nil
       %td
         - if product_to_sell.product.price
           - case product_to_sell.product.currency
@@ -49,16 +52,70 @@
             %p -
         %p= number_to_currency product_to_sell.product.shipping_cost
       %td
-        - if product_to_sell.product.profit
-          - if product_to_sell.product.profit/(product_to_sell.product.price*@exchange_rate.to_f) > 0.1
-            %span.green
-          - elsif product_to_sell.product.profit < 0
-            %span.red
-          = number_to_currency product_to_sell.product.profit
+        - if product_to_sell.product.profit && product_to_sell.product.cost
+          %p
+            [amazon]
+            %br
+            - if product_to_sell.product.profit/product_to_sell.product.cost.to_f > 0.1
+              %span.green
+                = number_to_currency product_to_sell.product.profit
+                %br
+                = "(#{(100*product_to_sell.product.profit/product_to_sell.product.cost).round(0)}%)"
+            - elsif product_to_sell.product.profit < 0
+              %span.red
+                = number_to_currency product_to_sell.product.profit
+            - else
+              = number_to_currency product_to_sell.product.profit
+              %br
+              = "(#{(100*product_to_sell.product.profit/product_to_sell.product.cost).round(0)}%)"
+        - unless @sold_items[product_to_sell.product.id].blank?
+          %p
+            [ebay]
+            %br
+            - if product_to_sell.product.cost
+              - if ((@sold_items[product_to_sell.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product_to_sell.product.id].size).round(2)*@exchange_rate - product_to_sell.product.cost)/product_to_sell.product.cost.to_f > 0.1
+                %span.green
+                  = number_to_currency (@sold_items[product_to_sell.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product_to_sell.product.id].size).round(2)*@exchange_rate - product_to_sell.product.cost
+                  %br
+                  = "(#{(100*((@sold_items[product_to_sell.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product_to_sell.product.id].size).round(2)*@exchange_rate - product_to_sell.product.cost)/product_to_sell.product.cost).round(0)}%)"
+              - elsif (@sold_items[product_to_sell.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product_to_sell.product.id].size).round(2)*@exchange_rate - product_to_sell.product.cost < 0
+                %span.red
+                  = number_to_currency (@sold_items[product_to_sell.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product_to_sell.product.id].size).round(2)*@exchange_rate - product_to_sell.product.cost
+              - else
+                = number_to_currency (@sold_items[product_to_sell.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product_to_sell.product.id].size).round(2)*@exchange_rate - product_to_sell.product.cost
+                %br
+                = "(#{(100*((@sold_items[product_to_sell.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product_to_sell.product.id].size).round(2)*@exchange_rate - product_to_sell.product.cost)/product_to_sell.product.cost).round(0)}%)"
+
+          -# - if product_to_sell.product.profit/(product_to_sell.product.price*@exchange_rate.to_f) > 0.1
+          -#   %span.green
+          -# - elsif product_to_sell.product.profit < 0
+          -#   %span.red
+          -# = number_to_currency product_to_sell.product.profit
       %td
-        = link_to 'Show', product_path(product_to_sell.product_id), class: "btn btn-default"
+        - unless @ebay_items[product_to_sell.product.id].blank?
+          %p
+            = t("views.product.all_count")
+            = number_with_delimiter @ebay_items[product_to_sell.product.id].count
+            - if @ebay_items[product_to_sell.product.id].count > 0
+              %br
+              = t("views.product.sold_count")
+              = number_with_delimiter @sold_items[product_to_sell.product.id].count
+              - if @sold_items[product_to_sell.product.id].count > 0
+                %p
+                  = t("views.product.highest")
+                  %br
+                  = "#{@locale} #{@sold_items[product_to_sell.product.id].last}"
+                  %br
+                  = t("views.product.average")
+                  %br
+                  = "#{@locale} #{(@sold_items[product_to_sell.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product_to_sell.product.id].size).round(1)}"
+      %td= product_to_sell.category_id
+      %td= product_to_sell.listed
+      %td
+        = link_to 'Show', product_to_sell_path(product_to_sell), class: "btn btn-default"
+        = link_to 'Edit', edit_product_to_sell_path(product_to_sell), class: "btn btn-default"
         = link_to 'Destroy', product_to_sell, :method => :delete, :data => { :confirm => 'Are you sure?' }, class: "btn btn-danger"
 
-%br
+.float-right= paginate @product_to_sells
 
 = link_to 'New Product to sell', new_product_to_sell_path, class: "btn btn-default"

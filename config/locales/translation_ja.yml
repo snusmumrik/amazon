@@ -53,16 +53,7 @@ ja:
         title: title  #g
         url: url  #g
         url_jp: url_jp  #g
-
-      search_index:
-        deleted_at: deleted_at  #g
-        name: name  #g
-        sort_values: sort_values  #g
-
-      sort_value:
-        deleted_at: deleted_at  #g
-        name: name  #g
-        search_index: :activerecord.models.search_index  #g
+        weight: weight
 
   views:
     index: 一覧

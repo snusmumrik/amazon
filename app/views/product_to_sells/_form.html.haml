@@ -8,6 +8,12 @@
 
   .field
     = f.label :product
-    = f.text_field :product
-  .actions
-    = f.submit 'Save'
+    = @product_to_sell.product.title
+  .field
+    = f.label :categpry_id
+    = f.text_field :category_id
+  .field
+    = f.label :listed
+    = f.check_box :listed
+    .actions
+    = f.submit 'Save', :class => "btn btn-default"
