@@ -25,8 +25,15 @@
           - if params[:manufacture]
             = hidden_tag :manufacturer, params[:manufacturer]
       .float-left
+        = label_tag :low_price
+        = text_field_tag :low_price, params[:low_price], class: "form-control"
+        = label_tag :high_price
+        = text_field_tag :high_price, params[:high_price], class: "form-control"
+
+      .float-left
         = submit_tag "Search", class: "btn btn-default"
         = link_to 'New Product', new_product_path, class: "btn btn-default"
+      .clear
       .float-right= paginate @products
 
 %table.table.table-condensed.table-striped.products

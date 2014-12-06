@@ -21,6 +21,8 @@ class ProductsController < ApplicationController
     @conditions = Array.new
     @orders = Array.new
 
+    @conditions << "price >= #{params[:low_price]}" unless params[:low_price].blank?
+    @conditions << "price <= #{params[:high_price]}" unless params[:high_price].blank?
     @conditions << "category = '#{params[:category]}'" unless params[:category].blank?
     @conditions << "profit > 0" if params[:profit] == "1"
     if params[:sales_rank]
@@ -95,11 +97,11 @@ class ProductsController < ApplicationController
   def new
     @product = Product.new
 
-    CSV.open("public/amazon_com_31.csv").each_with_index do |row, i|
-      next if i <= 0
-      asin = row[5]
-      lookup(asin)
-    end
+    # CSV.open("public/amazon_com_31.csv").each_with_index do |row, i|
+    #   next if i <= 0
+    #   asin = row[5]
+    #   lookup(asin)
+    # end
   end
 
   # GET /products/1/edit
@@ -160,7 +162,7 @@ class ProductsController < ApplicationController
                       associate_tag: ASSOCIATE_TAG
                       )
     SearchIndex.all.each_with_index do |search_index, i|
-      next if search_index.id < 14
+      next if search_index.id < 25
 
       search_index.sort_values.each do |sort_value|
         for i in 1..10
@@ -200,7 +202,7 @@ class ProductsController < ApplicationController
             response["ItemSearchResponse"]["Items"]["Item"].each do |item|
               puts "\r\nSEARCH_INDEX:#{search_index.name}, SORT_VALUE:#{sort_value.name}, ITEM_PAGE:#{i}"
 
-              save_product(item)
+              product = save_product(item)
               find_ebay_completed_items(product.title, product.id)
             end
           end
