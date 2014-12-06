@@ -43,6 +43,7 @@ class ProductsController < ApplicationController
     else
       @products = Product.where(@conditions.join(" AND ")).order(@orders.join(",")).page params[:page]
     end
+    @product_to_sells = ProductToSell.where(["product_id in (?)", @products.pluck(:id)]).pluck(:product_id)
 
     case params[:locale]
     when "USD"

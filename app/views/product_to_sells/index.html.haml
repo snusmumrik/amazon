@@ -32,7 +32,7 @@
   - @product_to_sells.each do |product_to_sell|
     %tr
       %td= product_to_sell.product.category
-      %td= product_to_sell.product.title
+      %td= link_to product_to_sell.product.title, product_path(product_to_sell.product)
       %td
         = link_to image_tag(product_to_sell.product.image_url1.sub(/.jpg$/, "._SL75_.jpg")), product_to_sell.product.image_url1, "data-lightbox" => product_to_sell.product.image_url1 rescue nil
         = link_to image_tag(product_to_sell.product.image_url2.sub(/.jpg$/, "._SL75_.jpg")), product_to_sell.product.image_url2, "data-lightbox" => product_to_sell.product.image_url2 rescue nil
@@ -110,7 +110,9 @@
                   %br
                   = "#{@locale} #{(@sold_items[product_to_sell.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product_to_sell.product.id].size).round(1)}"
       %td= product_to_sell.category_id
-      %td= product_to_sell.listed
+      %td
+        - if product_to_sell.listed
+          = "Listed"
       %td
         = link_to 'Show', product_to_sell_path(product_to_sell), class: "btn btn-default"
         = link_to 'Edit', edit_product_to_sell_path(product_to_sell), class: "btn btn-default"

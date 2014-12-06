@@ -3,6 +3,7 @@ require 'csv'
 class ProductToSellsController < ApplicationController
   before_action :set_product_to_sell, only: [:show, :edit, :update, :destroy]
   before_action :read_exchange_rate
+  before_action :get_ebay_sold_items, only: [:show, :edit]
   after_action :list_to_ebay, only: :update
   after_filter :remember_previous_page, only: :index
 
@@ -53,19 +54,6 @@ class ProductToSellsController < ApplicationController
   # GET /product_to_sells/1
   # GET /product_to_sells/1.json
   def show
-    case
-    when "USD"
-      @locale = "USD"
-    else
-      @locale = "USD"
-    end
-
-    @ebay_items = EbayItem.where(["product_id = ?", @product_to_sell.product.id]).order("end_time DESC")
-    @sold_items = EbayItem.where(["product_id = ? AND current_price_currency_id = ? AND selling_state = ?",
-                                  @product_to_sell.product.id,
-                                  @locale,
-                                  "EndedWithSales"])
-    @average = (@sold_items.pluck(:current_price_value).inject{ |sum, el| sum + el }.to_f / @sold_items.size).round(1) if @sold_items.count > 0
   end
 
   # GET /product_to_sells/new
@@ -138,7 +126,23 @@ class ProductToSellsController < ApplicationController
     puts "EXCHANGE RATE:#{@exchange_rate}"
   end
 
-  def list_to_ebay(api_call_name = "VerifyAddItem")
+  def get_ebay_sold_items
+    case
+    when "USD"
+      @locale = "USD"
+    else
+      @locale = "USD"
+    end
+
+    @ebay_items = EbayItem.where(["product_id = ?", @product_to_sell.product.id]).order("end_time DESC")
+    @sold_items = EbayItem.where(["product_id = ? AND current_price_currency_id = ? AND selling_state = ?",
+                                  @product_to_sell.product.id,
+                                  @locale,
+                                  "EndedWithSales"])
+    @average = (@sold_items.pluck(:current_price_value).inject{ |sum, el| sum + el }.to_f / @sold_items.size).round(1) if @sold_items.count > 0
+  end
+
+  def list_to_ebay(api_call_name = "VerifyAddItem", start_price = nil)
     if @product_to_sell.category_id && @product_to_sell.listed
       @product = @product_to_sell.product
 
@@ -159,10 +163,12 @@ class ProductToSellsController < ApplicationController
       descriptions << "Size:#{@product.size}" if @product.size
       descriptions << "International shipping free."
 
-      # start_price = (@product.price*0.95).round(0)
-      start_price = @product.price.round(0)
+      if start_price.blank?
+        # start_price = (@product.price*0.95).round(0)
+        start_price = @product.price.round(0)
+      end
       condition_id = 1000
-      listing_duration = "Days_7"
+      listing_duration = "Days_3"
       listing_type = "Chinese"
       payment_methods = "PayPal"
       paypal_email = "hiroyuki.kondo@chishaku.com"
@@ -245,7 +251,7 @@ class ProductToSellsController < ApplicationController
         end
 
         begin
-          list_to_ebay("AddItem") if fees < 1
+          list_to_ebay("AddItem", params[:start_price]) if fees < 1
         rescue => ex
           warn ex.message
         end
@@ -285,7 +291,7 @@ class ProductToSellsController < ApplicationController
       # start_price = (@product.price*0.95).round(0)
       start_price = @product.price.round(0)
       condition_id = 1000
-      listing_duration = "Days_7"
+      listing_duration = "Days_3"
       listing_type = "Chinese"
       payment_methods = "PayPal"
       paypal_email = "hiroyuki.kondo@chishaku.com"
