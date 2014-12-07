@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  product_id: 
+  locale: MyString
+  price_original: 1
+  price_yen: 1
+  cost: 1
+  shipping_cost: 1
+  profit: 1
+  sold_at: 2014-12-06
+
+two:
+  product_id: 
+  locale: MyString
+  price_original: 1
+  price_yen: 1
+  cost: 1
+  shipping_cost: 1
+  profit: 1
+  sold_at: 2014-12-06

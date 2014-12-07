@@ -1,0 +1,51 @@
+%table.table.table-bordered
+
+  %tr
+    %th
+      %strong Product
+    %td
+      = link_to @order.product.title, product_path(@order.product)
+  %tr
+    %th
+      %strong Price original
+    %td
+      - case @order.locale
+        - when "USD"
+          = number_to_currency @order.price_original, locale: :en
+  %tr
+    %th
+      %strong Price yen
+    %td
+      = number_to_currency @order.price_yen
+  %tr
+    %th
+      %strong Cost
+    %td
+      = number_to_currency @order.cost
+  %tr
+    %th
+      %strong Shipping cost
+    %td
+      = number_to_currency @order.shipping_cost
+  %tr
+    %th
+      %strong Profit
+    %td
+      - if @order.profit > 0
+        = number_to_currency @order.profit
+      - else
+        %span.red
+          = number_to_currency @order.profit
+  %tr
+    %th
+      %strong Sold at
+    %td
+      = @order.sold_at
+  %tr
+    %th
+      %strong Memo
+    %td
+      = @order.memo
+
+= link_to 'Edit', edit_order_path(@order), class: "btn btn-default"
+= link_to 'Back', orders_path, class: "btn btn-default"

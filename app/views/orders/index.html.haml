@@ -1,0 +1,67 @@
+%h1 Listing orders
+= form_tag("/orders", method: :get) do
+  .form-inline
+    .field
+      .float-left
+        %div
+          = label_tag :category
+          = select_tag :category, options_for_select(@categories, selected: params[:category]), include_blank: true, class: "form-control"
+          .checkboxes
+          - if params[:manufacture]
+            = hidden_tag :manufacturer, params[:manufacturer]
+      .float-left
+        = label_tag :low_price
+        = text_field_tag :low_price, params[:low_price], class: "form-control"
+        = label_tag :high_price
+        = text_field_tag :high_price, params[:high_price], class: "form-control"
+      .float-left
+        = submit_tag "Search", class: "btn btn-default"
+        = link_to 'New Product', new_product_path, class: "btn btn-default"
+      .clear
+      .float-right= paginate @orders
+
+%table.table.table-condensed.table-striped.products
+  %tr
+    %th Product
+    %th Image
+    %th Price original
+    %th Price yen
+    %th Cost
+    %th Shipping cost
+    %th Profit
+    %th Sold at
+    %th Memo
+    %th
+
+  - @orders.each do |order|
+    %tr
+      %td= link_to @products_hash[order.product_id].title, product_path(@products_hash[order.product_id])
+      %td
+        = link_to image_tag(@products_hash[order.product_id].image_url1.sub(/.jpg$/, "._SL75_.jpg")), @products_hash[order.product_id].image_url1, "data-lightbox" => @products_hash[order.product_id].image_url1 rescue nil
+        -# = link_to image_tag(@products_hash[order.product_id].image_url2.sub(/.jpg$/, "._SL75_.jpg")), @products_hash[order.product_id].image_url2, "data-lightbox" => @products_hash[order.product_id].image_url2 rescue nil
+        -# = link_to image_tag(@products_hash[order.product_id].image_url3.sub(/.jpg$/, "._SL75_.jpg")), @products_hash[order.product_id].image_url3, "data-lightbox" => @products_hash[order.product_id].image_url3 rescue nil
+        -# = link_to image_tag(@products_hash[order.product_id].image_url4.sub(/.jpg$/, "._SL75_.jpg")), @products_hash[order.product_id].image_url4, "data-lightbox" => @products_hash[order.product_id].image_url4 rescue nil
+        -# = link_to image_tag(@products_hash[order.product_id].image_url5.sub(/.jpg$/, "._SL75_.jpg")), @products_hash[order.product_id].image_url5, "data-lightbox" => @products_hash[order.product_id].image_url5 rescue nil
+      %td
+        - case order.locale
+        - when "USD"
+          = number_to_currency order.price_original, locale: :en
+      %td= number_to_currency order.price_yen
+      %td= number_to_currency order.cost
+      %td= number_to_currency order.shipping_cost
+      %td
+        - if order.profit > 0
+          = number_to_currency order.profit
+        - else
+          %span.red
+            = number_to_currency order.profit
+      %td= order.sold_at
+      %td= order.memo
+      %td
+        = link_to 'Show', order, class: "btn btn-default btn-sm"
+        = link_to 'Edit', edit_order_path(order), class: "btn btn-default btn-sm"
+        = link_to 'Destroy', order, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm"
+
+.float-right= paginate @orders
+
+= link_to 'New Order', new_order_path, class: "btn btn-default btn-sm"

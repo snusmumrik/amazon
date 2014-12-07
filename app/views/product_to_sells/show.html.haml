@@ -40,7 +40,14 @@
   %tr
     %th
       %strong Weight
-    %td= @product_to_sell.product.weight
+    %td
+      = @product_to_sell.product.weight
+      - if @product_to_sell.product.weight > 220
+        = surround "(", "kg)" do
+          = (@product_to_sell.product.weight.to_f / 100 * 0.454).round(2)
+      - else
+        = surround "(", "g)" do
+          = (@product_to_sell.product.weight.to_f * 4.54).round(0)
   %tr
     %th
       %strong Features

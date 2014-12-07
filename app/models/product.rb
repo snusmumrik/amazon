@@ -9,17 +9,12 @@ class Product < ActiveRecord::Base
   before_update :calculate_cost
 
   def calculate_cost
-    @@exchange_rate = open("public/exchange_rate.txt", "r").read.to_i
+    exchange_rate = open("public/exchange_rate.txt", "r").read.to_i
     weight = self.weight.to_f / 100 * 0.454
     # 小形包装物
-    #   長さ＋幅＋厚さ＝90cm
-    #   ただし、長さの最大は60cm
-    #   (許容差 2mm)
-    #   巻物については
-    #   長さ＋直径の2倍＝104cm
-    #   ただし、長さの最大は90cm
-    #   (許容差 2mm)
-
+    #   長さ＋幅＋厚さ＝90cm ただし、長さの最大は60cm (許容差 2mm)
+    # 巻物については
+    #   長さ＋直径の2倍＝104cm ただし、長さの最大は90cm (許容差 2mm)
     if weight <= 0.05*0.8
       self.shipping_cost = 150
     elsif weight <= 0.1*0.8
@@ -176,7 +171,7 @@ class Product < ActiveRecord::Base
     end
 
     if self.price && self.cost
-      self.profit = self.price * @@exchange_rate - self.shipping_cost - self.cost
+      self.profit = self.price * exchange_rate - self.shipping_cost - self.cost
     end
   end
 end

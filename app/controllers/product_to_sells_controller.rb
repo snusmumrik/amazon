@@ -15,9 +15,27 @@ class ProductToSellsController < ApplicationController
     @conditions = Array.new
     @orders = Array.new
 
+    @conditions << "price >= #{params[:low_price]}" unless params[:low_price].blank?
+    @conditions << "price <= #{params[:high_price]}" unless params[:high_price].blank?
     @conditions << "category = '#{params[:category]}'" unless params[:category].blank?
+    @conditions << "listed = TRUE" if params[:listed] == "1"
+    @conditions << "listed IS NOT TRUE" if params[:unlisted] == "1"
+
+    if params[:sales_rank]
+      @conditions << "sales_rank IS NOT NULL"
+      @orders << "sales_rank ASC"
+    end
+
+    if params[:manufacturer]
+      @conditions << "manufacturer = '#{params[:manufacturer]}'"
+    end
 
     @product_to_sells = ProductToSell.joins(:product).where(@conditions.join(" AND ")).page params[:page]
+    @products_hash = Hash.new
+    products = Product.where(["id IN (?)", @product_to_sells.pluck(:product_id)])
+    products.each do |p|
+      @products_hash.store(p.id, p)
+    end
 
     @categories = Array.new
     Product.group(:category).order(:category).all.each do |product|

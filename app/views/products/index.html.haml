@@ -67,7 +67,9 @@
     - @products.each do |product|
       %tr
         %td= product.category
-        %td= link_to product.manufacturer, "/products/manufacturers/#{product.manufacturer}"
+        %td
+          - if product.manufacturer
+            = link_to product.manufacturer, "/products/manufacturers/#{product.manufacturer}"
         %td
           %p= product.asin
           %p= product.model
