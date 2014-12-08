@@ -93,7 +93,7 @@
               = link_to number_to_currency(product.price, :locale => :en), product.url
         %td
           - if product.cost
-            %p= link_to number_to_currency(product.cost), product.url_jp
+            %p= link_to number_to_currency(product.cost), "#{URI.decode(product.url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}"
           - else
             .center
               %p -

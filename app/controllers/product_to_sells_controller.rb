@@ -179,7 +179,7 @@ class ProductToSellsController < ApplicationController
       descriptions << "Model:#{@product.model}" if @product.model
       descriptions << "Color:#{@product.color}" if @product.color
       descriptions << "Size:#{@product.size}" if @product.size
-      descriptions << "International shipping free."
+      descriptions << "Free international shipping"
 
       if start_price.blank?
         # start_price = (@product.price*0.95).round(0)

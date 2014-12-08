@@ -9,6 +9,16 @@
           .checkboxes
           - if params[:manufacture]
             = hidden_tag :manufacturer, params[:manufacturer]
+        %div
+          = label_tag :date
+          - if params[:sold_at]
+            = date_select :sold_at, :sold_at, {default: Date.new(params[:sold_at]["sold_at(1i)"].to_i, params[:sold_at]["sold_at(2i)"].to_i, 1), discard_day: true}, class: "form-control"
+          - else
+            = date_select :sold_at, :sold_at, {discard_day: true}, class: "form-control"
+          = "　　"
+          = label_tag :profit
+          %strong= number_to_currency @profit
+
       .float-left
         = label_tag :low_price
         = text_field_tag :low_price, params[:low_price], class: "form-control"
@@ -18,7 +28,7 @@
         = submit_tag "Search", class: "btn btn-default"
         = link_to 'New Product', new_product_path, class: "btn btn-default"
       .clear
-      .float-right= paginate @orders
+      -# .float-right= paginate @orders
 
 %table.table.table-condensed.table-striped.products
   %tr
@@ -45,13 +55,16 @@
       %td
         - case order.locale
         - when "USD"
-          = number_to_currency order.price_original, locale: :en
+          = link_to number_to_currency(order.price_original, locale: :en), order.product.url
       %td= number_to_currency order.price_yen
-      %td= number_to_currency order.cost
+      %td= link_to number_to_currency(order.cost), "#{URI.decode(order.product.url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}"
       %td= number_to_currency order.shipping_cost
       %td
         - if order.profit > 0
           = number_to_currency order.profit
+          %br
+          = surround "(", "%)" do
+            = (100 * order.profit/(order.cost + order.shipping_cost).to_f).round(1)
         - else
           %span.red
             = number_to_currency order.profit
@@ -62,6 +75,6 @@
         = link_to 'Edit', edit_order_path(order), class: "btn btn-default btn-sm"
         = link_to 'Destroy', order, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm"
 
-.float-right= paginate @orders
+-# .float-right= paginate @orders
 
 = link_to 'New Order', new_order_path, class: "btn btn-default btn-sm"

@@ -7,7 +7,7 @@
       [
       = link_to "US", @product.url
       |
-      = link_to "JP", @product.url_jp
+      = link_to "JP", "#{URI.decode(@product.url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}"
       ]
   %tr
     %th
@@ -38,10 +38,10 @@
       %strong Weight
     %td
       = @product.weight
-      - if @product.weight > 220
+      - if @product.weight && @product.weight > 220
         = surround "(", "kg)" do
           = (@product.weight.to_f / 100 * 0.454).round(2)
-      - else
+      - elsif @product.weight
         = surround "(", "g)" do
           = (@product.weight.to_f * 4.54).round(0)
   %tr

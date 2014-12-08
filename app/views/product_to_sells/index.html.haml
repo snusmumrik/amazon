@@ -74,7 +74,7 @@
             = link_to number_to_currency(@products_hash[p.product_id].price, :locale => :en), @products_hash[p.product_id].url
       %td
         - if @products_hash[p.product_id].cost
-          %p= link_to number_to_currency(@products_hash[p.product_id].cost), @products_hash[p.product_id].url_jp
+          %p= link_to number_to_currency(@products_hash[p.product_id].cost), "#{URI.decode(@products_hash[p.product_id].url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}"
         - else
           .center
             %p -

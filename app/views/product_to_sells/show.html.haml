@@ -11,7 +11,7 @@
       [
       = link_to "US", @product_to_sell.product.url
       |
-      = link_to "JP", @product_to_sell.product.url_jp
+      = link_to "JP", "#{URI.decode(@product_to_sell.product.url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}"
       ]
   %tr
     %th
@@ -76,7 +76,7 @@
   %tr
     %th
       %strong Cost
-    %td= link_to number_to_currency(@product_to_sell.product.cost), @product_to_sell.product.url_jp if @product_to_sell.product.cost
+    %td= link_to number_to_currency(@product_to_sell.product.cost), "#{@product_to_sell.product.url_jp.sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}" if @product_to_sell.product.cost
   %tr
     %th
       %strong Shipping cost

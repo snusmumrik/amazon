@@ -11,7 +11,7 @@
     - if @product
       = f.select :product_id, options_for_select(@product_options, @product.id), {include_blank: true}, class: "form-control"
     - else
-      = f.select :product, options_for_select(@product_options), {include_blank: true}, class: "form-control"
+      = f.select :product_id, options_for_select(@product_options), {include_blank: true}, class: "form-control"
   .field
     = f.label :locale
     - if @product

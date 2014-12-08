@@ -1,11 +1,25 @@
 class OrdersController < ApplicationController
   before_action :set_order, only: [:show, :edit, :update, :destroy]
   before_action :set_options, only: [:new, :create, :edit, :update]
+  before_action :set_product, only: [:edit, :update]
 
   # GET /orders
   # GET /orders.json
   def index
-    @orders = Order.order("sold_at DESC").page params[:page]
+    @conditions = Array.new
+
+    @conditions << "sold_at BETWEEN '#{Date.new(params[:sold_at]["sold_at(1i)"].to_i, params[:sold_at]["sold_at(2i)"].to_i, 1)}' AND '#{Date.new(params[:sold_at]["sold_at(1i)"].to_i, params[:sold_at]["sold_at(2i)"].to_i, -1)}'" if params[:sold_at]
+    @conditions << "price_original >= #{params[:low_price]}" unless params[:low_price].blank?
+    @conditions << "price_original <= #{params[:high_price]}" unless params[:high_price].blank?
+    @conditions << "products.category = '#{params[:category]}'" unless params[:category].blank?
+
+    if params[:manufacturer]
+      @conditions << "products.manufacturer = '#{params[:manufacturer]}'"
+    end
+
+    @orders = Order.joins(:product).where(@conditions.join(" AND ")).order("sold_at DESC").all # .page params[:page]
+    @profit = @orders.sum(:profit)
+
     @products_hash = Hash.new
     products = Product.where(["id IN (?)", @orders.pluck(:product_id)])
     products.each do |p|
@@ -15,17 +29,6 @@ class OrdersController < ApplicationController
     @categories = Array.new
     Product.group(:category).order(:category).all.each do |product|
       @categories << [product.category, product.category]
-    end
-
-    @conditions = Array.new
-    @sql_orders = Array.new
-
-    @conditions << "price >= #{params[:low_price]}" unless params[:low_price].blank?
-    @conditions << "price <= #{params[:high_price]}" unless params[:high_price].blank?
-    @conditions << "category = '#{params[:category]}'" unless params[:category].blank?
-
-    if params[:manufacturer]
-      @conditions << "manufacturer = '#{params[:manufacturer]}'"
     end
 
     case params[:locale]
@@ -120,6 +123,11 @@ class OrdersController < ApplicationController
     @order = Order.find(params[:id])
   end
 
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def order_params
+    params.require(:order).permit(:product_id, :locale, :memo, :price_original, :price_yen, :cost, :shipping_cost, :profit, :sold_at)
+  end
+
   def set_options
     @product_options = Array.new
     ProductToSell.joins(:product).where("listed IS TRUE").all.each do |p|
@@ -127,8 +135,7 @@ class OrdersController < ApplicationController
     end
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
-  def order_params
-    params.require(:order).permit(:product_id, :locale, :memo, :price_original, :price_yen, :cost, :shipping_cost, :profit, :sold_at)
+  def set_product
+    @product = @order.product
   end
 end
