@@ -23,8 +23,10 @@
             - else
               = check_box_tag :sales_rank, 1
             = label_tag :sales_rank
-          - if params[:manufacture]
-            = hidden_tag :manufacturer, params[:manufacturer]
+            = check_box_tag :refresh, 1
+            = label_tag :refresh
+            - if params[:manufacture]
+              = hidden_tag :manufacturer, params[:manufacturer]
       .float-left
         = label_tag :low_price
         = text_field_tag :low_price, params[:low_price], class: "form-control"
@@ -33,6 +35,7 @@
       .float-left
         = submit_tag "Search", :class => "btn btn-default"
         = link_to 'New Product', new_product_path, :class => "btn btn-default"
+        = link_to 'Refresh', refresh_product_to_sells_path, :class => "btn btn-default"
       .clear
       .float-right= paginate @product_to_sells
 
@@ -44,9 +47,14 @@
     %th Images
     %th Price
     %th
-      Cost/
+      Costs:
+      Supply
       %br
-        Shipping Cost
+      Shipping
+      %br
+      Ebay
+      %br
+      PayPal
     %th.col-sm-1 Profit
     %th.col-sm-1 Ebay
     %th Category ID
@@ -54,99 +62,121 @@
     %th
     %th
 
-  - @product_to_sells.each do |p|
+  - @product_to_sells.each do |pts|
     %tr
-      %td= @products_hash[p.product_id].category
+      %td= pts.product.category
       %td
-        - if @products_hash[p.product_id].manufacturer
-          = link_to @products_hash[p.product_id].manufacturer, "/product_to_sells/manufacturers/#{@products_hash[p.product_id].manufacturer}"
-      %td= link_to @products_hash[p.product_id].title, product_path(@products_hash[p.product_id])
+        - if pts.product.manufacturer
+          = link_to pts.product.manufacturer, "/product_to_sells/manufacturers/#{pts.product.manufacturer}"
+      %td= link_to pts.product.title, product_path(pts.product)
       %td
-        = link_to image_tag(@products_hash[p.product_id].image_url1.sub(/.jpg$/, "._SL75_.jpg")), @products_hash[p.product_id].image_url1, "data-lightbox" => @products_hash[p.product_id].image_url1 rescue nil
-        = link_to image_tag(@products_hash[p.product_id].image_url2.sub(/.jpg$/, "._SL75_.jpg")), @products_hash[p.product_id].image_url2, "data-lightbox" => @products_hash[p.product_id].image_url2 rescue nil
-        = link_to image_tag(@products_hash[p.product_id].image_url3.sub(/.jpg$/, "._SL75_.jpg")), @products_hash[p.product_id].image_url3, "data-lightbox" => @products_hash[p.product_id].image_url3 rescue nil
-        = link_to image_tag(@products_hash[p.product_id].image_url4.sub(/.jpg$/, "._SL75_.jpg")), @products_hash[p.product_id].image_url4, "data-lightbox" => @products_hash[p.product_id].image_url4 rescue nil
-        = link_to image_tag(@products_hash[p.product_id].image_url5.sub(/.jpg$/, "._SL75_.jpg")), @products_hash[p.product_id].image_url5, "data-lightbox" => @products_hash[p.product_id].image_url5 rescue nil
+        = link_to image_tag(pts.product.image_url1.sub(/.jpg$/, "._SL75_.jpg")), pts.product.image_url1, "data-lightbox" => pts.product.image_url1 rescue nil
+        = link_to image_tag(pts.product.image_url2.sub(/.jpg$/, "._SL75_.jpg")), pts.product.image_url2, "data-lightbox" => pts.product.image_url2 rescue nil
+        = link_to image_tag(pts.product.image_url3.sub(/.jpg$/, "._SL75_.jpg")), pts.product.image_url3, "data-lightbox" => pts.product.image_url3 rescue nil
+        = link_to image_tag(pts.product.image_url4.sub(/.jpg$/, "._SL75_.jpg")), pts.product.image_url4, "data-lightbox" => pts.product.image_url4 rescue nil
+        = link_to image_tag(pts.product.image_url5.sub(/.jpg$/, "._SL75_.jpg")), pts.product.image_url5, "data-lightbox" => pts.product.image_url5 rescue nil
       %td
-        - if @products_hash[p.product_id].price
-          - case @products_hash[p.product_id].currency
+        - if pts.product.price
+          - case pts.product.currency
           - when "USD"
-            = link_to number_to_currency(@products_hash[p.product_id].price, :locale => :en), @products_hash[p.product_id].url
+            %p= link_to number_to_currency(pts.product.price, :locale => :en), pts.product.url, target: :blank
+            %p= "#{number_to_currency pts.product.price * @exchange_rate}(@#{@exchange_rate})"
       %td
-        - if @products_hash[p.product_id].cost
-          %p= link_to number_to_currency(@products_hash[p.product_id].cost), "#{URI.decode(@products_hash[p.product_id].url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}"
+        - if pts.product.url_jp
+          %p= link_to number_to_currency(pts.product.cost), "#{URI.decode(pts.product.url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}", target: :blank
         - else
           .center
             %p -
-        %p= number_to_currency @products_hash[p.product_id].shipping_cost
+        %p
+          = number_to_currency pts.product.shipping_cost
+          %br
+          - if pts.product.weight && pts.product.weight > 220
+            = surround "(", "kg)" do
+              = (pts.product.weight.to_f / 100 * 0.454).round(2)
+          - elsif pts.product.weight
+            = surround "(", "g)" do
+              = (pts.product.weight.to_f * 4.54).round(0)
+          - else
+            %p.center -
+        - if pts.product.price
+          %p= number_to_currency pts.product.price * 0.1 * @exchange_rate
+        - else
+          %p.center -
+        - if pts.product.price
+          %p= number_to_currency (pts.product.price * 0.039 + 0.3) * @exchange_rate
+        - else
+          %p.center -
       %td
-        - if @products_hash[p.product_id].profit && @products_hash[p.product_id].cost
+        - if pts.product.price && pts.product.cost
           %p
             [amazon]
             %br
-            - if @products_hash[p.product_id].profit/@products_hash[p.product_id].cost.to_f > 0.1
+            - if @profit_hash[pts.product_id]/pts.product.cost.to_f > 0.2
               %span.green
-                = number_to_currency @products_hash[p.product_id].profit
+                = number_to_currency @profit_hash[pts.product_id]
                 %br
-                = "(#{(100*@products_hash[p.product_id].profit/@products_hash[p.product_id].cost).round(0)}%)"
-            - elsif @products_hash[p.product_id].profit < 0
+                = "(#{(100*@profit_hash[pts.product_id]/pts.product.cost).round(0)}%)"
+            - elsif @profit_hash[pts.product_id] < 0
               %span.red
-                = number_to_currency @products_hash[p.product_id].profit
+                = number_to_currency @profit_hash[pts.product_id]
             - else
-              = number_to_currency @products_hash[p.product_id].profit
+              = number_to_currency @profit_hash[pts.product_id]
               %br
-              = "(#{(100*@products_hash[p.product_id].profit/@products_hash[p.product_id].cost).round(0)}%)"
-        - unless @sold_items[@products_hash[p.product_id].id].blank?
+              = "(#{(100*@profit_hash[pts.product_id]/pts.product.cost).round(0)}%)"
+        - unless @sold_items[pts.product.id].blank?
           %p
             [ebay]
             %br
-            - if @products_hash[p.product_id].cost
-              - if ((@sold_items[@products_hash[p.product_id].id].inject{ |sum, el| sum + el }.to_f / @sold_items[@products_hash[p.product_id].id].size).round(2)*@exchange_rate - @products_hash[p.product_id].cost)/@products_hash[p.product_id].cost.to_f > 0.1
+            - if pts.product.cost
+              - profit = ((@sold_items[pts.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[pts.product.id].size).round(2) * (1 - 0.1 - 0.039) - 0.3)*@exchange_rate - pts.product.cost - pts.product.shipping_cost
+              - if profit/pts.product.cost.to_f > 0.2
                 %span.green
-                  = number_to_currency (@sold_items[@products_hash[p.product_id].id].inject{ |sum, el| sum + el }.to_f / @sold_items[@products_hash[p.product_id].id].size).round(2)*@exchange_rate - @products_hash[p.product_id].cost
+                  = number_to_currency profit
                   %br
-                  = "(#{(100*((@sold_items[@products_hash[p.product_id].id].inject{ |sum, el| sum + el }.to_f / @sold_items[@products_hash[p.product_id].id].size).round(2)*@exchange_rate - @products_hash[p.product_id].cost)/@products_hash[p.product_id].cost).round(0)}%)"
-              - elsif (@sold_items[@products_hash[p.product_id].id].inject{ |sum, el| sum + el }.to_f / @sold_items[@products_hash[p.product_id].id].size).round(2)*@exchange_rate - @products_hash[p.product_id].cost < 0
+                  = "(#{(100*profit/pts.product.cost).round(0)}%)"
+              - elsif profit < 0
                 %span.red
-                  = number_to_currency (@sold_items[@products_hash[p.product_id].id].inject{ |sum, el| sum + el }.to_f / @sold_items[@products_hash[p.product_id].id].size).round(2)*@exchange_rate - @products_hash[p.product_id].cost
+                  = number_to_currency profit
               - else
-                = number_to_currency (@sold_items[@products_hash[p.product_id].id].inject{ |sum, el| sum + el }.to_f / @sold_items[@products_hash[p.product_id].id].size).round(2)*@exchange_rate - @products_hash[p.product_id].cost
+                = number_to_currency profit
                 %br
-                = "(#{(100*((@sold_items[@products_hash[p.product_id].id].inject{ |sum, el| sum + el }.to_f / @sold_items[@products_hash[p.product_id].id].size).round(2)*@exchange_rate - @products_hash[p.product_id].cost)/@products_hash[p.product_id].cost).round(0)}%)"
+                = "(#{(100*profit/pts.product.cost).round(0)}%)"
 
-          -# - if @products_hash[p.product_id].profit/(@products_hash[p.product_id].price*@exchange_rate.to_f) > 0.1
+          -# - if @profit_hash[pts.product_id]/(pts.product.price*@exchange_rate.to_f) > 0.1
           -#   %span.green
-          -# - elsif @products_hash[p.product_id].profit < 0
+          -# - elsif @profit_hash[pts.product_id] < 0
           -#   %span.red
-          -# = number_to_currency @products_hash[p.product_id].profit
+          -# = number_to_currency @profit_hash[pts.product_id]
       %td
-        - unless @ebay_items[@products_hash[p.product_id].id].blank?
+        - unless @ebay_items[pts.product.id].blank?
           %p
             = t("views.product.all_count")
-            = number_with_delimiter @ebay_items[@products_hash[p.product_id].id].count
-            - if @ebay_items[@products_hash[p.product_id].id].count > 0
+            = number_with_delimiter @ebay_items[pts.product.id].count
+            - if @ebay_items[pts.product.id].count > 0
               %br
               = t("views.product.sold_count")
-              = number_with_delimiter @sold_items[@products_hash[p.product_id].id].count
-              - if @sold_items[@products_hash[p.product_id].id].count > 0
+              = number_with_delimiter @sold_items[pts.product.id].count
+              - if @sold_items[pts.product.id].count > 0
                 %p
                   = t("views.product.highest")
                   %br
-                  = "#{@locale} #{@sold_items[@products_hash[p.product_id].id].last}"
+                  = "#{@locale} #{@sold_items[pts.product.id].last}"
                   %br
                   = t("views.product.average")
                   %br
-                  = "#{@locale} #{(@sold_items[@products_hash[p.product_id].id].inject{ |sum, el| sum + el }.to_f / @sold_items[@products_hash[p.product_id].id].size).round(1)}"
-      %td= p.category_id
+                  = "#{@locale} #{@averages[pts.product.id]}"
+                  -# = "#{@locale} #{(@sold_items[pts.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[pts.product.id].size).round(1)}"
+        = link_to "More items", "http://www.ebay.com/sch/i.html?_nkw=#{URI.escape(pts.product.title)}&LH_Complete=1&LH_Sold=1&rt=nc", target: "blank"
+      %td= pts.category_id
       %td
-        - if p.listed
-          = "Listed"
+        - if pts.listed
+          %span.btn.btn-success Listed
       %td
-        = link_to 'Show', product_to_sell_path(p), class: "btn btn-default"
-        = link_to 'Edit', edit_product_to_sell_path(p), class: "btn btn-default"
-        = link_to 'Sold', "#{new_order_path}/#{p.product_id}", class: "btn btn-info"
-        = link_to 'Destroy', p, :method => :delete, :data => { :confirm => 'Are you sure?' }, class: "btn btn-danger"
+        = link_to 'Show', product_to_sell_path(pts), class: "btn btn-default"
+        = link_to 'Edit', edit_product_to_sell_path(pts), class: "btn btn-default"
+        = link_to 'Sold', "#{new_order_path}/#{pts.product_id}", class: "btn btn-info"
+        = link_to 'Destroy', pts, :method => :delete, :data => { :confirm => 'Are you sure?' }, class: "btn btn-danger"
 
 .float-right= paginate @product_to_sells
 
-= link_to 'New Product to sell', new_product_to_sell_path, class: "btn btn-default"
+-# = link_to 'New Product to sell', new_product_to_sell_path, class: "btn btn-default"

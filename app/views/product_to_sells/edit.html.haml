@@ -2,5 +2,8 @@
 
 = render 'form'
 
+- if length = @product_to_sell.product.title &&  @product_to_sell.product.title.index(" ")
+  - if length > 80
+    = link_to t("links.edit") + t("activerecord.models.product"), edit_product_path(@product_to_sell.product), target: "blank", class: "btn btn-danger"
 = link_to 'Show', @product_to_sell, :class => "btn btn-default"
 = link_to 'Back', product_to_sells_path, :class => "btn btn-default"

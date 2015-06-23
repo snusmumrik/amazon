@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141206114803) do
+ActiveRecord::Schema.define(version: 20141225220557) do
 
   create_table "categories", force: true do |t|
     t.string   "name"
@@ -62,12 +62,14 @@ ActiveRecord::Schema.define(version: 20141206114803) do
   create_table "orders", force: true do |t|
     t.integer  "product_id"
     t.string   "locale"
-    t.integer  "price_original"
+    t.float    "price_original", limit: 11
     t.integer  "price_yen"
     t.integer  "cost"
     t.integer  "shipping_cost"
     t.integer  "profit"
     t.date     "sold_at"
+    t.boolean  "shipped"
+    t.date     "shipped_at"
     t.text     "memo"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -110,6 +112,7 @@ ActiveRecord::Schema.define(version: 20141206114803) do
     t.integer  "cost"
     t.integer  "shipping_cost"
     t.integer  "profit"
+    t.integer  "ebay_average"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"

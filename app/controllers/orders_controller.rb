@@ -2,10 +2,12 @@ class OrdersController < ApplicationController
   before_action :set_order, only: [:show, :edit, :update, :destroy]
   before_action :set_options, only: [:new, :create, :edit, :update]
   before_action :set_product, only: [:edit, :update]
+  before_filter :set_categories, except: [:show, :delete]
 
   # GET /orders
   # GET /orders.json
   def index
+    read_exchange_rate
     @conditions = Array.new
 
     @conditions << "sold_at BETWEEN '#{Date.new(params[:sold_at]["sold_at(1i)"].to_i, params[:sold_at]["sold_at(2i)"].to_i, 1)}' AND '#{Date.new(params[:sold_at]["sold_at(1i)"].to_i, params[:sold_at]["sold_at(2i)"].to_i, -1)}'" if params[:sold_at]
@@ -18,48 +20,15 @@ class OrdersController < ApplicationController
     end
 
     @orders = Order.joins(:product).where(@conditions.join(" AND ")).order("sold_at DESC").all # .page params[:page]
+    @sales = @orders.sum(:price_original)
+    @average_exchange_rate = (@orders.sum(:price_yen) / @sales).round(2)
+    @cost = @orders.sum(:cost)
+    @shipping_cost = @orders.sum(:shipping_cost)
+    @ebay_cost = @sales * 0.1
+    @paypal_cost = (@sales * 0.039 + 0.3 * @orders.size)
     @profit = @orders.sum(:profit)
 
-    @products_hash = Hash.new
-    products = Product.where(["id IN (?)", @orders.pluck(:product_id)])
-    products.each do |p|
-      @products_hash.store(p.id, p)
-    end
-
-    @categories = Array.new
-    Product.group(:category).order(:category).all.each do |product|
-      @categories << [product.category, product.category]
-    end
-
-    case params[:locale]
-    when "USD"
-      @locale = "USD"
-    else
-      @locale = "USD"
-    end
-
-    @ebay_items = Hash.new do |hash, key|
-      hash[key] = Array.new
-    end
-
-    @sold_items = Hash.new do |hash, key|
-      hash[key] = Array.new
-    end
-
-    @averages = Hash.new do |hash, key|
-      hash[key] = Array.new
-    end
-
-    ebay_items = EbayItem.where(["product_id IN (?)", @orders.pluck(:product_id)]).order("current_price_value")
-    ebay_items.each do |item|
-      if item.current_price_currency_id == @locale
-        @ebay_items[item.product_id] << item.try(:current_price_value)
-      end
-
-      if item.current_price_currency_id == @locale && item.selling_state == "EndedWithSales"
-        @sold_items[item.product_id] << item.try(:current_price_value)
-      end
-    end
+    @products_hash = Product.where(["id IN (?)", @orders.pluck(:product_id)]).inject(Hash.new) {|h, p| h[p.id] = p; h}
   end
 
   # GET /orders/1
@@ -125,14 +94,11 @@ class OrdersController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def order_params
-    params.require(:order).permit(:product_id, :locale, :memo, :price_original, :price_yen, :cost, :shipping_cost, :profit, :sold_at)
+    params.require(:order).permit(:product_id, :locale, :memo, :price_original, :price_yen, :cost, :shipping_cost, :profit, :sold_at, :shipped)
   end
 
   def set_options
-    @product_options = Array.new
-    ProductToSell.joins(:product).where("listed IS TRUE").all.each do |p|
-      @product_options << [p.product.title, p.product.id]
-    end
+    @product_options = ProductToSell.joins(:product).where("listed IS TRUE").inject(Array.new) {|a, pts| a << [pts.product.title, pts.product_id]; a}
   end
 
   def set_product

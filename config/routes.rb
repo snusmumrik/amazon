@@ -3,12 +3,17 @@ Rails.application.routes.draw do
 
   resources :ebay_categories
 
-  resources :product_to_sells
+  resources :product_to_sells do
+    collection do
+      get 'refresh'
+    end
+  end
 
   resources :ebay_items
 
   resources :products do
     collection do
+      get 'refresh'
       get 'search'
     end
   end
@@ -23,6 +28,7 @@ Rails.application.routes.draw do
   #   get 'products/:id' => 'catalog#view'
   get 'orders/new/:product_id' => 'orders#new'
   get 'products/manufacturers/:manufacturer' => 'products#index'
+  get 'products/refresh/:id' => 'products#refresh'
   get 'product_to_sells/manufacturers/:manufacturer' => 'product_to_sells#index'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)

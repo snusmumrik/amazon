@@ -6,45 +6,88 @@
         %div
           = label_tag :category
           = select_tag :category, options_for_select(@categories, selected: params[:category]), include_blank: true, class: "form-control"
-          .checkboxes
           - if params[:manufacture]
             = hidden_tag :manufacturer, params[:manufacturer]
-        %div
-          = label_tag :date
-          - if params[:sold_at]
-            = date_select :sold_at, :sold_at, {default: Date.new(params[:sold_at]["sold_at(1i)"].to_i, params[:sold_at]["sold_at(2i)"].to_i, 1), discard_day: true}, class: "form-control"
-          - else
-            = date_select :sold_at, :sold_at, {discard_day: true}, class: "form-control"
-          = "　　"
-          = label_tag :profit
-          %strong= number_to_currency @profit
-
       .float-left
         = label_tag :low_price
         = text_field_tag :low_price, params[:low_price], class: "form-control"
         = label_tag :high_price
         = text_field_tag :high_price, params[:high_price], class: "form-control"
       .float-left
+        = label_tag :date
+        - if params[:sold_at]
+          = date_select :sold_at, :sold_at, {default: Date.new(params[:sold_at]["sold_at(1i)"].to_i, params[:sold_at]["sold_at(2i)"].to_i, 1), discard_day: true}, class: "form-control"
+        - else
+          = date_select :sold_at, :sold_at, {discard_day: true}, class: "form-control"
+        = "　　"
+      .clear
+        .float-left
+          %table.profit
+            %tr
+              %th= label_tag :exchange_rate
+              %td= "is #{number_with_delimiter @exchange_rate}円"
+              %td= "was #{number_with_delimiter @average_exchange_rate}円"
+              %td
+            %tr
+              %th= label_tag :sales
+              %td= number_to_currency @sales, locale: :en
+              %td= number_to_currency @sales * @average_exchange_rate
+              %td
+            %tr
+              %th= label_tag :ebay_cost
+              %td= number_to_currency @ebay_cost, locale: :en
+              %td= number_to_currency @ebay_cost * @average_exchange_rate
+              %td= number_to_percentage @ebay_cost / @sales * 100, precision: 1
+            %tr
+              %th= label_tag :paypal_cost
+              %td= number_to_currency @paypal_cost, locale: :en
+              %td= number_to_currency @paypal_cost * @average_exchange_rate
+              %td= number_to_percentage @paypal_cost / @sales * 100, precision: 1
+            %tr
+              %th= label_tag :supply_cost
+              %td
+              %td= number_to_currency @cost
+              %td= number_to_percentage @cost / (@sales * @average_exchange_rate) * 100, precision: 1
+            %tr
+              %th= label_tag :shipping_cost
+              %td
+              %td= number_to_currency @shipping_cost
+              %td= number_to_percentage @shipping_cost / (@sales * @average_exchange_rate) * 100, precision: 1
+            %tr
+              %th= label_tag :withdraw_cost
+              %td
+              %td= number_to_currency @sales * 3
+              %td= number_to_percentage 3 / @average_exchange_rate * 100, precision: 1
+            %tr
+              %th= label_tag :profit
+              %td
+              %td= number_to_currency @profit
+              %td= number_to_percentage @profit / (@sales * @average_exchange_rate) * 100, precision: 1
+      .float-right.action
         = submit_tag "Search", class: "btn btn-default"
         = link_to 'New Product', new_product_path, class: "btn btn-default"
-      .clear
       -# .float-right= paginate @orders
 
 %table.table.table-condensed.table-striped.products
   %tr
+    %th Category
     %th Product
     %th Image
-    %th Price original
-    %th Price yen
-    %th Cost
-    %th Shipping cost
+    %th Price Original
+    %th Price Yen
+    %th Supply Cost
+    %th Shipping Cost
+    %th Ebay Cost
+    %th PayPal Cost
     %th Profit
-    %th Sold at
+    %th Sold At
+    %th Shipped
     %th Memo
     %th
 
   - @orders.each do |order|
     %tr
+      %td= order.product.category
       %td= link_to @products_hash[order.product_id].title, product_path(@products_hash[order.product_id])
       %td
         = link_to image_tag(@products_hash[order.product_id].image_url1.sub(/.jpg$/, "._SL75_.jpg")), @products_hash[order.product_id].image_url1, "data-lightbox" => @products_hash[order.product_id].image_url1 rescue nil
@@ -55,25 +98,60 @@
       %td
         - case order.locale
         - when "USD"
-          = link_to number_to_currency(order.price_original, locale: :en), order.product.url
+          = link_to number_to_currency(order.price_original, locale: :en), order.product.url, target: :blank
+        %br
+        = surround "@", "円" do
+          = (order.price_yen / order.price_original.to_f).round(1)
       %td= number_to_currency order.price_yen
-      %td= link_to number_to_currency(order.cost), "#{URI.decode(order.product.url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}"
-      %td= number_to_currency order.shipping_cost
+      %td= link_to number_to_currency(order.cost), "#{URI.decode(order.product.url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}", target: :blank rescue nil
+      %td
+        = number_to_currency order.shipping_cost
+        %br
+        - if order.product.weight && order.product.weight > 220
+          = surround "(", "kg)" do
+            = (order.product.weight.to_f / 100 * 0.454).round(2)
+        - elsif order.product.weight
+          = surround "(", "g)" do
+            = (order.product.weight.to_f * 4.54).round(0)
+      %td
+        = number_to_currency order.price_yen * 0.1
+      %td
+        = number_to_currency order.price_yen * 0.036 + 40
       %td
         - if order.profit > 0
           = number_to_currency order.profit
           %br
           = surround "(", "%)" do
-            = (100 * order.profit/(order.cost + order.shipping_cost).to_f).round(1)
+            = (100 * order.profit/(order.cost + order.shipping_cost + order.price_yen * 0.1).to_f).round(1)
         - else
           %span.red
             = number_to_currency order.profit
-      %td= order.sold_at
+      %td= order.sold_at.strftime("%m/%d")
+      %td
+        - if order.shipped
+          = order.shipped_at.strftime("%m/%d")
       %td= order.memo
       %td
         = link_to 'Show', order, class: "btn btn-default btn-sm"
+        %br
         = link_to 'Edit', edit_order_path(order), class: "btn btn-default btn-sm"
+        %br
         = link_to 'Destroy', order, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm"
+  %tr
+    %th Category
+    %th Product
+    %th Image
+    %th Price Original
+    %th Price Yen
+    %th Supply Cost
+    %th Shipping Cost
+    %th Ebay Cost
+    %th PayPal Cost
+    %th Profit
+    %th Sold At
+    %th Shipped
+    %th Memo
+    %th
 
 -# .float-right= paginate @orders
 

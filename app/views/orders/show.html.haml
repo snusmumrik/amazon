@@ -43,6 +43,15 @@
       = @order.sold_at
   %tr
     %th
+      %strong Shipped
+    %td
+      - if @order.shipped
+        = @order.shipped
+        %br
+        = surround "(", ")" do
+          = @order.shipped_at
+  %tr
+    %th
       %strong Memo
     %td
       = @order.memo

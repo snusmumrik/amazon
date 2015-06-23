@@ -20,10 +20,10 @@
       = f.text_field :locale, class: "form-control"
   .field
     = f.label :price_original
-    - if @product
-      = f.number_field :price_original, value: @product.price, class: "form-control"
+    - if !@order.price_original && @product
+      = f.text_field :price_original, value: @product.price, class: "form-control"
     - else
-      = f.number_field :price_original, class: "form-control"
+      = f.text_field :price_original, class: "form-control"
   .field
     = f.label :price_yen
     = f.number_field :price_yen, class: "form-control"
@@ -32,7 +32,7 @@
     = f.number_field :cost, class: "form-control"
   .field
     = f.label :shipping_cost
-    - if @product
+    - if @order.shipping_cost.blank?
       = f.number_field :shipping_cost, value: @product.shipping_cost, class: "form-control"
     - else
       = f.number_field :shipping_cost, class: "form-control"
@@ -43,8 +43,11 @@
     .field
       = f.label :sold_at
       = f.date_select :sold_at, {}, class: "form-control"
+    = f.label :shipped
+    = f.check_box :shipped, class: "form-control"
   .field
     = f.label :memo
     = f.text_area :memo, class: "form-control"
   .actions
     = f.submit 'Save', class: "btn btn-default"
+    = link_to 'Back', orders_path, class: "btn btn-default"

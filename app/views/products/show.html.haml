@@ -5,9 +5,10 @@
     %td
       = @product.asin
       [
-      = link_to "US", @product.url
-      |
-      = link_to "JP", "#{URI.decode(@product.url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}"
+      = link_to "US", @product.url, target: :blank
+      - if @product.url_jp
+        |
+        = link_to "JP", "#{URI.decode(@product.url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}", target: :blank
       ]
   %tr
     %th
@@ -68,11 +69,11 @@
       - if @product.price
         - case @product.currency
         - when "USD"
-          = link_to number_to_currency(@product.price, :locale => :en), @product.url
+          = link_to number_to_currency(@product.price, :locale => :en), @product.url, target: :blank
   %tr
     %th
       %strong Cost
-    %td= link_to number_to_currency(@product.cost), @product.url_jp if @product.cost
+    %td= link_to number_to_currency(@product.cost), @product.url_jp, target: :blank if @product.cost
   %tr
     %th
       %strong Shipping cost
@@ -81,39 +82,39 @@
     %th
       %strong Profit
     %td
-      - if @product.profit && @product.cost
+      - if @amazon_profit && @product.cost
         %p
           [amazon]
           %br
-          - if @product.profit/@product.cost.to_f > 0.1
+          - if @amazon_profit/@product.cost.to_f > 0.1
             %span.green
-              = number_to_currency @product.profit
+              = number_to_currency @amazon_profit
               %br
-              = "(#{(100*@product.profit/@product.cost).round(0)}%)"
-          - elsif @product.profit < 0
+              = "(#{(100*@amazon_profit/@product.cost).round(0)}%)"
+          - elsif @amazon_profit < 0
             %span.red
-              = number_to_currency @product.profit
+              = number_to_currency @amazon_profit
           - else
-            = number_to_currency @product.profit
+            = number_to_currency @amazon_profit
             %br
-            = "(#{(100*@product.profit/@product.cost).round(0)}%)"
+            = "(#{(100*@amazon_profit/@product.cost).round(0)}%)"
       - unless @sold_items.blank?
         %p
           [ebay]
           %br
           - if @product.cost
-            - if (@average*@exchange_rate - @product.cost)/@product.cost.to_f > 0.1
+            - if @ebay_profit.to_f > 0.2
               %span.green
-                = number_to_currency @average*@exchange_rate - @product.cost
+                = number_to_currency @ebay_profit
                 %br
-                = "(#{(100*(@average*@exchange_rate - @product.cost)/@product.cost).round(0)}%)"
-            - elsif @average*@exchange_rate - @product.cost < 0
+                = "(#{(100*@ebay_profit/@product.cost).round(0)}%)"
+            - elsif @ebay_profit < 0
               %span.red
-                = number_to_currency @average*@exchange_rate - @product.cost
+                = number_to_currency @ebay_profit
             - else
-              = number_to_currency @average*@exchange_rate - @product.cost
+              = number_to_currency @ebay_profit
               %br
-              = "(#{(100*(@average*@exchange_rate - @product.cost)/@product.cost).round(0)}%)"
+              = "(#{(100*@ebay_profit/@product.cost).round(0)}%)"
   %tr
     %th
       %p
@@ -138,7 +139,9 @@
             - elsif item.selling_state == "EndedWithoutSales"
               %span.red= item.selling_state
             = link_to "(#{item.current_price_currency_id} #{item.current_price_value}@#{item.end_time.strftime('%Y/%m/%d')})", item.view_item_url
-      %p.right= link_to "More on Advanced Search at ebay.com", "http://www.ebay.com/sch/i.html?_nkw=#{URI.escape(@product.title)}"
+      %p.right= link_to "More on Advanced Search at ebay.com", "http://www.ebay.com/sch/i.html?_nkw=#{URI.escape(@product.title)}", target: "blank"
 = link_to 'Edit', edit_product_path(@product), :class => "btn btn-default"
+= link_to 'Refresh', "#{refresh_products_path}/#{@product.id}", :class => "btn btn-default"
+= link_to 'Add', product_to_sells_path, method: "post", data: { confirm: 'Are you sure?', params: { product_to_sell: { product_id: @product.id } } }, remote: true, class: "btn btn-success btn-sm"
 = link_to 'Destroy', @product, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger"
 = link_to 'Back', session[:previous_page], :class => "btn btn-default"
