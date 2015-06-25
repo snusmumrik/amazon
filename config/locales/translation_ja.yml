@@ -1,7 +1,7 @@
 ja:
   activerecord:
     models:
-      ebay_item: ebay_item  #g
+      ebay_item: ebay出品状況
       product: Product
       product_to_sell: Product to sell
       search_index: search_index  #g
@@ -29,31 +29,36 @@ ja:
         view_item_url: view_item_url  #g
 
       product:
-        asin: asin  #g
-        category: category  #g
-        color: color  #g
-        cost: cost  #g
+        asin: ASIN
+        category: カテゴリー
+        color: 色
+        cost: 仕入値
         currency: currency  #g
         deleted_at: deleted_at  #g
-        ebay_items: ebay_items  #g
-        features: features  #g
+        ebay_items: ebayでの出品
+        features: 特徴
         group: group  #g
         image_url1: image_url1  #g
         image_url2: image_url2  #g
         image_url3: image_url3  #g
         image_url4: image_url4  #g
         image_url5: image_url5  #g
-        manufacturer: manufacturer  #g
-        model: model  #g
-        price: price  #g
-        profit: profit  #g
-        sales_rank: sales_rank  #g
-        shipping_cost: shipping_cost  #g
-        size: size  #g
-        title: title  #g
+        manufacturer: 製造元
+        model: モデル
+        price: 価格
+        profit: 利益
+        sales_rank: セールスランク
+        shipping_cost: 送料
+        size: サイズ
+        title: 商品名
         url: url  #g
         url_jp: url_jp  #g
-        weight: weight
+        weight: 重量
+
+  links:
+    back: 戻る
+    product:
+      more: 詳細をebay.comで見る
 
   views:
     index: 一覧
@@ -64,14 +69,14 @@ ja:
 
     product:
       all_count: 出品総数
-      average: 平均
+      average: 平均販売価格
+      converted_price: 換算価格
       highest: 最高値
       sold_count: 販売数
 
     pagination:
-
-    #   first: "&laquo; 最初"
-    #   last: "最後 &raquo;"
-    #   previous: "&lsaquo; 前"
-    #   next: "次 &rsaquo;"
+      first: "&laquo; 最初"
+      last: "最後 &raquo;"
+      previous: "&lsaquo; 前"
+      next: "次 &rsaquo;"
       truncate: "..."

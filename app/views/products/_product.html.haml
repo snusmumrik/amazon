@@ -1,0 +1,62 @@
+.col-lg-4.col-sm-6.product
+  - if product.image_url1
+    = link_to image_tag(product.image_url1.sub(/.jpg$/, "._SL120_.jpg"), alt: product.title, class: "img-circle img-responsive img-center"), product.image_url1, "data-lightbox" => product.image_url1, "data-title" => product.title
+  - else
+    = image_tag("/missing_120.png", alt: "No large image: #{product.title}", class: "img-circle img-responsive img-center")
+  %ul
+    %li
+      %h4= link_to product.title, product
+    %li
+      %h4{data:{no_turbolink: true}}= link_to product.category, "#{products_path}/category/#{product.category}"
+    %li
+      %h4
+        %p
+        = "US #{number_to_currency product.price, locale: :en}"
+        - if product.price
+          %small= "#{number_to_currency product.price * @exchange_rate}@#{number_to_currency @exchange_rate, locale: :en}"
+        %p
+        = "JP #{number_to_currency(product.cost)}"
+
+    %li
+      %h5= "#{t('activerecord.attributes.product.shipping_cost')}: #{number_to_currency product.shipping_cost}〜"
+
+    - if @amazon_profit_hash[product.id] || @ebay_profit_hash[product.id]
+      %li.profit
+        = "#{t('activerecord.attributes.product.profit')}:"
+        - if @amazon_profit_hash[product.id]
+          %h4
+            %small amazon
+            - if @amazon_profit_hash[product.id]/product.cost.to_f > 0.1
+              %span.green
+                = number_to_currency @amazon_profit_hash[product.id]
+                = "(#{number_to_percentage(100*@amazon_profit_hash[product.id]/product.cost, precision: 1)})"
+            - elsif @amazon_profit_hash[product.id] < 0
+              %span.red
+                = number_to_currency @amazon_profit_hash[product.id]
+            - else
+              = number_to_currency @amazon_profit_hash[product.id]
+              = "(#{number_to_percentage(100*@amazon_profit_hash[product.id]/product.cost, precision: 1)})"
+
+        - if @ebay_profit_hash[product.id]
+          %h4
+            %small ebay
+            - if @ebay_profit_hash[product.id]/product.cost.to_f > 0.1
+              %span.green
+                = number_to_currency @ebay_profit_hash[product.id]
+                = "(#{number_to_percentage(100*@ebay_profit_hash[product.id]/product.cost, precision: 1)})"
+            - elsif @ebay_profit_hash[product.id] < 0
+              %span.red
+                = number_to_currency @ebay_profit_hash[product.id]
+            - else
+              = number_to_currency @ebay_profit_hash[product.id]
+              = "(#{number_to_percentage(100*@ebay_profit_hash[product.id]/product.cost, precision: 1)})"
+          %h4
+            %small= "#{t('views.product.sold_count')}: #{@sold_item_hash[product.id].count}"
+            %small= "#{t('views.product.average')}: #{number_to_currency @average_hash[product.id], locale: :en}"
+
+    %li
+      - if product.price
+        = link_to "Amazon US", product.url, class: "btn btn-default btn-sm", target: :blank
+      - if product.cost
+        = link_to "Amazon JP", product.url_jp, class: "btn btn-default btn-sm", target: :blank
+      = link_to "ebay US", "http://rover.ebay.com/rover/1/711-53200-19255-0/1?icep_ff3=9&pub=5575129667&toolid=10001&campid=5337713314&customid=&icep_uq=#{URI.escape(product.title)}&icep_sellerId=&icep_ex_kw=&icep_sortBy=12&icep_catId=&icep_minPrice=&icep_maxPrice=&ipn=psmain&icep_vectorid=229466&kwid=902099&mtid=824&kw=lg", class: "btn btn-default btn-sm", target: :blank

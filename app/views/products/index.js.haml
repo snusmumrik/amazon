@@ -1,0 +1,5 @@
+$("#count").hide().html("#{number_with_delimiter @count}").fadeIn();
+$("#products").hide().html("#{escape_javascript(render @products)}").fadeIn();
+$("div.pagination").hide().html("#{escape_javascript(paginate(@products, :remote => true).to_s)}").fadeIn();
+
+NProgress.done();

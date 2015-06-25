@@ -1,5 +1,14 @@
-%h1 Listing products
-= form_tag("/products", :method => :get) do
+/ Introduction Row
+.row
+  .col-lg-12
+    %h2.page-header
+      このサイトについて
+      %small 日本とアメリカのamazonの価格差を表示しています。
+    %p amazon輸出においてもみんなが知りたい情報、それはどの商品で利益か取れるのかという事に尽きます。利ざやの取りやすいやすいカテゴリーの商品を見つけましょう。
+
+%div{id: "top"}
+
+= form_for Product.new, url: products_path, remote: true, html: {method: :get, class: "form-inline search-form"} do |f|
   .form-inline
     .field
       .float-left
@@ -37,155 +46,22 @@
 
       .float-left
         = submit_tag "Search", class: "btn btn-default"
-        = link_to 'New Product', new_product_path, class: "btn btn-default"
       .clear
-      .float-right= paginate @products
+      .pagination.float-right= paginate @products
 
-%table.table.table-condensed.table-striped.products
-  %thead
-    %tr
-      %th Category
-      %th Manufacturer
-      %th
-        Asin/
-        %br
-          Model
-      %th Title
-      %th
-        Color/
-        %br
-        Size
-      -# %th Features
-      %th Sales rank
-      %th Images
-      %th Price
-      %th
-        Cost:
-        Supply
-        %br
-        Shipping
-        %br
-        Ebay
-        %br
-        PayPal
-      %th.col-sm-1 Profit
-      %th.col-sm-1 Ebay
-      %th
-  %tbody
-    - @products.each do |product|
-      %tr
-        %td= product.category
-        %td
-          - if product.manufacturer
-            = link_to product.manufacturer, "/products/manufacturers/#{product.manufacturer}"
-        %td
-          %p= product.asin
-          %p= product.model
-        %td= link_to product.title, product.url, target: :blank
-        %td
-          %p= product.color
-          %p= product.size
-        -# %td= product.features
-        %td= number_with_delimiter product.sales_rank
-        %td
-          = link_to image_tag(product.image_url1.sub(/.jpg$/, "._SL75_.jpg")), product.image_url1, "data-lightbox" => product.image_url1 rescue nil
-          = link_to image_tag(product.image_url2.sub(/.jpg$/, "._SL75_.jpg")), product.image_url2, "data-lightbox" => product.image_url2 rescue nil
-          = link_to image_tag(product.image_url3.sub(/.jpg$/, "._SL75_.jpg")), product.image_url3, "data-lightbox" => product.image_url3 rescue nil
-          = link_to image_tag(product.image_url4.sub(/.jpg$/, "._SL75_.jpg")), product.image_url4, "data-lightbox" => product.image_url4 rescue nil
-          = link_to image_tag(product.image_url5.sub(/.jpg$/, "._SL75_.jpg")), product.image_url5, "data-lightbox" => product.image_url5 rescue nil
-        %td
-          - if product.price
-            - case product.currency
-            - when "USD"
-              %p= link_to number_to_currency(product.price, :locale => :en), product.url, target: :blank
-              %p= "#{number_to_currency product.price * @exchange_rate}(@#{@exchange_rate})"
-        %td
-          - if product.cost && product.url_jp
-            %p= link_to number_to_currency(product.cost), "#{URI.decode(product.url_jp).sub(/\?.+$/, '')}#{AMAZON_ASSOCIATE_JP}", target: :blank
-          - elsif product.cost
-            %p= link_to number_to_currency(product.cost), product.url_jp, target: :blank
-          - else
-            .center
-              %p -
-          %p
-            = number_to_currency product.shipping_cost
-            %br
-            - if product.weight && product.weight > 220
-              = surround "(", "kg)" do
-                = (product.weight.to_f / 100 * 0.454).round(2)
-            - elsif product.weight
-              = surround "(", "g)" do
-                = (product.weight.to_f * 4.54).round(0)
-          - if product.price
-            %p= number_to_currency product.price * 0.1 * @exchange_rate
-          - else
-            %p -
-          - if product.price
-            %p= number_to_currency (product.price * 0.039 + 0.3) * @exchange_rate
-          - else
-            %p -
-        %td
-          - if product.price && product.cost
-            %p
-              [amazon]
-              %br
-              - if @profit_hash[product.id]/product.cost.to_f > 0.2
-                %span.green
-                  = number_to_currency @profit_hash[product.id]
-                  %br
-                  = "(#{number_with_delimiter (@profit_hash[product.id] / product.cost * 100).round(0)}%)"
-              - elsif @profit_hash[product.id] < 0
-                %span.red
-                  = number_to_currency @profit_hash[product.id]
-              - else
-                = number_to_currency @profit_hash[product.id]
-                %br
-                = "(#{number_with_delimiter (@profit_hash[product.id] / product.cost * 100).round(0)}%)"
-          - unless @sold_items[product.id].blank?
-            %p
-              [ebay]
-              %br
-              - if product.cost
-                - profit = ((@sold_items[product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[product.id].size).round(2) * (1 - 0.1 - 0.039) - 0.3)*@exchange_rate - product.cost - product.shipping_cost
-                - if profit/product.cost.to_f > 0.2
-                  %span.green
-                    = number_to_currency profit
-                    %br
-                    = "(#{(100*profit/product.cost).round(0)}%)"
-                - elsif profit < 0
-                  %span.red
-                    = number_to_currency profit
-                - else
-                  = number_to_currency profit
-                  %br
-                  = "(#{(100*profit/product.cost).round(0)}%)"
-        %td
-          %p
-            = t("views.product.all_count")
-            = number_with_delimiter @ebay_items[product.id].count
-            - if @ebay_items[product.id].count > 0
-              %br
-              = t("views.product.sold_count")
-              = number_with_delimiter @sold_items[product.id].count
-              - if @sold_items[product.id].count > 0
-                %p
-                  = t("views.product.highest")
-                  %br
-                  = "#{@locale} #{@sold_items[product.id].last}"
-                  %br
-                  = t("views.product.average")
-                  %br
-                  = "#{@locale} #{@averages[product.id]}"
-            = link_to "More items", "http://www.ebay.com/sch/i.html?_nkw=#{URI.escape(product.title)}&LH_Complete=1&LH_Sold=1&rt=nc", target: "blank"
-        %td
-          = link_to 'Show', product, class: "btn btn-default btn-sm"
-          = link_to 'Edit', edit_product_path(product), class: "btn btn-default btn-sm"
-          - if @product_to_sells.include? product.id
-            %span.btn.btn-info Added
-          - else
-            = link_to 'Add', product_to_sells_path, method: "post", data: { confirm: 'Are you sure?', params: { product_to_sell: { product_id: product.id } } }, remote: true, class: "btn btn-success btn-sm"
-          = link_to 'Destroy', product, method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: "btn btn-danger btn-sm"
+.row
+  .col-lg-12
+    %h3.page-header
+      総数
+      %span{id: "count"}= number_with_delimiter @count
+      品
+      -# %small= "（#{@latest_item.updated.strftime('%Y/%m/%d %H:%M:%S')} 更新）"
 
-.float-right= paginate @products
+.row
+  .col-lg-12
+    %div{id: "products"}= render @products
 
-= link_to 'New Product', new_product_path, class: "btn btn-default btn-sm"
+    .right= link_to t("links.back_to_top"), "#top", class: "btn btn-default"
+
+
+.pagination.float-right= paginate @products

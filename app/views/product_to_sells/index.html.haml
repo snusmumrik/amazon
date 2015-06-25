@@ -128,19 +128,19 @@
             [ebay]
             %br
             - if pts.product.cost
-              - profit = ((@sold_items[pts.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[pts.product.id].size).round(2) * (1 - 0.1 - 0.039) - 0.3)*@exchange_rate - pts.product.cost - pts.product.shipping_cost
-              - if profit/pts.product.cost.to_f > 0.2
+              - ebay_profit = ((@sold_items[pts.product.id].inject{ |sum, el| sum + el }.to_f / @sold_items[pts.product.id].size).round(2) * (1 - 0.1 - 0.039) - 0.3)*@exchange_rate - pts.product.cost - pts.product.shipping_cost
+              - if ebay_profit/pts.product.cost.to_f > 0.2
                 %span.green
-                  = number_to_currency profit
+                  = number_to_currency ebay_profit
                   %br
-                  = "(#{(100*profit/pts.product.cost).round(0)}%)"
-              - elsif profit < 0
+                  = "(#{(100*ebay_profit/pts.product.cost).round(0)}%)"
+              - elsif ebay_profit < 0
                 %span.red
-                  = number_to_currency profit
+                  = number_to_currency ebay_profit
               - else
-                = number_to_currency profit
+                = number_to_currency ebay_profit
                 %br
-                = "(#{(100*profit/pts.product.cost).round(0)}%)"
+                = "(#{(100*ebay_profit/pts.product.cost).round(0)}%)"
 
           -# - if @profit_hash[pts.product_id]/(pts.product.price*@exchange_rate.to_f) > 0.1
           -#   %span.green

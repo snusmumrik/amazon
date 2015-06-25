@@ -3,6 +3,8 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 $ ->
-  $('#category').change( ->
-    $("input[name='commit']").submit()
-    )
+  $('#category').change ->
+    $("input[name='commit']").click()
+
+  $("input[name='commit']").click ->
+    NProgress.start()

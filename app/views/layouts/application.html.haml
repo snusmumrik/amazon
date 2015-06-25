@@ -1,35 +1,57 @@
 !!!
 %html
   %head
-    %title Vacuum
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
+    %meta{:charset => "utf-8"}
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}
+    %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}
+    %meta{:content => "amazon輸出の便利サイト。日本とアメリカのアマゾンの価格差を表示しています。#{@description}", :name => "description"}
+    %meta{:content => "amazon,輸出,#{@keyword}", :name => "keyword"}
+    %meta{:content => "", :name => "author"}
+
+    %title amazon.crudoe.com
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
     = csrf_meta_tags
   %body
-    .navbar.navbar-default.navbar-fixed-top{:role => "navigation"}
+    / Navigation
+    %nav.navbar{:role => "navigation"}
       .container
+        / Brand and toggle get grouped for better mobile display
         .navbar-header
-          %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", :type => "button"}
+          %button.navbar-toggle{"data-target" => "#bs-example-navbar-collapse-1", "data-toggle" => "collapse", :type => "button"}
             %span.sr-only Toggle navigation
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-          %a.navbar-brand{:href => "/"} Vacuum
-        .navbar-collapse.collapse
-          %ul.nav.navbar-nav
-            %li= link_to t("activerecord.models.product"), products_path
-            %li= link_to t("activerecord.models.product_to_sell"), product_to_sells_path
-            %li= link_to t("activerecord.models.order"), orders_path
+          %div.navbar-brand{data:{no_turbolink: true}}= link_to "amazon.crudoe.com", root_path
+          / Collect the nav links, forms, and other content for toggling
+        -# #bs-example-navbar-collapse-1.collapse.navbar-collapse
+        -#   %ul.nav.navbar-nav
+        -#     %li
+        -#       %a{:href => "#"} About
+        / /.navbar-collapse
+    / Page Content
     .container
-      - if notice
-        .alert.alert-success
-          %p#notice= notice
-      - if alert
-        .alert.alert-error
-          %p#alert= alert
-      .main_container
-        = yield
+      = yield
 
+      .row
+        .col-lg-12
+          .ad
+            %script{:async => "", :src => "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"}
+              / amazon.crudoe.com
+            %ins.adsbygoogle{"data-ad-client" => "ca-pub-9916693973832627", "data-ad-format" => "auto", "data-ad-slot" => "5444341538", :style => "display:block"}
+            :javascript
+              (adsbygoogle = window.adsbygoogle || []).push({});
+
+    / /.container
+
+    / Footer
     %footer
-      %p &copy; #{Date.today.year}#{link_to "chishaku.com", root_path}
+      .row.text-center
+        .col-lg-12
+          %p{data:{no_turbolink: true}}= link_to "Copyright © ebay.crudoe.com #{Date.today.year}", root_path
+        / /.col-lg-12
+      / /.row
+
 
     = javascript_include_tag "application", "data-turbolinks-track" => true

@@ -108,18 +108,18 @@
           [ebay]
           %br
           - if @product_to_sell.product.cost
-            - if @profit/@product_to_sell.product.cost.to_f > 0.2
+            - if @ebay_profit/@product_to_sell.product.cost.to_f > 0.2
               %span.green
-                = number_to_currency @profit
+                = number_to_currency @ebay_profit
                 %br
-                = "(#{(100*@profit/@product_to_sell.product.cost).round(0)}%)"
-            - elsif @profit < 0
+                = "(#{(100*@ebay_profit/@product_to_sell.product.cost).round(0)}%)"
+            - elsif @ebay_profit < 0
               %span.red
-                = number_to_currency @profit
+                = number_to_currency @ebay_profit
             - else
-              = number_to_currency @profit
+              = number_to_currency @ebay_profit
               %br
-              = "(#{(100*@profit/@product_to_sell.product.cost).round(0)}%)"
+              = "(#{(100*@ebay_profit/@product_to_sell.product.cost).round(0)}%)"
   %tr
     %th
       %p

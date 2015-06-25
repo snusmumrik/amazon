@@ -55,9 +55,9 @@ class ProductToSellsController < ApplicationController
   # GET /product_to_sells/1
   # GET /product_to_sells/1.json
   def show
-    @profit = (@product_to_sell.product.price * (1 - 0.1 - 0.039) - 0.3) * @exchange_rate - @product_to_sell.product.shipping_cost - @product_to_sell.product.cost  if @product_to_sell.product.price && @product_to_sell.product.shipping_cost && @product_to_sell.product.cost
+    @profit = Product.calculate_cost(@product_to_sell.product_id) if @product_to_sell.product.price && @product_to_sell.product.shipping_cost && @product_to_sell.product.cost
     set_ebay_data_for_single_product(@product_to_sell.product.id)
-    @profit = (@average * (1 - 0.1 - 0.039) - 0.3)*@exchange_rate - @product_to_sell.product.cost - @product_to_sell.product.shipping_cost if @average && @product_to_sell.product.cost && @product_to_sell.product.shipping_cost
+    @ebay_profit = (@average * (1 - 0.1 - 0.039) - 0.3)*@exchange_rate - @product_to_sell.product.cost - @product_to_sell.product.shipping_cost if @average && @product_to_sell.product.cost && @product_to_sell.product.shipping_cost
   end
 
   # GET /product_to_sells/new
