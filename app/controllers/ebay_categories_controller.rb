@@ -7,7 +7,7 @@ class EbayCategoriesController < ApplicationController
     limit = EbayCategory.select(:category_level).group(:category_level).order("category_level").last.category_level
     for i in 1..limit
       EbayCategory.where(["category_level = ?", i]).all.each do |p|
-        puts "PARENT ID:#{p.id} CATEGORY_LEVEL:#{p.category_level]} CATEGORY_NAME:#{p.category_name}"
+        puts "PARENT ID:#{p.id} CATEGORY_LEVEL:#{p.category_level} CATEGORY_NAME:#{p.category_name}"
         get_category(p)
       end
     end
