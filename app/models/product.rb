@@ -231,7 +231,7 @@ class Product < ActiveRecord::Base
     #   self.shipping_cost = 26050
 
     if self.price && self.cost
-      self.profit = (self.price * (1 - 0.1 - 0.039) - 0.3) * @exchange_rate - self.shipping_cost - self.cost
+      self.profit = (self.price * (1 - 0.1 - 0.039) - 0.3) * (@exchange_rate - 3) - self.shipping_cost - self.cost
     else
       self.profit = nil
     end
@@ -243,6 +243,7 @@ class Product < ActiveRecord::Base
       agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
       page = agent.get("https://www.google.com/finance/converter?a=1&from=USD&to=JPY")
       rate = page.search("span[class='bld']").text.sub!(" JPY", "").to_f
+      p rate
 
       file = open("public/exchange_rate.txt", "w")
       file.puts rate
@@ -569,7 +570,104 @@ class Product < ActiveRecord::Base
     end
   end
 
-  def self.calculate_profit(product, average = product.price)
-    (average * (1 - 0.1 - 0.039) - 0.3) * @exchange_rate - product.shipping_cost - product.cost
+  def self.calculate_profit(product, price = product.price)
+    (price * (1 - 0.1 - 0.039) - 0.3) * (@exchange_rate - 3) - product.shipping_cost - product.cost
+  end
+
+  def self.calculate_profit_on_ebay(price, cost, weight)
+    exchange_rate = open("public/exchange_rate.txt", "r").read.to_f
+
+    # 小形包装物 SAL
+    if price >= 50
+      if weight * 1.1 <= 0.1
+        shipping_cost = 180 + 410
+      elsif weight * 1.1 <= 0.2
+        shipping_cost = 280 + 410
+      elsif weight * 1.1 <= 0.3
+        shipping_cost = 380 + 410
+      elsif weight * 1.1 <= 0.4
+        shipping_cost = 480 + 410
+      elsif weight * 1.1 <= 0.5
+        shipping_cost = 580 + 410
+      elsif weight * 1.1 <= 0.6
+        shipping_cost = 680 + 410
+      elsif weight * 1.1 <= 0.7
+        shipping_cost = 780 + 410
+      elsif weight * 1.1 <= 0.8
+        shipping_cost = 880 + 410
+      elsif weight * 1.1 <= 0.9
+        shipping_cost = 980 + 410
+      elsif weight * 1.1 <= 1
+        shipping_cost = 1080 + 410
+      elsif weight * 1.1 <= 1.1
+        shipping_cost = 1180 + 410
+      elsif weight * 1.1 <= 1.2
+        shipping_cost = 1280 + 410
+      elsif weight * 1.1 <= 1.3
+        shipping_cost = 1380 + 410
+      elsif weight * 1.1 <= 1.4
+        shipping_cost = 1480 + 410
+      elsif weight * 1.1 <= 1.5
+        shipping_cost = 1580 + 410
+      elsif weight * 1.1 <= 1.6
+        shipping_cost = 1680 + 410
+      elsif weight * 1.1 <= 1.7
+        shipping_cost = 1780 + 410
+      elsif weight * 1.1 <= 1.8
+        shipping_cost = 1880 + 410
+      elsif weight * 1.1 <= 1.9
+        shipping_cost = 1980 + 410
+      elsif weight * 1.1 <= 2
+        shipping_cost = 2080 + 410
+      end
+    else
+      if weight * 1.1 <= 0.1
+        shipping_cost = 180
+      elsif weight * 1.1 <= 0.2
+        shipping_cost = 280
+      elsif weight * 1.1 <= 0.3
+        shipping_cost = 380
+      elsif weight * 1.1 <= 0.4
+        shipping_cost = 480
+      elsif weight * 1.1 <= 0.5
+        shipping_cost = 580
+      elsif weight * 1.1 <= 0.6
+        shipping_cost = 680
+      elsif weight * 1.1 <= 0.7
+        shipping_cost = 780
+      elsif weight * 1.1 <= 0.8
+        shipping_cost = 880
+      elsif weight * 1.1 <= 0.9
+        shipping_cost = 980
+      elsif weight * 1.1 <= 1
+        shipping_cost = 1080
+      elsif weight * 1.1 <= 1.1
+        shipping_cost = 1180
+      elsif weight * 1.1 <= 1.2
+        shipping_cost = 1280
+      elsif weight * 1.1 <= 1.3
+        shipping_cost = 1380
+      elsif weight * 1.1 <= 1.4
+        shipping_cost = 1480
+      elsif weight * 1.1 <= 1.5
+        shipping_cost = 1580
+      elsif weight * 1.1 <= 1.6
+        shipping_cost = 1680
+      elsif weight * 1.1 <= 1.7
+        shipping_cost = 1780
+      elsif weight * 1.1 <= 1.8
+        shipping_cost = 1880
+      elsif weight * 1.1 <= 1.9
+        shipping_cost = 1980
+      elsif weight * 1.1 <= 2
+        shipping_cost = 2080
+      end
+    end
+
+    p "Price: #{price}"
+    p "Exchange Rate: #{exchange_rate} - 3"
+    p "Shipping Cost #{shipping_cost}"
+    p "Cost: #{cost}"
+    ((price * (1 - 0.1 - 0.039) - 0.3) * (exchange_rate - 3) - shipping_cost - cost).round
   end
 end
