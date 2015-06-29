@@ -61,9 +61,7 @@
   .col-lg-12
     %div{id: "products"}= render @products
 
-    .right= link_to t("links.back_to_top"), "#top", class: "btn btn-default"
-
-    .right= link_to t("links.back_to_top"), "#top", class: "btn btn-default"
+    .clear.right= link_to t("links.back_to_top"), "#top", class: "btn btn-default"
 
 
 .pagination.float-right= paginate @products
