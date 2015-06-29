@@ -58,7 +58,8 @@ ja:
   links:
     back: 戻る
     product:
-      more: 詳細をebay.comで見る
+    more: 詳細をebay.comで見る
+    back_to_top: トップへ戻る
 
   views:
     index: 一覧
