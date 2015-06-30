@@ -8,7 +8,7 @@
 
 %div{id: "top"}
 
-= form_for Product.new, url: products_path, remote: true, html: {method: :get, class: "form-inline search-form"} do |f|
+= form_for Product.new, url: @form_path, remote: true, html: {method: :get, class: "form-inline search-form"} do |f|
   .form-inline
     .field
       .float-left
@@ -52,6 +52,13 @@
 .row
   .col-lg-12
     %h3.page-header
+      %span.category-name{data:{no_turbolink: true}}
+        - if params[:category_name]
+          = params[:category_name]
+          - if params[:keyword].blank?
+            = link_to "X", root_path, class: "btn btn-default btn-sm"
+          - else
+            = link_to "X", "#{root_path}?keyword=#{params[:keyword]}", class: "btn btn-default btn-sm"
       総数
       %span{id: "count"}= number_with_delimiter @count
       品

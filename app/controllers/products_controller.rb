@@ -15,6 +15,7 @@ class ProductsController < ApplicationController
     @conditions << "price >= #{params[:low_price]}" unless params[:low_price].blank?
     @conditions << "price <= #{params[:high_price]}" unless params[:high_price].blank?
     @conditions << "category = '#{params[:category]}'" unless params[:category].blank?
+    @conditions << "category = '#{params[:category_name]}'" unless params[:category_name].blank?
     @conditions << "profit > 0" if params[:profit] == "1"
     if params[:sales_rank]
       @conditions << "sales_rank IS NOT NULL"
@@ -46,6 +47,12 @@ class ProductsController < ApplicationController
 
     set_ebay_data_for_multiple_products(@products.pluck(:id))
     @ebay_profit_hash = @products.inject(Hash.new) {|h, p| h[p.id] = Product.calculate_profit(p, @average_hash[p.id]) if !@sold_item_hash[p.id].blank?  && p.cost; h}
+
+    if params[:category_name]
+      @form_path = "#{products_path}/category/#{params[:category_name]}"
+    else
+      @form_path = products_path
+    end
 
     respond_to do |format|
       format.html # index.html.erb
