@@ -19,10 +19,10 @@
 
 # Learn more: http://github.com/javan/whenever
 
-every 1.day, :at => '3:00 am' do
-  runner "Product.search"
+every "1 * * * *" do
+  runner "Product.get_exchange_rate"
 end
 
-every :hour do
-  runner "Product.get_exchange_rate"
+every 1.day, :at => '1:00 am' do
+  runner "Product.search"
 end
