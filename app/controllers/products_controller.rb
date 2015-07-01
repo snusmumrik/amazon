@@ -55,6 +55,8 @@ class ProductsController < ApplicationController
       @form_path = products_path
     end
 
+    @latest_product = Product.order("updated_at").last
+
     respond_to do |format|
       format.html # index.html.erb
       format.js # index.js.erb

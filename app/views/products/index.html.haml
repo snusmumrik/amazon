@@ -62,7 +62,7 @@
       総数
       %span{id: "count"}= number_with_delimiter @count
       品
-      -# %small= "（#{@latest_item.updated.strftime('%Y/%m/%d %H:%M:%S')} 更新）"
+      %small= "（#{@latest_product.updated_at.strftime('%Y/%m/%d %H:%M:%S')} 更新）"
 
 .row
   .col-lg-12
