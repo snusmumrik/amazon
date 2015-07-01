@@ -9,7 +9,7 @@ class Order < ActiveRecord::Base
 
   def calculate_profit
     exchange_rate = open("public/exchange_rate.txt", "r").read.to_i
-    self.profit = self.price_yen * 0.9 - self.cost - self.shipping_cost - (self.price_original * 0.039 + 0.3)*exchange_rate
+    self.profit = Product.calculate_profit_on_amazon(self)
   end
 
   def shipped?

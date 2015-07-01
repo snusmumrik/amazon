@@ -61,6 +61,9 @@ ja:
     more: 詳細をebay.comで見る
     back_to_top: トップへ戻る
 
+    product:
+      download_images: 画像ダウンロード
+
   views:
     index: 一覧
     new: 新規作成

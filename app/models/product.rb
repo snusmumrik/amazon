@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+require "open-uri"
 require "mechanize"
-require 'csv'
+require "httpclient"
+require "csv"
 
 # -*- coding: utf-8 -*-
 class Product < ActiveRecord::Base
@@ -11,7 +13,7 @@ class Product < ActiveRecord::Base
 
   before_save :calculate_cost
 
-  @exchange_rate = open("public/exchange_rate.txt", "r").read.to_i
+  @@exchange_rate = open("public/exchange_rate.txt", "r").read.to_i
 
   def calculate_cost
     weight = self.weight.to_f / 100 * 0.454
@@ -210,9 +212,6 @@ class Product < ActiveRecord::Base
       self.shipping_cost = 25850
     elsif weight * 1.1 <= 30
       self.shipping_cost = 26550
-    else
-      self.shipping_cost = 0
-    end
 
     #ヤマト交際パーセルサービス
     # elsif weight * 1.1 <= 1
@@ -229,11 +228,15 @@ class Product < ActiveRecord::Base
     #   self.shipping_cost = 20550
     # elsif weight * 1.1 <= 25
     #   self.shipping_cost = 26050
+    end
 
     if self.price && self.cost
-      self.profit = (self.price * (1 - 0.1 - 0.039) - 0.3) * (@exchange_rate - 3) - self.shipping_cost - self.cost
-    else
-      self.profit = nil
+      begin
+        self.profit = Product.calculate_profit_on_amazon(self)
+      rescue => ex
+        p ex.message
+        self.profit = nil
+      end
     end
   end
 
@@ -328,7 +331,9 @@ class Product < ActiveRecord::Base
                       aws_secret_access_key: AWS_SECRET_ACCESS_KEY,
                       associate_tag: ASSOCIATE_TAG)
     parameters = {
+      # "Condition" => "New",
       "ItemId" => asin,
+      # "MerchantId" => "Amazon",
       "ResponseGroup" => "Medium"
     }
 
@@ -361,17 +366,18 @@ class Product < ActiveRecord::Base
 
       puts item
 
-      product = save_product(item)
-      find_ebay_completed_items(product.title, product.id)
+      if product = save_product(item)
+        find_ebay_completed_items(product.title, product.id)
 
-      average = product.ebay_items.inject(Array.new) {|a, ei|
-        a << ei.current_price_value if ei.selling_state == "EndedWithSales";
-        puts "SOLD ON EBAY AT:#{ei.current_price_value}"; a
-      }
+        average = product.ebay_items.inject(Array.new) {|a, ei|
+          a << ei.current_price_value if ei.selling_state == "EndedWithSales";
+          puts "SOLD ON EBAY AT:#{ei.current_price_value}"; a
+        }
 
-      if average.size > 0
-        product.update_attribute(:ebay_average, average.inject{ |sum, el| sum + el }.to_f / average.size)
-        puts "EBAY PROFIT: #{product.ebay_average}"
+        if average.size > 0
+          product.update_attribute(:ebay_average, average.inject{ |sum, el| sum + el }.to_f / average.size)
+          puts "EBAY PROFIT: #{product.ebay_average}"
+        end
       end
     else
       puts response["ItemLookupResponse"]["Items"]["Request"]["Errors"]
@@ -460,6 +466,20 @@ class Product < ActiveRecord::Base
     if response2
       product.url_jp = response2["ItemLookupResponse"]["Items"]["Item"]["DetailPageURL"] rescue nil
       product.cost = response2["ItemLookupResponse"]["Items"]["Item"]["OfferSummary"]["LowestNewPrice"]["Amount"] rescue nil
+    end
+
+    begin
+      agent = Mechanize.new
+
+      p "Scrape Amazon price form #{product.url}"
+
+      page = agent.get(product.url)
+      amazon_price = page.search("span[id='priceblock_ourprice']").text.sub!("$", "").to_f
+      p "Amazon Price: #{amazon_price}"
+
+      product.price = amazon_price
+    rescue => ex
+      warn ex.message
     end
 
     if saved_product = Product.where(["asin = ?", product.asin]).with_deleted.first
@@ -564,110 +584,197 @@ class Product < ActiveRecord::Base
     end
   end
 
-  def self.refresh
-    Product.find_each do |p|
-      Product.lookup p.asin
+  def self.refresh(asin = nil)
+    if asin
+      Product.lookup asin
+    else
+      Product.find_each(batch_size: 10) do |p|
+        Product.lookup p.asin
+      end
     end
   end
 
-  def self.calculate_profit(product, price = product.price)
-    (price * (1 - 0.1 - 0.039) - 0.3) * (@exchange_rate - 3) - product.shipping_cost - product.cost
+  def self.calculate_profit_on_amazon(product)
+    if product.shipping_cost && product.cost
+      (product.price * (1 - 0.15) - 1) * @@exchange_rate - product.shipping_cost - product.cost
+    end
   end
 
-  def self.calculate_profit_on_ebay(price, cost, weight)
+  def self.calculate_profit_on_ebay(product, price = product.price)
+    if product.shipping_cost && product.cost
+      (price * (1 - 0.1 - 0.039) - 0.3) * @@exchange_rate * 0.96 - product.shipping_cost - product.cost
+    end
+  end
+
+  def self.check_profit_on_ebay(price, supply_cost, weight)
     exchange_rate = open("public/exchange_rate.txt", "r").read.to_f
 
     # 小形包装物 SAL
-    if price >= 50
-      if weight * 1.1 <= 0.1
-        shipping_cost = 180 + 410
-      elsif weight * 1.1 <= 0.2
-        shipping_cost = 280 + 410
-      elsif weight * 1.1 <= 0.3
-        shipping_cost = 380 + 410
-      elsif weight * 1.1 <= 0.4
-        shipping_cost = 480 + 410
-      elsif weight * 1.1 <= 0.5
-        shipping_cost = 580 + 410
-      elsif weight * 1.1 <= 0.6
-        shipping_cost = 680 + 410
-      elsif weight * 1.1 <= 0.7
-        shipping_cost = 780 + 410
-      elsif weight * 1.1 <= 0.8
-        shipping_cost = 880 + 410
-      elsif weight * 1.1 <= 0.9
-        shipping_cost = 980 + 410
-      elsif weight * 1.1 <= 1
-        shipping_cost = 1080 + 410
-      elsif weight * 1.1 <= 1.1
-        shipping_cost = 1180 + 410
-      elsif weight * 1.1 <= 1.2
-        shipping_cost = 1280 + 410
-      elsif weight * 1.1 <= 1.3
-        shipping_cost = 1380 + 410
-      elsif weight * 1.1 <= 1.4
-        shipping_cost = 1480 + 410
-      elsif weight * 1.1 <= 1.5
-        shipping_cost = 1580 + 410
-      elsif weight * 1.1 <= 1.6
-        shipping_cost = 1680 + 410
-      elsif weight * 1.1 <= 1.7
-        shipping_cost = 1780 + 410
-      elsif weight * 1.1 <= 1.8
-        shipping_cost = 1880 + 410
-      elsif weight * 1.1 <= 1.9
-        shipping_cost = 1980 + 410
-      elsif weight * 1.1 <= 2
-        shipping_cost = 2080 + 410
-      end
-    else
-      if weight * 1.1 <= 0.1
-        shipping_cost = 180
-      elsif weight * 1.1 <= 0.2
-        shipping_cost = 280
-      elsif weight * 1.1 <= 0.3
-        shipping_cost = 380
-      elsif weight * 1.1 <= 0.4
-        shipping_cost = 480
-      elsif weight * 1.1 <= 0.5
-        shipping_cost = 580
-      elsif weight * 1.1 <= 0.6
-        shipping_cost = 680
-      elsif weight * 1.1 <= 0.7
-        shipping_cost = 780
-      elsif weight * 1.1 <= 0.8
-        shipping_cost = 880
-      elsif weight * 1.1 <= 0.9
-        shipping_cost = 980
-      elsif weight * 1.1 <= 1
-        shipping_cost = 1080
-      elsif weight * 1.1 <= 1.1
-        shipping_cost = 1180
-      elsif weight * 1.1 <= 1.2
-        shipping_cost = 1280
-      elsif weight * 1.1 <= 1.3
-        shipping_cost = 1380
-      elsif weight * 1.1 <= 1.4
-        shipping_cost = 1480
-      elsif weight * 1.1 <= 1.5
-        shipping_cost = 1580
-      elsif weight * 1.1 <= 1.6
-        shipping_cost = 1680
-      elsif weight * 1.1 <= 1.7
-        shipping_cost = 1780
-      elsif weight * 1.1 <= 1.8
-        shipping_cost = 1880
-      elsif weight * 1.1 <= 1.9
-        shipping_cost = 1980
-      elsif weight * 1.1 <= 2
-        shipping_cost = 2080
-      end
+    if weight * 1.1 <= 0.1
+      shipping_cost = 180
+    elsif weight * 1.1 <= 0.2
+      shipping_cost = 280
+    elsif weight * 1.1 <= 0.3
+      shipping_cost = 380
+    elsif weight * 1.1 <= 0.4
+      shipping_cost = 480
+    elsif weight * 1.1 <= 0.5
+      shipping_cost = 580
+    elsif weight * 1.1 <= 0.6
+      shipping_cost = 680
+    elsif weight * 1.1 <= 0.7
+      shipping_cost = 780
+    elsif weight * 1.1 <= 0.8
+      shipping_cost = 880
+    elsif weight * 1.1 <= 0.9
+      shipping_cost = 980
+    elsif weight * 1.1 <= 1
+      shipping_cost = 1080
+    elsif weight * 1.1 <= 1.1
+      shipping_cost = 1180
+    elsif weight * 1.1 <= 1.2
+      shipping_cost = 1280
+    elsif weight * 1.1 <= 1.3
+      shipping_cost = 1380
+    elsif weight * 1.1 <= 1.4
+      shipping_cost = 1480
+    elsif weight * 1.1 <= 1.5
+      shipping_cost = 1580
+    elsif weight * 1.1 <= 1.6
+      shipping_cost = 1680
+    elsif weight * 1.1 <= 1.7
+      shipping_cost = 1780
+    elsif weight * 1.1 <= 1.8
+      shipping_cost = 1880
+    elsif weight * 1.1 <= 1.9
+      shipping_cost = 1980
+    elsif weight * 1.1 <= 2
+      shipping_cost = 2080
     end
 
-    p "Price: #{price}"
-    p "Exchange Rate: #{exchange_rate} - 3"
+    # # e-packet
+    # if weight * 1.1 <= 0.05
+    #   shipping_cost = 560
+    # elsif weight * 1.1 <= 0.1
+    #   shipping_cost = 635
+    # elsif weight * 1.1 <= 0.15
+    #   shipping_cost = 710
+    # elsif weight * 1.1 <= 0.2
+    #   shipping_cost = 785
+    # elsif weight * 1.1 <= 0.25
+    #   shipping_cost = 860
+    # elsif weight * 1.1 <= 0.3
+    #   shipping_cost = 935
+    # elsif weight * 1.1 <= 0.4
+    #   shipping_cost = 1085
+    # elsif weight * 1.1 <= 0.5
+    #   shipping_cost = 1235
+    # elsif weight * 1.1 <= 0.6
+    #   shipping_cost = 1385
+    # elsif weight * 1.1 <= 0.7
+    #   shipping_cost = 1535
+    # elsif weight * 1.1 <= 0.8
+    #   shipping_cost = 1685
+    # elsif weight * 1.1 <= 0.9
+    #   shipping_cost = 1835
+    # elsif weight * 1.1 <= 1.0
+    #   shipping_cost = 1985
+    # elsif weight * 1.1 <= 1.25
+    #   shipping_cost = 2255
+    # elsif weight * 1.1 <= 1.5
+    #   shipping_cost = 2525
+    # elsif weight * 1.1 <= 1.75
+    #   shipping_cost = 2795
+    # elsif weight * 1.1 <= 2.0
+    #   shipping_cost = 3065
+    # end
+
+    p "Exchange Rate: #{exchange_rate}"
     p "Shipping Cost #{shipping_cost}"
-    p "Cost: #{cost}"
-    ((price * (1 - 0.1 - 0.039) - 0.3) * (exchange_rate - 3) - shipping_cost - cost).round
+    p "Supply Cost: #{supply_cost}"
+    p "PayPal Cost: #{((price * (1 - 0.1 - 0.039) - 0.3) * exchange_rate * 0.04).round}"
+    profit = ((price * (1 - 0.1 - 0.039) - 0.3) * exchange_rate * 0.96 - shipping_cost - supply_cost).round
+    p "Profit: #{profit}"
+
+    minimum_price = ((1.1 * (shipping_cost + supply_cost))/(0.96 * 0.861 * exchange_rate) + 0.3/0.861).round
+    p "Minimum Price: #{minimum_price}"
+
+    if price >= minimum_price
+      "Sell it"
+    else
+      "Find another one"
+    end
+  end
+
+  def self.get_amazon_images(url)
+    @destination = "#{Etc.getpwuid.dir}/Downloads/amazon"
+    unless File.exists?(@destination)
+      Dir.mkdir @destination
+    end
+
+    if url != ""
+      agent = Mechanize.new
+
+      begin
+        page = agent.get(url)
+        title = page.search("#productTitle").text
+        p title
+        images = page.search("span[class='a-button-text'] img")
+        images.each_with_index do |image, i|
+          path = image.attr("src").sub!("._SS40_", "")
+          p path
+          /.+\.([a-z]+)$/ =~ path
+          extention = $1
+          get_content(path, title, "#{i}.#{extention}")
+        end
+      rescue TimeoutError
+        warn "TimeoutError"
+      rescue Mechanize::ResponseCodeError => ex
+        case ex.response_code
+        when "404" then
+          warn "404: #{ex.page.uri} does not exist"
+        when "503" then
+          # follows RFC2616
+          if @retryuri != url && sec = ex.page.header["Retry-After"]
+            warn "503: will retry #{ex.page.uri} in #{sec}seconds"
+            @retryuri = ex.page.uri
+            sleep sec.to_i
+            retry
+          end
+        when /\A5/ then
+          warn "#{ex.response_code}: internal error"
+        else
+          warn ex.message
+        end
+      end
+    end
+  end
+
+  def get_content(uri, folder, file_name)
+    hc = HTTPClient.new
+    begin
+      content = hc.get_content(uri, :get, {})
+    rescue
+    end
+
+    if content.nil? || content.size < 10
+      p "file not found from #{uri}."
+      return false
+    else
+      destination = "#{@destination}/#{folder.gsub('/', ' ')}"
+      unless File.exists?(destination)
+        Dir.mkdir destination
+      end
+
+      if File.exists?("#{destination}/#{file_name}")
+        p "#{file_name} already exists."
+        return
+      end
+
+      File.open("#{destination}/#{file_name}", "w") do |f|
+        f.print content
+        p "#{file_name} saved from #{uri}."
+      end
+    end
   end
 end
