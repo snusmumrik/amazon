@@ -80,7 +80,7 @@
       %li= "#{t('activerecord.attributes.product.model')}: #{@product.model}"
       %li= "#{t('activerecord.attributes.product.color')}: #{@product.color}"
       %li= "#{t('activerecord.attributes.product.size')}: #{@product.size}"
-      %li= "#{t('activerecord.attributes.product.weight')}: #{@product.weight}"
+      %li= "#{t('activerecord.attributes.product.weight')}: #{(@product.weight.to_f / 100 * 0.454).round(2)}kg"
       %li= "#{t('activerecord.attributes.product.features')}: #{@product.features}"
       %li= "#{t('activerecord.attributes.product.sales_rank')}: #{number_with_delimiter @product.sales_rank}"
 

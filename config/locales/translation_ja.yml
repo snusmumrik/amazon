@@ -58,11 +58,11 @@ ja:
   links:
     back: 戻る
     product:
-    more: 詳細をebay.comで見る
     back_to_top: トップへ戻る
 
     product:
       download_images: 画像ダウンロード
+      more: 詳細をebay.comで見る
 
   views:
     index: 一覧

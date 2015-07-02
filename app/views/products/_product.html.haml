@@ -26,7 +26,7 @@
         = "JP #{number_to_currency(product.cost)}"
 
     %li
-      %h5= "#{t('activerecord.attributes.product.shipping_cost')}: #{number_to_currency product.shipping_cost}〜"
+      %h5= "#{t('activerecord.attributes.product.shipping_cost')}: #{number_to_currency product.shipping_cost}〜 (#{(product.weight.to_f / 100 * 0.454).round(2)}kg)"
 
     - if @amazon_profit_hash[product.id] || @ebay_profit_hash[product.id]
       %li.profit
