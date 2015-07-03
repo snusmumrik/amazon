@@ -25,7 +25,7 @@
     = link_to image_tag(@product.image_url4.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url4, "data-lightbox" => @product.image_url4 rescue nil
     = link_to image_tag(@product.image_url5.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url5, "data-lightbox" => @product.image_url5 rescue nil
 
-    .clear
+    .clear.download
       = link_to t("links.product.download_images"), "#{products_path}/download_images/#{@product.id}", remote: true, class: "btn btn-default"
 
   .col-md-4
