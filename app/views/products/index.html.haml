@@ -13,38 +13,42 @@
     .field
       .float-left
         %div
-          = label_tag :category
-          = select_tag :category, options_for_select(@categories, :selected => params[:category]), :include_blank => true, class: "form-control"
+          = label_tag t("activerecord.attributes.product.category")
+          = select_tag t("activerecord.attributes.product.category"), options_for_select(@categories, :selected => params[:category]), :include_blank => true, class: "form-control"
           .checkboxes
             - if params[:profit]
-              = check_box_tag :profit, 1, :checked => true
+              = check_box_tag t("activerecord.attributes.product.profit"), 1, :checked => true
             - else
-              = check_box_tag :profit, 1
-            = label_tag :profit
+              = check_box_tag t("activerecord.attributes.product.profit"), 1
+            = label_tag t("activerecord.attributes.product.profit")
             - if params[:sales_rank]
-              = check_box_tag :sales_rank, 1, :checked => true
+              = check_box_tag t("activerecord.attributes.product.sales_rank"), 1, :checked => true
             - else
-              = check_box_tag :sales_rank, 1
-            = label_tag :sales_rank
+              = check_box_tag t("activerecord.attributes.product.sales_rank"), 1
+            = label_tag t("activerecord.attributes.product.sales_rank")
             - if params[:ebay]
-              = check_box_tag :ebay, 1, :checked => true
+              = check_box_tag t("views.product.ebay"), 1, :checked => true
             - else
-              = check_box_tag :ebay, 1
-            = label_tag :ebay
+              = check_box_tag t("views.product.ebay"), 1
+            = label_tag t("views.product.ebay")
             - if params[:image]
-              = check_box_tag :image, 1, :checked => true
+              = check_box_tag t("views.product.image"), 1, :checked => true
             - else
-              = check_box_tag :image, 1
-            = label_tag :image
+              = check_box_tag t("views.product.image"), 1
+            = label_tag t("views.product.image")
           - if params[:manufacture]
             = hidden_tag :manufacturer, params[:manufacturer]
       .float-left
-        = label_tag :low_price
+        = label_tag t("views.product.low_price")
         = text_field_tag :low_price, params[:low_price], class: "form-control"
-        = label_tag :high_price
+        = label_tag t("views.product.high_price")
         = text_field_tag :high_price, params[:high_price], class: "form-control"
 
       .float-left
+        = label_tag t("views.product.keyword")
+        = text_field "", :keyword, value: params[:keyword], class: "form-control"
+
+      .float-right
         = submit_tag "Search", class: "btn btn-default"
       .clear
       .pagination.float-right= paginate @products, remote: true

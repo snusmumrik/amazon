@@ -12,11 +12,13 @@ class ProductsController < ApplicationController
     @conditions = Array.new
     @orders = ["model, title"]
 
+    # refactoring required
     @conditions << "price >= #{params[:low_price]}" unless params[:low_price].blank?
     @conditions << "price <= #{params[:high_price]}" unless params[:high_price].blank?
     @conditions << "category = '#{params[:category]}'" unless params[:category].blank?
     @conditions << "category = '#{params[:category_name]}'" unless params[:category_name].blank?
     @conditions << "profit > 0" if params[:profit] == "1"
+    @conditions << "title LIKE '%#{params[:keyword]}%'" unless params[:keyword].blank?
 
     if params[:sales_rank]
       @conditions << "sales_rank IS NOT NULL"

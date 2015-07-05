@@ -75,7 +75,12 @@ ja:
       all_count: 出品総数
       average: 平均販売価格
       converted_price: 換算価格
+      ebay: ebay
+      low_price: 下値
+      high_price: 上値
       highest: 最高値
+      image: 画像あり
+      keyword: キーワード
       sold_count: 販売数
 
     pagination:
