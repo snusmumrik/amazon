@@ -817,7 +817,17 @@ def self.tweet
       end
 
       if product.image_url1
-        image = open(product.image_url1)
+        if product.image_url5
+          image = open(product.image_url5)
+        elsif product.image_url4
+          image = open(product.image_url4)
+        elsif product.image_url3
+          image = open(product.image_url3)
+        elsif product.image_url2
+          image = open(product.image_url2)
+        elsif product.image_url1
+          image = open(product.image_url1)
+        end
         if image.is_a?(StringIO)
           ext = File.extname(url)
           name = File.basename(url, ext)
