@@ -19,8 +19,12 @@
 
 # Learn more: http://github.com/javan/whenever
 
-every "1 * * * *" do
+every :hour do
   runner "Product.get_exchange_rate"
+end
+
+every :hour do
+  runner "Product.tweet"
 end
 
 every 1.day, :at => '1:00 am' do

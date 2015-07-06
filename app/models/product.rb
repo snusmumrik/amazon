@@ -3,6 +3,7 @@ require "open-uri"
 require "mechanize"
 require "httpclient"
 require "csv"
+require "twitter"
 
 # -*- coding: utf-8 -*-
 class Product < ActiveRecord::Base
@@ -24,95 +25,95 @@ class Product < ActiveRecord::Base
 
     # # 小形包装物 航空便
     # if weight * 1.1 <= 0.05
-    #   self.shipping_cost = 150 + 410
+    #   self.shipping_cost = 150
     # elsif weight * 1.1 <= 0.1
-    #   self.shipping_cost = 240 + 410
+    #   self.shipping_cost = 240
     # elsif weight * 1.1 <= 0.15
-    #   self.shipping_cost = 330 + 410
+    #   self.shipping_cost = 330
     # elsif weight * 1.1 <= 0.2
-    #   self.shipping_cost = 420 + 410
+    #   self.shipping_cost = 420
     # elsif weight * 1.1 <= 0.25
-    #   self.shipping_cost = 510 + 410
+    #   self.shipping_cost = 510
     # elsif weight * 1.1 <= 0.3
-    #   self.shipping_cost = 600 + 410
+    #   self.shipping_cost = 600
     # elsif weight * 1.1 <= 0.35
-    #   self.shipping_cost = 690 + 410
+    #   self.shipping_cost = 690
     # elsif weight * 1.1 <= 0.4
-    #   self.shipping_cost = 780 + 410
+    #   self.shipping_cost = 780
     # elsif weight * 1.1 <= 0.45
-    #   self.shipping_cost = 870 + 410
+    #   self.shipping_cost = 870
     # elsif weight * 1.1 <= 0.5
-    #   self.shipping_cost = 960 + 410
+    #   self.shipping_cost = 960
     # elsif weight * 1.1 <= 0.55
-    #   self.shipping_cost = 1050 + 410
+    #   self.shipping_cost = 1050
     # elsif weight * 1.1 <= 0.6
-    #   self.shipping_cost = 1140 + 410
+    #   self.shipping_cost = 1140
     # elsif weight * 1.1 <= 0.65
-    #   self.shipping_cost = 1230 + 410
+    #   self.shipping_cost = 1230
     # elsif weight * 1.1 <= 0.7
-    #   self.shipping_cost = 1320 + 410
+    #   self.shipping_cost = 1320
     # elsif weight * 1.1 <= 0.75
-    #   self.shipping_cost = 1410 + 410
+    #   self.shipping_cost = 1410
     # elsif weight * 1.1 <= 0.8
-    #   self.shipping_cost = 1500 + 410
+    #   self.shipping_cost = 1500
     # elsif weight * 1.1 <= 0.85
-    #   self.shipping_cost = 1590 + 410
+    #   self.shipping_cost = 1590
     # elsif weight * 1.1 <= 0.9
-    #   self.shipping_cost = 1680 + 410
+    #   self.shipping_cost = 1680
     # elsif weight * 1.1 <= 0.95
-    #   self.shipping_cost = 1770 + 410
+    #   self.shipping_cost = 1770
     # elsif weight * 1.1 <= 1
-    #   self.shipping_cost = 1860 + 410
+    #   self.shipping_cost = 1860
     # elsif weight * 1.1 <= 1.25
-    #   self.shipping_cost = 2085 + 410
+    #   self.shipping_cost = 2085
     # elsif weight * 1.1 <= 1.5
-    #   self.shipping_cost = 2310 + 410
+    #   self.shipping_cost = 2310
     # elsif weight * 1.1 <= 1.75
-    #   self.shipping_cost = 2535 + 410
+    #   self.shipping_cost = 2535
     # elsif weight * 1.1 <= 2
-    #   self.shipping_cost = 2760 + 410
+    #   self.shipping_cost = 2760
 
     # 小形包装物 SAL
     if weight * 1.1 <= 0.1
-      self.shipping_cost = 180 + 410
+      self.shipping_cost = 180
     elsif weight * 1.1 <= 0.2
-      self.shipping_cost = 280 + 410
+      self.shipping_cost = 280
     elsif weight * 1.1 <= 0.3
-      self.shipping_cost = 380 + 410
+      self.shipping_cost = 380
     elsif weight * 1.1 <= 0.4
-      self.shipping_cost = 480 + 410
+      self.shipping_cost = 480
     elsif weight * 1.1 <= 0.5
-      self.shipping_cost = 580 + 410
+      self.shipping_cost = 580
     elsif weight * 1.1 <= 0.6
-      self.shipping_cost = 680 + 410
+      self.shipping_cost = 680
     elsif weight * 1.1 <= 0.7
-      self.shipping_cost = 780 + 410
+      self.shipping_cost = 780
     elsif weight * 1.1 <= 0.8
-      self.shipping_cost = 880 + 410
+      self.shipping_cost = 880
     elsif weight * 1.1 <= 0.9
-      self.shipping_cost = 980 + 410
+      self.shipping_cost = 980
     elsif weight * 1.1 <= 1
-      self.shipping_cost = 1080 + 410
+      self.shipping_cost = 1080
     elsif weight * 1.1 <= 1.1
-      self.shipping_cost = 1180 + 410
+      self.shipping_cost = 1180
     elsif weight * 1.1 <= 1.2
-      self.shipping_cost = 1280 + 410
+      self.shipping_cost = 1280
     elsif weight * 1.1 <= 1.3
-      self.shipping_cost = 1380 + 410
+      self.shipping_cost = 1380
     elsif weight * 1.1 <= 1.4
-      self.shipping_cost = 1480 + 410
+      self.shipping_cost = 1480
     elsif weight * 1.1 <= 1.5
-      self.shipping_cost = 1580 + 410
+      self.shipping_cost = 1580
     elsif weight * 1.1 <= 1.6
-      self.shipping_cost = 1680 + 410
+      self.shipping_cost = 1680
     elsif weight * 1.1 <= 1.7
-      self.shipping_cost = 1780 + 410
+      self.shipping_cost = 1780
     elsif weight * 1.1 <= 1.8
-      self.shipping_cost = 1880 + 410
+      self.shipping_cost = 1880
     elsif weight * 1.1 <= 1.9
-      self.shipping_cost = 1980 + 410
+      self.shipping_cost = 1980
     elsif weight * 1.1 <= 2
-      self.shipping_cost = 2080 + 410
+      self.shipping_cost = 2080
 
     # # e-packet
     # if weight * 1.1 <= 0.05
@@ -229,6 +230,8 @@ class Product < ActiveRecord::Base
     # elsif weight * 1.1 <= 25
     #   self.shipping_cost = 26050
     end
+
+    self.shipping_cost += 410 if self.price >= 50
 
     if self.price && self.cost
       begin
@@ -519,6 +522,9 @@ class Product < ActiveRecord::Base
     # app_id = "Chishaku-8e8f-48de-a23a-e1304518388d" # sandbox
     app_id = "Chishaku-0efe-4739-a2ff-dba4724f0514" # production
 
+    keyword.gsub!(/(japan|Japan|JAPAN|import|Import|IMPORT|new|New|NEW)/,"")
+    p "Keyword: #{keyword}"
+
     url = "http://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findCompletedItems&SERVICE-VERSION=1.0.0&SECURITY-APPNAME=#{app_id}&RESPONSE-DATA-FORMAT=JSON&REST-PAYLOAD&keywords=#{URI.escape(keyword)}"
     puts "EBAY URL:#{url}"
 
@@ -609,6 +615,7 @@ class Product < ActiveRecord::Base
   def self.check_profit_on_ebay(price, supply_cost, weight)
     exchange_rate = open("public/exchange_rate.txt", "r").read.to_f
 
+    weight = weight.to_f / 100 * 0.454
     # 小形包装物 SAL
     if weight * 1.1 <= 0.1
       shipping_cost = 180
@@ -688,6 +695,8 @@ class Product < ActiveRecord::Base
     # elsif weight * 1.1 <= 2.0
     #   shipping_cost = 3065
     # end
+
+    shipping_cost += 410 if price >= 50
 
     p "Exchange Rate: #{exchange_rate}"
     p "Shipping Cost #{shipping_cost}"
@@ -775,6 +784,53 @@ class Product < ActiveRecord::Base
         f.print content
         p "#{file_name} saved from #{uri}."
       end
+    end
+  end
+
+def self.tweet
+    client = Twitter::REST::Client.new do |config|
+      config.consumer_key        = "pi372r3MegfGH4XbqKW2GgVCR"
+      config.consumer_secret     = "mC9B356xFZs7EjQzPE5MQz1jWDNq9Dl1OX3p8OOFsfXSv6dVps"
+      config.access_token        = "3269536514-rwiAuCrgJ3c3fk53IE7rEo9krRFwguBG7kmjxK8"
+      config.access_token_secret = "lxqieZET0XgEHVqEgoeJHSvJpgrQk9ttsjXNElvQBr9PV"
+    end
+
+    product = Product.where("profit > 1000").order("RAND()").limit(1).first
+    if product.price
+      rate = open("public/exchange_rate.txt", "r").read.to_f.round(2)
+
+      # tweet
+      Bitly.use_api_version_3
+      Bitly.configure do |config|
+        config.api_version = 3
+        config.access_token = "c7b6ba72ff78178e3e0cc063f4823820ba2dfb01"
+      end
+      url = Bitly.client.shorten("http://amazon.crudoe.com/products/#{product.id}").short_url
+      # image_url = Bitly.client.shorten(product.image_url1).short_url
+
+      text = "米国で$#{product.price}、日本では#{product.cost}円のこちらの商品は、諸経費を除いて#{product.profit}円の利益が見込めます。詳細はこちら => #{url}"
+      tags = [" #amazon輸出", " #副業", " #ネットビジネス", " #せどり", " #オークション"]
+      tags.each do |t|
+        if text.size + t.size < 115
+          text += t
+        end
+      end
+
+      if product.image_url1
+        image = open(product.image_url1)
+        if image.is_a?(StringIO)
+          ext = File.extname(url)
+          name = File.basename(url, ext)
+          Tempfile.new([name, ext])
+        else
+          image
+        end
+        client.update_with_media(text, image)
+      else
+        client.update(text)
+      end
+    else
+      Product.tweet
     end
   end
 end
