@@ -19,6 +19,7 @@ class ProductsController < ApplicationController
     @conditions << "category = '#{params[:category_name]}'" unless params[:category_name].blank?
     @conditions << "profit > 0" if params[:profit] == "1"
     @conditions << "title LIKE '%#{params[:keyword]}%'" unless params[:keyword].blank?
+    @conditions << "price IS NOT NULL"
 
     if params[:sales_rank]
       @conditions << "sales_rank IS NOT NULL"
