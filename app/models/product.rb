@@ -808,10 +808,10 @@ def self.tweet
       url = Bitly.client.shorten("http://amazon.crudoe.com/products/#{product.id}").short_url
       # image_url = Bitly.client.shorten(product.image_url1).short_url
 
-      text = "米国で$#{product.price}、日本では#{product.cost}円のこちらの商品は、諸経費を除いて#{product.profit}円の利益が見込めます。詳細はこちら => #{url}"
+      text = "米国で$#{product.price}、日本では#{product.cost}円のこの商品は、諸経費を除いて#{product.profit}円の利益が見込めるようです。詳細はこちら => #{url}"
       tags = [" #amazon輸出", " #副業", " #ネットビジネス", " #せどり", " #オークション"]
       tags.each do |t|
-        if text.size + t.size < 115
+        if text.size + t.size < 110
           text += t
         end
       end
