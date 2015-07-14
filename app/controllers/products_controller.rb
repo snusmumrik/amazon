@@ -10,7 +10,7 @@ class ProductsController < ApplicationController
   def index
     @product = Product.new
     @conditions = Array.new
-    @orders = ["model, title"]
+    @orders = ["category", "model", "products.title"]
 
     # refactoring required
     @conditions << "price >= #{params[:low_price]}" unless params[:low_price].blank?
