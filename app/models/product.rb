@@ -615,7 +615,6 @@ class Product < ActiveRecord::Base
   def self.check_profit_on_ebay(price, supply_cost, weight)
     exchange_rate = open("public/exchange_rate.txt", "r").read.to_f
 
-    weight = weight.to_f / 100 * 0.454
     # 小形包装物 SAL
     if weight * 1.1 <= 0.1
       shipping_cost = 180

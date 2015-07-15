@@ -30,3 +30,7 @@ end
 every 1.day, :at => '1:00 am' do
   runner "Product.search"
 end
+
+every 1.day, :at => '1:00 pm' do
+  runner "Product.refresh"
+end
