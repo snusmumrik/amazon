@@ -74,7 +74,7 @@
 
       %li= "#{t('activerecord.attributes.product.asin')}: #{@product.asin}"
       %li
-        = "#{t('activerecord.attributes.product.asin')}: "
+        = "#{t('activerecord.attributes.product.manufacturer')}: "
         - if @product.manufacturer
           = link_to @product.manufacturer, "/products/manufacturers/#{@product.manufacturer}"
       %li= "#{t('activerecord.attributes.product.model')}: #{@product.model}"
