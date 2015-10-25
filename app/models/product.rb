@@ -75,88 +75,88 @@ class Product < ActiveRecord::Base
 
     # 小形包装物 SAL
     if weight * 1.1 <= 0.1
-      self.shipping_cost = 180
+      self.shipping_cost = 180 + 410
     elsif weight * 1.1 <= 0.2
-      self.shipping_cost = 280
+      self.shipping_cost = 280 + 410
     elsif weight * 1.1 <= 0.3
-      self.shipping_cost = 380
+      self.shipping_cost = 380 + 410
     elsif weight * 1.1 <= 0.4
-      self.shipping_cost = 480
+      self.shipping_cost = 480 + 410
     elsif weight * 1.1 <= 0.5
-      self.shipping_cost = 580
+      self.shipping_cost = 580 + 410
     elsif weight * 1.1 <= 0.6
-      self.shipping_cost = 680
+      self.shipping_cost = 680 + 410
     elsif weight * 1.1 <= 0.7
-      self.shipping_cost = 780
+      self.shipping_cost = 780 + 410
     elsif weight * 1.1 <= 0.8
-      self.shipping_cost = 880
+      self.shipping_cost = 880 + 410
     elsif weight * 1.1 <= 0.9
-      self.shipping_cost = 980
+      self.shipping_cost = 980 + 410
     elsif weight * 1.1 <= 1
-      self.shipping_cost = 1080
+      self.shipping_cost = 1080 + 410
     elsif weight * 1.1 <= 1.1
-      self.shipping_cost = 1180
+      self.shipping_cost = 1180 + 410
     elsif weight * 1.1 <= 1.2
-      self.shipping_cost = 1280
+      self.shipping_cost = 1280 + 410
     elsif weight * 1.1 <= 1.3
-      self.shipping_cost = 1380
+      self.shipping_cost = 1380 + 410
     elsif weight * 1.1 <= 1.4
-      self.shipping_cost = 1480
+      self.shipping_cost = 1480 + 410
     elsif weight * 1.1 <= 1.5
-      self.shipping_cost = 1580
+      self.shipping_cost = 1580 + 410
     elsif weight * 1.1 <= 1.6
-      self.shipping_cost = 1680
+      self.shipping_cost = 1680 + 410
     elsif weight * 1.1 <= 1.7
-      self.shipping_cost = 1780
+      self.shipping_cost = 1780 + 410
     elsif weight * 1.1 <= 1.8
-      self.shipping_cost = 1880
+      self.shipping_cost = 1880 + 410
     elsif weight * 1.1 <= 1.9
-      self.shipping_cost = 1980
+      self.shipping_cost = 1980 + 410
     elsif weight * 1.1 <= 2
-      self.shipping_cost = 2080
+      self.shipping_cost = 2080 + 410
 
-    # # e-packet
-    # if weight * 1.1 <= 0.05
-    #   self.shipping_cost = 560
-    # elsif weight * 1.1 <= 0.1
-    #   self.shipping_cost = 635
-    # elsif weight * 1.1 <= 0.15
-    #   self.shipping_cost = 710
-    # elsif weight * 1.1 <= 0.2
-    #   self.shipping_cost = 785
-    # elsif weight * 1.1 <= 0.25
-    #   self.shipping_cost = 860
-    # elsif weight * 1.1 <= 0.3
-    #   self.shipping_cost = 935
-    # elsif weight * 1.1 <= 0.4
-    #   self.shipping_cost = 1085
-    # elsif weight * 1.1 <= 0.5
-    #   self.shipping_cost = 1235
-    # elsif weight * 1.1 <= 0.6
-    #   self.shipping_cost = 1385
-    # elsif weight * 1.1 <= 0.7
-    #   self.shipping_cost = 1535
-    # elsif weight * 1.1 <= 0.8
-    #   self.shipping_cost = 1685
-    # elsif weight * 1.1 <= 0.9
-    #   self.shipping_cost = 1835
-    # elsif weight * 1.1 <= 1.0
-    #   self.shipping_cost = 1985
-    # elsif weight * 1.1 <= 1.25
-    #   self.shipping_cost = 2255
-    # elsif weight * 1.1 <= 1.5
-    #   self.shipping_cost = 2525
-    # elsif weight * 1.1 <= 1.75
-    #   self.shipping_cost = 2795
-    # elsif weight * 1.1 <= 2.0
-    #   self.shipping_cost = 3065
-    # end
+      # # e-packet
+      # if weight * 1.1 <= 0.05
+      #   self.shipping_cost = 560
+      # elsif weight * 1.1 <= 0.1
+      #   self.shipping_cost = 635
+      # elsif weight * 1.1 <= 0.15
+      #   self.shipping_cost = 710
+      # elsif weight * 1.1 <= 0.2
+      #   self.shipping_cost = 785
+      # elsif weight * 1.1 <= 0.25
+      #   self.shipping_cost = 860
+      # elsif weight * 1.1 <= 0.3
+      #   self.shipping_cost = 935
+      # elsif weight * 1.1 <= 0.4
+      #   self.shipping_cost = 1085
+      # elsif weight * 1.1 <= 0.5
+      #   self.shipping_cost = 1235
+      # elsif weight * 1.1 <= 0.6
+      #   self.shipping_cost = 1385
+      # elsif weight * 1.1 <= 0.7
+      #   self.shipping_cost = 1535
+      # elsif weight * 1.1 <= 0.8
+      #   self.shipping_cost = 1685
+      # elsif weight * 1.1 <= 0.9
+      #   self.shipping_cost = 1835
+      # elsif weight * 1.1 <= 1.0
+      #   self.shipping_cost = 1985
+      # elsif weight * 1.1 <= 1.25
+      #   self.shipping_cost = 2255
+      # elsif weight * 1.1 <= 1.5
+      #   self.shipping_cost = 2525
+      # elsif weight * 1.1 <= 1.75
+      #   self.shipping_cost = 2795
+      # elsif weight * 1.1 <= 2.0
+      #   self.shipping_cost = 3065
+      # end
 
-    #国際小包SAL便
-    # elsif weight * 1.1 <= 1
-    #   self.shipping_cost = 2700
-    # elsif weight * 1.1 <= 2
-    #   self.shipping_cost = 3850
+      #国際小包SAL便
+      # elsif weight * 1.1 <= 1
+      #   self.shipping_cost = 2700
+      # elsif weight * 1.1 <= 2
+      #   self.shipping_cost = 3850
     elsif weight * 1.1 <= 3
       self.shipping_cost = 5000
     elsif weight * 1.1 <= 4
@@ -214,32 +214,37 @@ class Product < ActiveRecord::Base
     elsif weight * 1.1 <= 30
       self.shipping_cost = 26550
 
-    #ヤマト交際パーセルサービス
-    # elsif weight * 1.1 <= 1
-    #   self.shipping_cost = 1200
-    # elsif weight * 1.1 <= 2
-    #   self.shipping_cost = 2750
-    # elsif weight * 1.1 <= 5
-    #   self.shipping_cost = 4650
-    # elsif weight * 1.1 <= 10
-    #   self.shipping_cost = 8850
-    # elsif weight * 1.1 <= 15
-    #   self.shipping_cost = 15050
-    # elsif weight * 1.1 <= 20
-    #   self.shipping_cost = 20550
-    # elsif weight * 1.1 <= 25
-    #   self.shipping_cost = 26050
+      #ヤマト交際パーセルサービス
+      # elsif weight * 1.1 <= 1
+      #   self.shipping_cost = 1200
+      # elsif weight * 1.1 <= 2
+      #   self.shipping_cost = 2750
+      # elsif weight * 1.1 <= 5
+      #   self.shipping_cost = 4650
+      # elsif weight * 1.1 <= 10
+      #   self.shipping_cost = 8850
+      # elsif weight * 1.1 <= 15
+      #   self.shipping_cost = 15050
+      # elsif weight * 1.1 <= 20
+      #   self.shipping_cost = 20550
+      # elsif weight * 1.1 <= 25
+      #   self.shipping_cost = 26050
     end
 
     self.shipping_cost += 410 if self.price >= 50
 
-    if self.price && self.cost
-      begin
-        self.profit = Product.calculate_profit_on_amazon(self)
-      rescue => ex
-        p ex.message
-        self.profit = nil
-      end
+    begin
+      self.profit = Product.calculate_profit_on_amazon(self)
+    rescue => ex
+      p ex.message
+      self.profit = nil
+    end
+
+    begin
+      self.profit_ebay = Product.calculate_profit_on_ebay(self)
+    rescue => ex
+      p ex.message
+      self.profit_ebay = nil
     end
   end
 
@@ -601,13 +606,13 @@ class Product < ActiveRecord::Base
   end
 
   def self.calculate_profit_on_amazon(product)
-    if product.shipping_cost && product.cost
+    if product.price && product.shipping_cost && product.cost
       (product.price * (1 - 0.15) - 1) * @@exchange_rate - product.shipping_cost - product.cost
     end
   end
 
   def self.calculate_profit_on_ebay(product, price = product.price)
-    if product.shipping_cost && product.cost
+    if price && product.shipping_cost && product.cost
       (price * (1 - 0.1 - 0.039) - 0.3) * @@exchange_rate * 0.96 - product.shipping_cost - product.cost
     end
   end
@@ -786,7 +791,7 @@ class Product < ActiveRecord::Base
     end
   end
 
-def self.tweet
+  def self.tweet
     client = Twitter::REST::Client.new do |config|
       config.consumer_key        = "pi372r3MegfGH4XbqKW2GgVCR"
       config.consumer_secret     = "mC9B356xFZs7EjQzPE5MQz1jWDNq9Dl1OX3p8OOFsfXSv6dVps"
@@ -840,6 +845,13 @@ def self.tweet
       end
     else
       Product.tweet
+    end
+  end
+
+  def self.minimum_price(product)
+    if product.shipping_cost && product.cost
+      exchange_rate = open("public/exchange_rate.txt", "r").read.to_i
+      ((1.1 * (product.shipping_cost + product.cost))/(0.96 * 0.861 * exchange_rate) + 0.3/0.861).round(2)
     end
   end
 end

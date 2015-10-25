@@ -45,19 +45,19 @@
 
       %li.profit
         = "#{t('activerecord.attributes.product.profit')}:"
-        - if @amazon_profit && @product.cost
+        - if @product.profit && @product.cost
           %h4
             %small amazon
-            - if @amazon_profit/@product.cost.to_f >= 0.1
+            - if @product.profit/@product.cost.to_f >= 0.1
               %span.green
-                = number_to_currency @amazon_profit
-                = "(#{number_to_percentage(100*@amazon_profit/@product.cost, precision: 1)})"
-            - elsif @amazon_profit < 0
+                = number_to_currency @product.profit
+                = "(#{number_to_percentage(100*@product.profit/@product.cost, precision: 1)})"
+            - elsif @product.profit < 0
               %span.red
-                = number_to_currency @amazon_profit
+                = number_to_currency @product.profit
             - else
-              = number_to_currency @amazon_profit
-              = "(#{number_to_percentage(100*@amazon_profit/@product.cost, precision: 1)})"
+              = number_to_currency @product.profit
+              = "(#{number_to_percentage(100*@product.profit/@product.cost, precision: 1)})"
         - if @product.cost && @ebay_profit
           %h4
             %small ebay

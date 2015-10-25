@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141225220557) do
+ActiveRecord::Schema.define(version: 20150715090233) do
 
   create_table "categories", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -112,6 +112,7 @@ ActiveRecord::Schema.define(version: 20141225220557) do
     t.integer  "cost",          limit: 4
     t.integer  "shipping_cost", limit: 4
     t.integer  "profit",        limit: 4
+    t.integer  "profit_ebay",   limit: 4
     t.integer  "ebay_average",  limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"

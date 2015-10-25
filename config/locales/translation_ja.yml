@@ -81,6 +81,7 @@ ja:
       highest: 最高値
       image: 画像あり
       keyword: キーワード
+      minimum_price: 最低販売価格
       sold_count: 販売数
 
     pagination:
