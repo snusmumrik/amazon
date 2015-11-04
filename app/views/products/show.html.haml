@@ -90,6 +90,11 @@
       = link_to "Amazon JP", @product.url_jp, class: "btn btn-default", target: :blank
       = link_to "ebay US", "http://rover.ebay.com/rover/1/711-53200-19255-0/1?icep_ff3=9&pub=5575129667&toolid=10001&campid=5337713314&customid=&icep_uq=#{URI.escape(@product.title)}&icep_sellerId=&icep_ex_kw=&icep_sortBy=12&icep_catId=&icep_minPrice=&icep_maxPrice=&ipn=psmain&icep_vectorid=229466&kwid=902099&mtid=824&kw=lg", class: "btn btn-default", target: :blank
       = image_tag "http://rover.ebay.com/roverimp/1/711-53200-19255-0/1?ff3=4&pub=5575129667&toolid=10001&campid=5337712152&customid=&mpt=[CACHEBUSTER]", style: "text-decoration:none;border:0;padding:0;margin:0;"
+    - if user_signed_in?
+      - if @product_to_sells.include? @product.id
+        %span.btn.btn-info Added
+      - else
+        = link_to 'Add', product_to_sells_path, method: "post", data: { confirm: 'Are you sure?', params: { product_to_sell: { product_id: @product.id } } }, remote: true, class: "btn btn-success btn-sm"
 
 / /.row
 .row

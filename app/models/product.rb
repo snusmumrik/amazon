@@ -8,15 +8,17 @@ require "twitter"
 # -*- coding: utf-8 -*-
 class Product < ActiveRecord::Base
   has_many :ebay_items
-  validates :asin, presence: true
+  validates :asin, :cost, presence: true
   validates :asin, uniqueness: true
   acts_as_paranoid
 
-  before_save :calculate_cost
+  paginates_per 15
+
+  before_save :calculate_shipping_cost, :calculate_cost
 
   @@exchange_rate = open("public/exchange_rate.txt", "r").read.to_i
 
-  def calculate_cost
+  def calculate_shipping_cost
     weight = self.weight.to_f / 100 * 0.454
     # 小形包装物
     #   長さ＋幅＋厚さ＝90cm ただし、長さの最大は60cm (許容差 2mm)
@@ -230,9 +232,9 @@ class Product < ActiveRecord::Base
       # elsif weight * 1.1 <= 25
       #   self.shipping_cost = 26050
     end
+  end
 
-    self.shipping_cost += 410 if self.price >= 50
-
+  def calculate_cost
     begin
       self.profit = Product.calculate_profit_on_amazon(self)
     rescue => ex
@@ -311,7 +313,8 @@ class Product < ActiveRecord::Base
               puts "\r\nSEARCH_INDEX:#{search_index.name}, SORT_VALUE:#{sort_value.name}, ITEM_PAGE:#{i}"
 
               if !item.nil? && item.instance_of?(Hash)
-                if product = save_product(item)
+                product = save_product(item)
+                if product.persisted?
                   find_ebay_completed_items(product.title, product.id)
 
                   average = product.ebay_items.inject(Array.new) {|a, ei| a << ei.current_price_value if ei.selling_state == "EndedWithSales"
@@ -434,10 +437,11 @@ class Product < ActiveRecord::Base
       product.image_url1 = item["ImageSets"]["ImageSet"]["LargeImage"]["URL"]
     end
 
-    if item["OfferSummary"] && item["OfferSummary"]["LowestNewPrice"]
-      product.currency = item["OfferSummary"]["LowestNewPrice"]["CurrencyCode"]
-      product.price = (item["OfferSummary"]["LowestNewPrice"]["Amount"].to_f/100).round(2)
-    end
+    # if item["OfferSummary"] && item["OfferSummary"]["LowestNewPrice"]
+    #   product.currency = item["OfferSummary"]["LowestNewPrice"]["CurrencyCode"]
+    #   product.price = (item["OfferSummary"]["LowestNewPrice"]["Amount"].to_f/100).round(2)
+    #   p "Amazon Price: #{product.price}"
+    # end
 
     # amazon.co.jp
     request2 = Vacuum.new("JP")
@@ -474,8 +478,10 @@ class Product < ActiveRecord::Base
     if response2
       product.url_jp = response2["ItemLookupResponse"]["Items"]["Item"]["DetailPageURL"] rescue nil
       product.cost = response2["ItemLookupResponse"]["Items"]["Item"]["OfferSummary"]["LowestNewPrice"]["Amount"] rescue nil
+      p "Amazon Cost: #{product.cost}" if product.cost
     end
 
+    # get retail amazon price not from third party vendors
     begin
       agent = Mechanize.new
 
@@ -852,6 +858,219 @@ class Product < ActiveRecord::Base
     if product.shipping_cost && product.cost
       exchange_rate = open("public/exchange_rate.txt", "r").read.to_i
       ((1.1 * (product.shipping_cost + product.cost))/(0.96 * 0.861 * exchange_rate) + 0.3/0.861).round(2)
+    end
+  end
+
+  def self.list_to_ebay(product, api_call_name = "VerifyAddItem")
+    @header = {
+      "X-EBAY-API-DEV-NAME" => DEVID,
+      "X-EBAY-API-APP-NAME" => APPID,
+      "X-EBAY-API-CERT-NAME" => CERTID,
+      "X-EBAY-API-CALL-NAME" => api_call_name,
+      "X-EBAY-API-COMPATIBILITY-LEVEL" => API_COMPATIBILITY_LEVEL,
+      "X-EBAY-API-SITEID" => EBAY_API_SITEID,
+      "Content-Type" => "text/xml",
+    }
+
+    @return_accespted_option = "ReturnsAccepted"
+    @refund_option = "MoneyBack"
+    @returns_within_option = "Days_30"
+    @refund_description = "If for any reason you are not satisfied with your order, simply send it back to us. You are responsible for return shipping. Once your return is processed, you will receive a refund for the amount paid for the returned item back to the original method of payment. Any outbound shipping charges paid will not be refunded if the order is returned. All merchandise must be the same condition it was received."
+
+    basic_information = Array.new
+    basic_information << "#{product.title}(#{product.manufacturer})"
+    basic_information << "Model:#{product.model}" if product.model
+    basic_information << "Color:#{product.color}" if product.color
+    basic_information << "Size:#{product.size}" if product.size
+    basic_information << "Free international shipping from Japan"
+
+    description = "<div id='inkfrog_crosspromo_top'></div>
+<!DOCTYPE html>
+<head>
+<title>#{product.title} | Imported from Japan</title>
+
+<meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1'>
+<link href='//open.inkfrog.com/assets/plugins/bootstrap/css/bootstrap.css' rel='stylesheet' type='text/css'>
+<link href='//open.inkfrog.com/assets/plugins/bootstrap/css/bootstrap-responsive.min.css' rel='stylesheet' type='text/css'>
+<link href='//fonts.googleapis.com/css?family=Open+Sans:400,600|Cabin:400|Cabin:700|Josefin+Sans:400|Josefin+Sans:700|Oswald:400|Oswald:700|Varela|Josefin+Slab:400|Josefin+Slab:700|Open+Sans:400|Open+Sans:700|Ovo|PT+Serif:400|PT+Serif:700|Wire+One|Kameron:400|Kameron:700|Rokkitt:400|Rokkitt:700|Maiden+Orange|Bevan|Dancing+Script|Tangerine|Pacifico|Damion|Permanent+Marker|Fugaz+One' rel='stylesheet' type='text/css'>
+<link href='//open.inkfrog.com/templates/designer/styles/style.css' rel='stylesheet' type='text/css'>
+<link href='https://open.inkfrog.com/templates/designer/predesigned_templates/tabs_css/default.css' rel='stylesheet' type='text/css'>
+
+<script type='text/javascript'>
+document.Echo = document['standard' + 'Write'] == null ? document['write'] : document['standard' + 'Write'];
+var include = function (path) { document.Echo('<' + 'script src=\'' + path + '\'' + ' type=\'text\/javascript\'><' + '\/script>'); };
+include('//open.inkfrog.com/templates/designer/scripts/if_theme.js');
+include('//open.inkfrog.com/templates/designer/scripts/zoom.js');
+</script>
+</head>
+
+<body style='margin:0px;background:#ffffff;'>
+<div id='template_wrapper' style='margin:0px;padding:25px;background-image: url('http://templates.frg.im/backgrounds/rocky.jpg');background-color: #ffffff;background-attachment: fixed;background-repeat: no-repeat no-repeat;background-size: cover;-webkit-background-size: cover;'>
+<div class='container-fluid'>
+<div id='logo_banner' class='logo hide' style='display: none;'></div>
+<div id='template_content' style='font-family: Varela, sans-serif; font-weight: normal; color: #3c3c3c; font-size: 14px;background-color:#ffffff'>
+<div class='row-fluid section'>
+<div class='span12'>
+<h4 class='listing_title' style='font-family: Rokkitt, serif; font-weight: 400; color: #3596B7; font-size: 30px; line-height:30px;'>#{product.title} | Imported from Japan</h4>
+</div>
+</div>
+
+<div id='drag_area'>
+<div class='row-fluid section' id='description-section'>
+<div id='description'>#{basic_information.join(',')}</div>
+</div>
+<div id='image-section'>
+
+<div class='row-fluid section' id='images-zoom'>
+<div class='span8'>
+<span class='zoom' id='main-img'>
+<a href='#'>
+<img src='#{product.image_url1}'>
+</a>
+</span>
+</div>
+
+<div class='span4'>
+<ul class='thumbnails'>
+<li class='span8'>
+<a href='#' class='thumbnail'>
+<img src='#{product.image_url2}'>
+</a>
+</li>
+
+<li class='span8'>
+<a href='#' class='thumbnail'>
+<img src='#{product.image_url3}'>
+</a>
+</li>
+
+<li class='span8'>
+<a href='#' class='thumbnail'>
+<img src='#{product.image_url4}'>
+</a>
+
+<li class='span8'>
+<a href='#' class='thumbnail'>
+<img src='#{product.image_url5}'>
+</a>
+</li>
+</ul>
+
+<div class='clearfix'></div>
+</div>
+</div>
+</div>
+
+<div class='row-fluid section'><div class='text_section text-container editable' id='text-ThSnJGUc' style='display: block;'><p><b style='background-color: initial;'><em>Shipping</em></b></p><p>Economy Shipping with a tracking number is free for items over $50. If you would like to track your packet that is under $50, the additional charge is $4. Although it usually takes 14-21&nbsp;days to be delivered, you could choose EMS for faster delivery (7-10 days), the additional charge is $10.<strong></strong></p><p><b style='background-color: initial;'><em>Payment</em></b></p><p>We only accept PayPal<em>.</em></p><p><b style='background-color: initial;'><em>Return Policy</em></b></p><p>If for any reason you are not satisfied with your order, simply send it back to us. You are responsible for return shipping. Once your return is processed, you will receive a refund for the amount paid for the returned item back to the original method of payment. Any outbound shipping charges paid will not be refunded if the order is returned. All merchandise must be the same condition it was received.</p><p><strong><em>Customs</em></strong></p><p>Import duties, taxes, and charges are not included in the item price or shipping cost. These charges are the buyer's responsibility.&nbsp;Please check with your country's customs office to determine what these additional costs will be prior to bidding or buying.</p></div></div><div class='row-fluid section'><div class='text_section text-container editable' id='text-49gyo0aD' style='display: block;'></div></div></div>
+</div>
+</div>
+</div>
+
+<div id='inkfrog_gallery'></div>
+<div id='inkfrog_credit'></div>
+</body>
+
+<!-- Begin inkFrog Gallery -->
+<script>
+document.Echo = document['standard' + 'Write'] == null ? document['write'] : document['standard' + 'Write'];
+var include_showcase = function (path) { document.Echo('<' + 'script src=\'' + path + '\'' + '><' + '\/script>'); };
+var _ebayItemID = 0;
+if (typeof ebayItemID != 'undefined') { _ebayItemID = ebayItemID };
+include_showcase('//open.inkfrog.com/services/showcase/?sid=17821&uid=18797&ebayItemID=' + _ebayItemID);
+</script>
+<div id='inkfrog_crosspromo_bottom'></div>
+<!-- End inkFrog Gallery -->"
+
+    start_price = product.price.round(0)
+    condition_id = 1000
+    listing_duration = "Days_5"
+    listing_type = "Chinese"
+    payment_methods = "PayPal"
+    paypal_email = "crudo@hiroyukikondo.com"
+
+    pictures = Array.new
+    pictures << "<PictureURL>#{product.image_url1}</PictureURL>" unless product.image_url1.blank?
+    pictures << "<PictureURL>#{product.image_url2}</PictureURL>" unless product.image_url2.blank?
+    pictures << "<PictureURL>#{product.image_url3}</PictureURL>" unless product.image_url3.blank?
+    pictures << "<PictureURL>#{product.image_url4}</PictureURL>" unless product.image_url4.blank?
+    pictures << "<PictureURL>#{product.image_url5}</PictureURL>" unless product.image_url5.blank?
+
+    category_id = EbayCategory.where(["category_name LIKE ? AND leaf_category = TRUE", "%#{product.category}%"]).first.try(:category_id)
+
+    puts "CATEGORY ID: #{category_id}"
+
+    xml = "
+<?xml version='1.0' encoding='utf-8'?>
+<#{api_call_name}Request xmlns='urn:ebay:apis:eBLBaseComponents'>
+  <RequesterCredentials>
+    <eBayAuthToken>#{TOKEN}</eBayAuthToken>
+  </RequesterCredentials>
+  <ErrorLanguage>en_US</ErrorLanguage>
+  <WarningLevel>High</WarningLevel>
+  <Item>
+    <Title>#{product.title[1, 80]}</Title>
+    <Description><![CDATA[#{description}]]></Description>
+    <PrimaryCategory>
+      <CategoryID>#{category_id}</CategoryID>
+    </PrimaryCategory>
+    <StartPrice>#{start_price}</StartPrice>
+    <CategoryMappingAllowed>true</CategoryMappingAllowed>
+    <ConditionID>#{condition_id}</ConditionID>
+    <Country>JP</Country>
+    <Currency>USD</Currency>
+    <DispatchTimeMax>3</DispatchTimeMax>
+    <ListingDuration>#{listing_duration}</ListingDuration>
+    <ListingType>#{listing_type}</ListingType>
+    <PaymentMethods>#{payment_methods}</PaymentMethods>
+    <PayPalEmailAddress>#{paypal_email}</PayPalEmailAddress>
+    <PictureDetails>
+      #{pictures.join("
+")}
+    </PictureDetails>
+    <Location>Fukuoka</Location>
+    <Quantity>1</Quantity>
+    <ReturnPolicy>
+      <ReturnsAcceptedOption>#{@return_accespted_option}</ReturnsAcceptedOption>
+      <RefundOption>#{@refund_option}</RefundOption>
+      <ReturnsWithinOption>#{@returns_within_option}</ReturnsWithinOption>
+      <Description>#{@refund_description}</Description>
+      <ShippingCostPaidByOption>Buyer</ShippingCostPaidByOption>
+    </ReturnPolicy>
+    <ShippingDetails>
+      <ShippingType>Flat</ShippingType>
+      <ShippingServiceOptions>
+        <ShippingServicePriority>1</ShippingServicePriority>
+        <ShippingService>USPSStandardPost</ShippingService>
+        <ShippingServiceCost>0</ShippingServiceCost>
+      </ShippingServiceOptions>
+    </ShippingDetails>
+    <Site>US</Site>
+  </Item>
+</#{api_call_name}Request>
+"
+
+    puts "XML: #{xml}"
+
+    response = Typhoeus::Request.post(URL, :body => xml, :headers => @header )
+    hash = Hash.from_xml(response.response_body)
+
+    puts hash
+
+    if api_call_name == "VerifyAddItem"
+      fees = 0
+      if hash["VerifyAddItemResponse"] && hash["VerifyAddItemResponse"]["Fees"] && hash["VerifyAddItemResponse"]["Fees"]["Fee"]
+        fees = hash["VerifyAddItemResponse"]["Fees"]["Fee"].inject(0) {|sum, i| sum += i["Fee"].to_f; sum}
+        # hash["VerifyAddItemResponse"]["Fees"]["Fee"].each do |fee|
+        #   fees += fee["Fee"].to_f
+        # end
+      end
+      puts "TOTAL FEE: $#{fees}"
+
+      begin
+        list_to_ebay(product, "AddItem") if fees < 1
+      rescue => ex
+        warn ex.message
+      end
     end
   end
 end

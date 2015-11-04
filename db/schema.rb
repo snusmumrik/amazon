@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150715090233) do
+ActiveRecord::Schema.define(version: 20151104044555) do
 
   create_table "categories", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20150715090233) do
     t.integer  "category_level",     limit: 4
     t.string   "category_name",      limit: 255
     t.integer  "category_parent_id", limit: 4
-    t.boolean  "leaf_category",      limit: 1
+    t.boolean  "leaf_category"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -45,12 +45,12 @@ ActiveRecord::Schema.define(version: 20150715090233) do
     t.float    "current_price_value",               limit: 24
     t.string   "bid_count",                         limit: 255
     t.string   "selling_state",                     limit: 255
-    t.boolean  "best_offer_enabled",                limit: 1
-    t.boolean  "buy_it_now_available",              limit: 1
+    t.boolean  "best_offer_enabled"
+    t.boolean  "buy_it_now_available"
     t.datetime "start_time"
     t.datetime "end_time"
     t.string   "listing_type",                      limit: 255
-    t.boolean  "returns_accepted",                  limit: 1
+    t.boolean  "returns_accepted"
     t.string   "condition_display_name",            limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(version: 20150715090233) do
     t.integer  "shipping_cost",  limit: 4
     t.integer  "profit",         limit: 4
     t.date     "sold_at"
-    t.boolean  "shipped",        limit: 1
+    t.boolean  "shipped"
     t.date     "shipped_at"
     t.text     "memo",           limit: 65535
     t.datetime "created_at"
@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(version: 20150715090233) do
   create_table "product_to_sells", force: :cascade do |t|
     t.integer  "product_id",  limit: 4
     t.integer  "category_id", limit: 4
-    t.boolean  "listed",      limit: 1
+    t.boolean  "listed"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
@@ -131,5 +131,20 @@ ActiveRecord::Schema.define(version: 20150715090233) do
   end
 
   add_index "sort_values", ["search_index_id"], name: "index_sort_values_on_search_index_id", using: :btree
+
+  create_table "users", force: :cascade do |t|
+    t.string   "email",               limit: 255, default: "", null: false
+    t.string   "encrypted_password",  limit: 255, default: "", null: false
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",       limit: 4,   default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip",  limit: 255
+    t.string   "last_sign_in_ip",     limit: 255
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+  end
+
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
 
 end

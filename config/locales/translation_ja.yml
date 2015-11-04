@@ -82,6 +82,7 @@ ja:
       image: 画像あり
       keyword: キーワード
       minimum_price: 最低販売価格
+      sales_rank: セールスランク
       sold_count: 販売数
 
     pagination:

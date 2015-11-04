@@ -67,9 +67,20 @@
               = "#{t('views.product.average')}: "
               = link_to number_to_currency(@average_hash[product.id], locale: :en), "http://rover.ebay.com/rover/1/711-53200-19255-0/1?icep_ff3=9&pub=5575129667&toolid=10001&campid=5337713314&customid=&icep_uq=#{URI.escape(product.title)}&LH_Complete=1&LH_Sold=1&icep_sellerId=&icep_ex_kw=&icep_sortBy=12&icep_catId=&icep_minPrice=&icep_maxPrice=&ipn=psmain&icep_vectorid=229466&kwid=902099&mtid=824&kw=lg", target: :blank
 
+          %h4
+            %small
+              = "#{t('views.product.sales_rank')}: "
+              = number_with_delimiter product.sales_rank
+
     %li
       - if product.price
         = link_to "Amazon US", product.url, class: "btn btn-default btn-sm", target: :blank
       - if product.cost
         = link_to "Amazon JP", product.url_jp, class: "btn btn-default btn-sm", target: :blank
       = link_to "ebay US", "http://rover.ebay.com/rover/1/711-53200-19255-0/1?icep_ff3=9&pub=5575129667&toolid=10001&campid=5337713314&customid=&icep_uq=#{URI.escape(product.title)}&icep_sellerId=&icep_ex_kw=&icep_sortBy=12&icep_catId=&icep_minPrice=&icep_maxPrice=&ipn=psmain&icep_vectorid=229466&kwid=902099&mtid=824&kw=lg", class: "btn btn-default btn-sm", target: :blank
+
+      - if user_signed_in?
+        - if @product_to_sells.include? product.id
+          %span.btn.btn-info Added
+        - else
+          = link_to 'Add', product_to_sells_path, method: "post", data: { confirm: 'Are you sure?', params: { product_to_sell: { product_id: product.id } } }, remote: true, class: "btn btn-success btn-sm"

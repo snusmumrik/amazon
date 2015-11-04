@@ -10,7 +10,6 @@ class ProductToSellsController < ApplicationController
   # @@app_id = "Chishaku-8e8f-48de-a23a-e1304518388d" # sandbox
   @@app_id = "Chishaku-0efe-4739-a2ff-dba4724f0514" # production
 
-  @@amazon_affiliate_link = "http://www.amazon.com/?_encoding=UTF8&camp=1789&creative=9325&linkCode=ur2&tag=chishaku-20&linkId=AOXRRTZSW6246HKX"
   @@return_accespted_option = "ReturnsAccepted"
   @@refund_option = "MoneyBack"
   @@returns_within_option = "Days_30"
