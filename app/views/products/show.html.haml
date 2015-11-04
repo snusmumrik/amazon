@@ -96,6 +96,10 @@
       - else
         = link_to 'Add', product_to_sells_path, method: "post", data: { confirm: 'Are you sure?', params: { product_to_sell: { product_id: @product.id } } }, remote: true, class: "btn btn-success btn-sm"
 
+        = link_to 'Edit', edit_product_path(@product), :class => "btn btn-default"
+        = link_to 'Refresh', "#{refresh_products_path}/#{@product.id}", :class => "btn btn-default"
+        = link_to 'Destroy', @product, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger"
+
 / /.row
 .row
   .col-lg-12
