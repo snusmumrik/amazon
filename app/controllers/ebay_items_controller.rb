@@ -1,5 +1,6 @@
 class EbayItemsController < ApplicationController
   before_action :set_ebay_item, only: [:show, :edit, :update, :destroy]
+  before_filter :authenticate_user!
 
   # GET /ebay_items
   # GET /ebay_items.json

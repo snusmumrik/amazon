@@ -3,6 +3,7 @@ class ProductsController < ApplicationController
   before_action :read_exchange_rate
   before_filter :set_locale, only: [:index, :show]
   before_filter :set_categories, except: [:show, :delete]
+  before_filter :authenticate_user!, except: [:index, :show]
   after_filter :remember_previous_page, only: :index
 
   # GET /products

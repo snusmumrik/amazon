@@ -5,6 +5,7 @@ class ProductToSellsController < ApplicationController
   before_action :read_exchange_rate
   after_action :list_to_ebay, only: :update
   before_filter :set_locale, only: [:index]
+  before_filter :authenticate_user!
   after_filter :remember_previous_page, only: :index
 
   # @@app_id = "Chishaku-8e8f-48de-a23a-e1304518388d" # sandbox

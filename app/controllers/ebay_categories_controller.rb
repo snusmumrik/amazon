@@ -1,4 +1,6 @@
 class EbayCategoriesController < ApplicationController
+  before_filter :authenticate_user!
+
   # GET /ebay_categories/
   # GET /ebay_categories.json
   def index

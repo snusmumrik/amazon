@@ -3,6 +3,7 @@ class OrdersController < ApplicationController
   before_action :set_options, only: [:new, :create, :edit, :update]
   before_action :set_product, only: [:edit, :update]
   before_filter :set_categories, except: [:show, :delete]
+  before_filter :authenticate_user!
 
   # GET /orders
   # GET /orders.json
