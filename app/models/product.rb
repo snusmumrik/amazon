@@ -815,7 +815,7 @@ class Product < ActiveRecord::Base
         config.api_version = 3
         config.access_token = "c7b6ba72ff78178e3e0cc063f4823820ba2dfb01"
       end
-      url = Bitly.client.shorten("http://amazon.crudoe.com/products/#{product.id}").short_url
+      url = Bitly.client.shorten("http://a.crudoe.com/products/#{product.id}").short_url
       # image_url = Bitly.client.shorten(product.image_url1).short_url
 
       text = "米国で$#{product.price}、日本では#{product.cost}円のこの商品は、諸経費を除いて#{product.profit}円の利益が見込めるようです。詳細はこちら => #{url}"
