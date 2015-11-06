@@ -8,7 +8,7 @@ require "twitter"
 # -*- coding: utf-8 -*-
 class Product < ActiveRecord::Base
   has_many :ebay_items
-  validates :asin, :cost, presence: true
+  validates :asin, presence: true
   validates :asin, uniqueness: true
   acts_as_paranoid
 
@@ -375,7 +375,7 @@ class Product < ActiveRecord::Base
     if response && response["ItemLookupResponse"]["Items"]["Item"]
       item = response["ItemLookupResponse"]["Items"]["Item"]
 
-      puts item
+      # puts item
 
       if product = save_product(item)
         find_ebay_completed_items(product.title, product.id)
@@ -391,7 +391,9 @@ class Product < ActiveRecord::Base
         end
       end
     else
-      puts response["ItemLookupResponse"]["Items"]["Request"]["Errors"]
+      puts response["ItemLookupResponse"]["Items"]["Request"]["Errors"] rescue nil
+      product = Product.where(["asin = ?", asin]).first
+      product.update_attribute(:price, nil)
     end
   end
 
@@ -437,11 +439,26 @@ class Product < ActiveRecord::Base
       product.image_url1 = item["ImageSets"]["ImageSet"]["LargeImage"]["URL"]
     end
 
-    # if item["OfferSummary"] && item["OfferSummary"]["LowestNewPrice"]
-    #   product.currency = item["OfferSummary"]["LowestNewPrice"]["CurrencyCode"]
-    #   product.price = (item["OfferSummary"]["LowestNewPrice"]["Amount"].to_f/100).round(2)
-    #   p "Amazon Price: #{product.price}"
-    # end
+    if item["OfferSummary"] && item["OfferSummary"]["LowestNewPrice"]
+      product.currency = item["OfferSummary"]["LowestNewPrice"]["CurrencyCode"]
+      product.price = (item["OfferSummary"]["LowestNewPrice"]["Amount"].to_f/100).round(2)
+      p "Amazon Lowest Price: #{product.price}"
+    end
+
+    # get retail amazon price not from third party vendors
+    begin
+      agent = Mechanize.new
+
+      p "Scrape Amazon price form #{product.url}"
+
+      page = agent.get(product.url)
+      if amazon_price = page.search("span[id='priceblock_ourprice']").text.sub!("$", "").to_f
+        p "Amazon Retail Price: #{amazon_price}"
+        product.price = amazon_price
+      end
+    rescue => ex
+      warn ex.message
+    end
 
     # amazon.co.jp
     request2 = Vacuum.new("JP")
@@ -481,43 +498,31 @@ class Product < ActiveRecord::Base
       p "Amazon Cost: #{product.cost}" if product.cost
     end
 
-    # get retail amazon price not from third party vendors
-    begin
-      agent = Mechanize.new
-
-      p "Scrape Amazon price form #{product.url}"
-
-      page = agent.get(product.url)
-      amazon_price = page.search("span[id='priceblock_ourprice']").text.sub!("$", "").to_f
-      p "Amazon Price: #{amazon_price}"
-
-      product.price = amazon_price
-    rescue => ex
-      warn ex.message
-    end
-
-    if saved_product = Product.where(["asin = ?", product.asin]).with_deleted.first
-      saved_product.update_attributes(:manufacturer => product.manufacturer,
-                                      :model => product.model,
-                                      :title => product.title,
-                                      :color => product.color,
-                                      :size => product.size,
-                                      :weight => product.weight,
-                                      :features => product.features,
-                                      :sales_rank => product.sales_rank,
-                                      :url => product.url,
-                                      :url_jp => product.url_jp,
-                                      :image_url1 => product.image_url1,
-                                      :image_url2 => product.image_url2,
-                                      :image_url3 => product.image_url3,
-                                      :image_url4 => product.image_url4,
-                                      :image_url5 => product.image_url5,
-                                      :currency => product.currency,
-                                      :price => product.price,
-                                      :cost => product.cost
-                                      )
-      puts "PRODUCT UPDATED:#{product.title}"
-      saved_product
+    saved_product = Product.where(["asin = ?", product.asin]).with_deleted.first
+    puts product.inspect
+    if saved_product
+      if saved_product.update_attributes(:manufacturer => product.manufacturer,
+                                         :model => product.model,
+                                         :title => product.title,
+                                         :color => product.color,
+                                         :size => product.size,
+                                         :weight => product.weight,
+                                         :features => product.features,
+                                         :sales_rank => product.sales_rank,
+                                         :url => product.url,
+                                         :url_jp => product.url_jp,
+                                         :image_url1 => product.image_url1,
+                                         :image_url2 => product.image_url2,
+                                         :image_url3 => product.image_url3,
+                                         :image_url4 => product.image_url4,
+                                         :image_url5 => product.image_url5,
+                                         :currency => product.currency,
+                                         :price => product.price,
+                                         :cost => product.cost
+                                         )
+        puts "PRODUCT UPDATED:#{product.title}"
+        saved_product
+      end
     else
       begin
         product.save
