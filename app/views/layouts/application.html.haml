@@ -5,11 +5,11 @@
     %meta{:charset => "utf-8"}
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}
     %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}
-    %meta{:content => "amazon輸出の便利サイト。日本とアメリカのアマゾンの価格差を表示しています。#{@description}", :name => "description"}
-    %meta{:content => "amazon,輸出,#{@keyword}", :name => "keyword"}
+    %meta{:content => "アマゾン輸出の便利サイト。日本とアメリカのamazonの価格差を表示しています。#{@description}", :name => "description"}
+    %meta{:content => "amazon,輸出,#{@keyword}", :name => "keywords"}
     %meta{:content => "", :name => "author"}
 
-    %title a.crudoe.com
+    %title アマゾン輸出のための価格比較サービス a.crudoe.com
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
     = csrf_meta_tags
   %body
@@ -23,7 +23,7 @@
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-          %div.navbar-brand{data:{no_turbolink: true}}= link_to "a.crudoe.com", root_path
+          %div.navbar-brand{data:{no_turbolink: true}}= link_to "アマゾン輸出のための価格比較 a.crudoe.com", root_path
           / Collect the nav links, forms, and other content for toggling
         -# #bs-example-navbar-collapse-1.collapse.navbar-collapse
         -#   %ul.nav.navbar-nav
@@ -49,7 +49,7 @@
     %footer
       .row.text-center
         .col-lg-12
-          %p{data:{no_turbolink: true}}= link_to "Copyright © ebay.crudoe.com #{Date.today.year}", root_path
+          %p{data:{no_turbolink: true}}= link_to "Copyright © a.crudoe.com #{Date.today.year}", root_path
         / /.col-lg-12
       / /.row
 
