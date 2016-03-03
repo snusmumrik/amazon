@@ -12,7 +12,7 @@ class Product < ActiveRecord::Base
   validates :asin, uniqueness: true
   acts_as_paranoid
 
-  paginates_per 15
+  paginates_per 9
 
   before_save :calculate_shipping_cost, :calculate_cost
 
@@ -810,7 +810,7 @@ class Product < ActiveRecord::Base
       config.access_token_secret = "lxqieZET0XgEHVqEgoeJHSvJpgrQk9ttsjXNElvQBr9PV"
     end
 
-    product = Product.where("profit > 1000").order("RAND()").limit(1).first
+    product = Product.where("profit > 1000 AND RAND() < 0.002").limit(1)
     if product.price
       rate = open("public/exchange_rate.txt", "r").read.to_f.round(2)
 

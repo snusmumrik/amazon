@@ -18,7 +18,12 @@ class ApplicationController < ActionController::Base
   end
 
   def set_categories
-    @categories = Product.group(:category).order(:category).inject(Array.new) {|a, p| a << [p.category, p.category]; a}
+    if session[:categories]
+      @categories = session[:categories]
+    else
+      @categories = Product.group(:category).order(:category).inject(Array.new) {|a, p| a << [p.category, p.category]; a}
+      session[:categories] = @categories
+    end
   end
 
   def set_ebay_data_for_single_product(id)

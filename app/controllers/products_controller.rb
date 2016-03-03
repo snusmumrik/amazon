@@ -16,8 +16,18 @@ class ProductsController < ApplicationController
     # refactoring required
     @conditions << "price >= #{params[:low_price]}" unless params[:low_price].blank?
     @conditions << "price <= #{params[:high_price]}" unless params[:high_price].blank?
-    @conditions << "category = '#{params[:category]}'" unless params[:category].blank?
-    @conditions << "category = '#{params[:category_name]}'" unless params[:category_name].blank?
+    unless params[:category].blank?
+      @conditions << "category = '#{params[:category]}'"
+      @orders <<  "products.title"
+    end
+
+    unless params[:category_name].blank?
+      @conditions << "category = '#{params[:category_name]}'"
+      @orders <<  "products.title" unless @orders.include?("products.title")
+    end
+
+    @orders << "products.created_at DESC" unless @orders.include?("products.title")
+
     unless params[:profit].blank?
       @conditions << "profit > 0"
       @orders << "profit DESC"
@@ -39,22 +49,18 @@ class ProductsController < ApplicationController
       @conditions << "image_url1 IS NOT null"
     end
 
-    @orders << ["category", "model", "products.title"]
-
     if params[:ebay]
       @conditions << "selling_state = 'EndedWithSales'"
       if params[:profit]
         @conditions << "profit_ebay > 0"
-        @products = Product.joins(:ebay_items).where(@conditions.join(" AND ")).group("products.id, products.asin").order(@orders.join(",")).page params[:page]
-        @count = Product.joins(:ebay_items).where(@conditions.join(" AND ")).group("products.id, products.asin").count.size
+        @products = Product.joins(:ebay_items).where(@conditions.join(" AND ")).uniq.order(@orders.join(",")).page params[:page]
       else
-        @products = Product.joins(:ebay_items).where(@conditions.join(" AND ")).group("products.id, products.asin").order(@orders.join(",")).page params[:page]
-        @count = Product.joins(:ebay_items).where(@conditions.join(" AND ")).group("products.id, products.asin").count.size
+        @products = Product.joins(:ebay_items).where(@conditions.join(" AND ")).uniq.order(@orders.join(",")).page params[:page]
       end
     else
-      @products = Product.where(@conditions.join(" AND ")).group("products.asin").order(@orders.join(",")).page params[:page]
-      @count = Product.where(@conditions.join(" AND ")).count
+      @products = Product.where(@conditions.join(" AND ")).order(@orders.join(",")).page params[:page]
     end
+    @count = @products.total_count
 
     # @amazon_profit_hash = @products.inject(Hash.new) {|h, p| h[p.id] = Product.calculate_profit_on_amazon(p) if p.price && p.cost; h}
     @product_to_sells = ProductToSell.where(["product_id in (?)", @products.pluck(:id)]).pluck(:product_id)
@@ -88,10 +94,10 @@ class ProductsController < ApplicationController
       # @ebay_profit = Product.calculate_profit_on_ebay(@product, @average)
     end
 
-    @related_products = Product.where(["category = ? AND id != ?", @product.category, @product.id]).order("RAND()").limit(4)
+    @related_products = Product.where(["category = ? AND id != ? AND RAND() < ?", @product.category, @product.id, 0.01]).limit(3)
     # @amazon_profit_hash = @related_products.inject(Hash.new) {|h, p| h[p.id] = Product.calculate_profit_on_amazon(p) if p.price && p.cost; h}
 
-    puts @related_products.pluck(:id)
+    # puts @related_products.pluck(:id)
 
     set_ebay_data_for_multiple_products(@related_products.pluck(:id))
     # @ebay_profit_hash = @related_products.inject(Hash.new) {|h, p| h[p.id] = Product.calculate_profit_on_ebay(p, @average_hash[p.id]) if @average_hash[p.id] > 0 && p.cost; h}

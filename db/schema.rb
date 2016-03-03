@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151104044555) do
+ActiveRecord::Schema.define(version: 20160303041415) do
 
   create_table "categories", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20151104044555) do
     t.datetime "deleted_at"
   end
 
+  add_index "ebay_items", ["product_id", "selling_state"], name: "index_ebay_items_on_product_id_and_selling_state", using: :btree
   add_index "ebay_items", ["product_id"], name: "index_ebay_items_on_product_id", using: :btree
 
   create_table "orders", force: :cascade do |t|
@@ -118,6 +119,13 @@ ActiveRecord::Schema.define(version: 20151104044555) do
     t.datetime "updated_at"
     t.datetime "deleted_at"
   end
+
+  add_index "products", ["asin"], name: "index_products_on_asin", using: :btree
+  add_index "products", ["category", "title"], name: "index_products_on_category_and_title", length: {"category"=>nil, "title"=>64}, using: :btree
+  add_index "products", ["created_at"], name: "index_products_on_created_at", using: :btree
+  add_index "products", ["deleted_at", "price", "cost"], name: "index_products_on_deleted_at_and_price_and_cost", using: :btree
+  add_index "products", ["profit"], name: "index_products_on_profit", using: :btree
+  add_index "products", ["updated_at"], name: "index_products_on_updated_at", using: :btree
 
   create_table "search_indices", force: :cascade do |t|
     t.string   "name",       limit: 255
