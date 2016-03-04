@@ -1,9 +1,11 @@
 .row
   .col-lg-12
-    %h2.page-header
-      = link_to @product.title, @product.url, target: :blank
+    %h1.page-header
+      %strong
+        %small= link_to @product.title, "#{products_path}?keyword=#{@product.title}"
       %br
-      %small= link_to @product.category, "#{products_path}/category/#{@product.category}"
+      %h2
+        %small= link_to @product.category, "#{products_path}/category/#{@product.category}"
 / /.row
 / Portfolio Product Row
 .row

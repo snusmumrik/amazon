@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy, :refresh, :download_images]
   before_action :read_exchange_rate
@@ -70,6 +71,8 @@ class ProductsController < ApplicationController
 
     if params[:category_name]
       @form_path = "#{products_path}/category/#{params[:category_name]}"
+      @keyword = params[:category_name]
+      @description = "#{params[:category_name]}の販売価格"
     else
       @form_path = products_path
     end
@@ -85,6 +88,9 @@ class ProductsController < ApplicationController
   # GET /products/1
   # GET /products/1.json
   def show
+    @keyword = @product.title
+    @description = "#{@product.title}の販売価格"
+
     # if @product.price && @product.cost
     #   @amazon_profit = Product.calculate_profit_on_amazon(@product)
     # end

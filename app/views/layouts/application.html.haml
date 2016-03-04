@@ -6,10 +6,10 @@
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}
     %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}
     %meta{:content => "アマゾン輸出の便利サイト。日本とアメリカのamazonの価格差を表示しています。#{@description}", :name => "description"}
-    %meta{:content => "amazon,輸出,#{@keyword}", :name => "keywords"}
+    %meta{:content => "amazon,輸出,せどり,副業,#{@keyword}", :name => "keywords"}
     %meta{:content => "", :name => "author"}
 
-    %title アマゾン輸出のための価格比較サービス a.crudoe.com
+    %title= "アマゾン輸出のための#{@keyword}日米販売価格比較"
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
     = csrf_meta_tags
   %body
@@ -23,12 +23,17 @@
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-          %div.navbar-brand{data:{no_turbolink: true}}= link_to "アマゾン輸出のための価格比較 a.crudoe.com", root_path
+          %div.navbar-brand{data:{no_turbolink: true}}= link_to "a.crudoe.com", root_path
           / Collect the nav links, forms, and other content for toggling
-        -# #bs-example-navbar-collapse-1.collapse.navbar-collapse
-        -#   %ul.nav.navbar-nav
-        -#     %li
-        -#       %a{:href => "#"} About
+        .float-right#bs-example-navbar-collapse-1.collapse.navbar-collapse
+          %ul.nav.navbar-nav
+            %li
+              %strong
+                %small
+                  日米アマゾンの
+                  - if @keyword
+                    = link_to @keyword, "#{products_path}?keyword=#{@keyword}"
+                  販売価格比較
         / /.navbar-collapse
     / Page Content
     .container
