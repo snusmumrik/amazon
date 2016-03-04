@@ -5,7 +5,6 @@ require "httpclient"
 require "csv"
 require "twitter"
 
-# -*- coding: utf-8 -*-
 class Product < ActiveRecord::Base
   has_many :ebay_items
   validates :asin, presence: true
