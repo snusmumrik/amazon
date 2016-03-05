@@ -312,8 +312,7 @@ class Product < ActiveRecord::Base
               puts "\r\nSEARCH_INDEX:#{search_index.name}, SORT_VALUE:#{sort_value.name}, ITEM_PAGE:#{i}"
 
               if !item.nil? && item.instance_of?(Hash)
-                product = save_product(item)
-                if product.persisted?
+                if product = save_product(item)
                   find_ebay_completed_items(product.title, product.id)
 
                   average = product.ebay_items.inject(Array.new) {|a, ei| a << ei.current_price_value if ei.selling_state == "EndedWithSales"
