@@ -1,0 +1,554 @@
+/* ------------------------------------------------------------------------------
+	amazon用CSS
+------------------------------------------------------------------------------*/
+
+ul{
+	padding: 0;
+	padding-left: 1px;
+}
+
+/* 各パーツ用CSS
+-------------------------------------------------- */
+.w100-p0{
+	width: 100%!important;
+    padding: 0!important;
+}
+.mt90{
+	margin-top: 90px;
+}
+.table-center{
+	float: none;
+    display: table;
+    text-align: center;
+    width: 100%;
+}
+/* webフォント用CSS
+-------------------------------------------------- */
+/* webフォント -FontAwesome- */
+@font-face {
+	font-family:FontAwesome;
+	src: url('/fonts/fontawesome-webfont.woff')format("woff"),
+	url('/fonts/fontawesome-webfont.ttf') format("truetype"),
+	url('/fonts/fontawesome-webfont.eot?') format("eot");
+}
+.FontAwesome{font-family: 'FontAwesome';}
+/* webフォント -源ノ角ゴシック- */
+@font-face {
+  font-family: "genMedium";
+  src: url("/fonts/SourceHanSansJP-Medium.woff") format("woff");
+}
+@font-face {
+  font-family: "genNormal";
+  src: url("/fonts/SourceHanSansJP-Normal.woff") format("woff");
+}
+@font-face {
+  font-family: "genRegular";
+  src: url("/fonts/SourceHanSansJP-Regular.woff") format("woff");
+}
+@font-face {
+  font-family: "genHeavy";
+  src: url("/fonts/SourceHanSansJP-Heavy.woff") format("woff");
+}
+@font-face {
+  font-family: "genLight";
+  src: url("/fonts/SourceHanSansJP-Light.woff") format("woff");
+}
+@font-face {
+  font-family: "genExLight";
+  src: url("/fonts/SourceHanSansJP-ExtraLight.woff") format("woff");
+}
+@font-face {
+  font-family: "genBold";
+  src: url("/fonts/SourceHanSansJP-Bold.woff") format("woff");
+}
+.genExLight {
+  font-family: "genExLight" !important;
+}
+.genLight {
+  font-family: "genLight" !important;
+}
+.genNormal {
+  font-family: "genNormal" !important;
+}
+.genRegular {
+  font-family: "genRegular" !important;
+}
+.genMedium {
+  font-family: "genMedium" !important;
+}
+.genBold {
+  font-family: "genBold" !important;
+}
+.genHeavy {
+  font-family: "genHeavy" !important;
+}
+/* ---------------------
+	文字スタイル用CSS
+----------------------*/
+.fs-min{
+	font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", "ＭＳ 明朝", serif!important;
+}
+.bold{
+	font-weight: bold;
+}
+.black{
+	color: #1C1C19;
+}
+.red01{
+	color: #ED1C24;	
+}
+.red02{
+	color: #F14950;	
+}
+.blue01{
+	color: #3FA9F5;	
+}
+.yellow01{
+	color: #F5AF02;	
+}
+.green01{
+	color: #86B817;	
+}
+.green02{/* 濃い目黄緑 */
+	color: #8CC63F;
+}
+.pink01{/* 濃い目ピンク */
+	color: #DC607C;
+}
+.orange01{
+	color: #F88509;
+}
+.letter-spacing-025em{
+	letter-spacing:-.025em;
+}
+.letter-spacing-01em{
+	letter-spacing:-.01em;
+}
+/* BOOTSTRAPパーツ用CSS
+-------------------------------------------------- */
+
+/* navbar collapse for iPad (bootstrap) */
+@media (max-width: 1200px) {
+    .navbar-header {
+        float: none;
+    }
+    .navbar-toggle {
+        display: block;
+        margin-top: 25px;
+	    border-color: #ABABAB!important;;
+    }
+    .navbar-collapse {
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .navbar-collapse.collapse {
+        display: none!important;
+    }
+    .navbar-nav {
+        float: none!important;
+        margin: 7.5px -15px;
+    }
+    .navbar-nav>li {
+        float: none;
+    }
+    .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .navbar-text {
+        float: none;
+        margin: 15px 0;
+    }
+    .navbar-collapse.collapse.in {
+        display: block!important;
+    }
+    .collapsing {
+        overflow: hidden!important;
+    }
+}
+/* ---------------------
+	nav用CSS
+----------------------*/
+.navbar-default {
+    background: url(/images/common/header-bg.png)!important;
+    background-position: top center;
+    border: 0px!important;
+    height: 90px;
+}
+.header-h1 {
+    color:#fff;
+}
+.navbar-wrapper .navbar .logo{
+	background: url(/images/common/logo.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 233px;
+    height: 30px;
+    position: absolute;
+    left: 50%;
+    margin-left: -67px;
+    margin-top: 25px;
+}
+.navbar-default .navbar-nav>li>a {
+	    color: #fff;
+	    letter-spacing: 0.15em;
+	}
+/* ---------------------
+	page-header用CSS
+----------------------*/
+section#page-header{
+	background: url(/images/home/page-header-bg.jpg);
+	background-position: top center;
+	width: 100%;
+	/*height: 100vh;*/
+	height: 765px;
+}
+section#page-header img.page-header-img01{
+	margin-top: 107px;
+    margin-bottom: 16px;
+    width: 400px;
+	max-width: 90%;
+
+}
+section#page-header .page-header-catchbox{
+	background: #fff;
+	padding: 35px 10px 40px;
+	position: relative;
+}
+section#page-header .page-header-catchbox h2{
+	margin: 0;
+	margin-bottom: 9px;
+	font-size: 34px;
+	color:#808080;
+}
+section#page-header .page-header-catchbox h2:before{
+	background:url(/images/home/jausa.svg);
+	width: 36px;
+    height: 28px;
+    margin:0 1px 0 0;
+	content:" ";
+	display:inline-block;
+	background-size:contain;
+	vertical-align:middle;
+}
+section#page-header .page-header-catchbox p{
+	margin: 0;
+	font-size: 14px;
+	color:#666;
+}
+section#page-header .page-header-catchbox p.annotation{
+	margin: 0;
+	margin-top: 1px;
+	font-size: 9px;
+	color:#86B817;
+}
+.amazon-border{
+	background: url(/images/common/amazon-border.png);
+	width: 100%;
+	height: 5px;
+	background-position: top center;
+}
+.page-header-border{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+/* ---------------------
+	search-form用CSS
+----------------------*/
+form.search-form {
+	margin: 0 auto;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    display: table;
+}
+.search-form .form-control{
+    width: 18em;
+}
+form.search-form span.submit{
+    margin: 0 auto;
+    margin-top: 28px;
+    display: block;
+    position: relative;
+}
+form.search-form input[type="submit"]{
+    margin: 0 auto;
+    margin-top: 28px;
+    display: block;
+    background: #F88509;
+    border: 0px;
+    padding: 12px 0;
+    width: 345px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 17px;
+    letter-spacing: .95em;
+    text-indent: 3em;
+}
+form.search-form span.submit:before{
+    content: "\f002";
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: 26px;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #fff;
+    margin-top: -.5em;
+    margin-left: -2.7em;
+}
+/* ---------------------
+	itemリスト用CSS
+----------------------*/
+#items div.item {
+    margin-bottom: 50px;
+    height: auto;
+}
+.item img {
+    width: 130px;
+    border: 1px solid #E4E4E4;
+    margin-bottom: 10px!important;
+}
+span#count{
+	color: #F5AF02;
+    font-weight: bold;
+}
+h3.page-header{
+	margin-bottom: 40px!important;
+}
+h3.page-header small{
+	font-size: 13px;
+}
+.item>h2{
+    letter-spacing: -0.07em;
+    font-size: 24px;
+    font-family: "genLight" !important;
+    line-height: .9;
+    min-height: 2em;
+    margin-top: 0;
+    margin-bottom: 6px;
+}
+.item>h2 a{
+	color:#383838;
+}
+.item>h3{
+	color:#9E9E9E;
+	font-weight: normal;
+	font-size: 13px;
+	font-family: "genLight" !important;
+	letter-spacing: 0.35em;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 2px;
+}
+.item>h3 a{
+	color:#9E9E9E;
+}
+.item>h2 a:hover,.item>h3 a:hover{
+	color:#23527c;
+}
+.item>ul{
+	padding: 0;
+	padding-left: 7px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	border-top:1px solid #eee;
+    padding-top: 15px;
+    color:#636363;
+}
+.item>ul h4{
+    color: #D44643;
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    font-family: "genBold" !important;
+    margin: 0;
+    margin-bottom: 1px;
+}
+.item>ul h4:nth-of-type(2){
+    margin-bottom: 15px;
+}
+.item>ul h4 small{
+	font-size: 12px;
+    padding: -8px 0;
+    color: #636363;
+    font-family: initial;
+}
+.item>ul a{
+    color:#86B817;
+}
+.item>ul a:hover{
+    color:#C9EA7E;
+}
+/* ---------------------
+	商品詳細ページ用CSS
+----------------------*/
+.show h1.page-header{
+    margin: 50px 0 0!important;
+    letter-spacing: -0.07em;
+    font-family: "genExLight" !important;
+}
+.show h1.page-header + h2{
+	margin-top: .5em;
+    margin-bottom: 40px;
+    line-height: .2;
+}
+.show h1.page-header + h2 small{
+	font-size: 12px;
+    letter-spacing: .65em;
+    font-family: "genLight" !important;
+    padding-left: 3px;
+}
+/* ---------------------
+	レスポンシブ用CSS
+----------------------*/
+/* PC用 */
+@media (min-width: 800px){
+	.span-br-pctab:after {
+		content: "\A" ;
+		white-space: pre ;
+	}
+	.navbar-wrapper .container {
+	    padding-right: 0px;
+	    padding-left: 0px;
+	    position: relative;
+	}
+	.navbar-wrapper .navbar {
+	    margin: 0;
+	}
+	.container>.navbar-header {
+	}
+	.header-h1 {
+        margin: 0;
+	    margin-left: -15px;
+	    font-size: 12px;
+	    /* position: absolute; */
+	    /* top: 50%; */
+	    margin-top: 34px!important;
+	    letter-spacing: 0.05em;
+	}
+	.navbar-nav {
+	    margin: 0;
+        margin-top: -60px;
+	}
+	.navbar-default .navbar-nav>li:last-child>a {
+	    padding-right: 0;
+	}
+	.navbar-default .navbar-nav>li>a {
+	    color: #333;
+	    letter-spacing: 0.15em;
+	}
+	.navbar-nav>li i.fa{
+		display: block;
+		margin-bottom: 3px;
+	}
+	.navbar-nav>li.amazon i.fa{
+		margin-bottom: 0.06em;
+	}
+	.navbar-nav>li i.ebay-logo{
+		content:url(/images/common/ebaylogo−b.png);
+		width: 55px;
+		height: auto;
+	    margin: 0 auto;
+	    margin-bottom: 0.03em;
+	}
+	.navbar-nav>li i.fa-amazon{
+	    font-size: 21px;
+    	color: #000;
+	}
+}
+/* 1200以下 nav用 */
+@media (max-width: 1200px){
+	.navbar-default {
+    height: auto;
+	}
+	.navbar-header {
+	    height: 90px;
+	}
+	.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+	    border-bottom: 0px;
+	}
+	.navbar-wrapper .navbar .logo{
+        width: 115px;
+	    height: 47px;
+	    margin-left: -48px;
+	    margin-top: 16px;
+	    position: absolute;
+	}
+	.navbar-toggle {
+	    background-color: #0264D2;
+	    border:0px;
+	}
+	.navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover {
+	    background-color: #C0D9F4;
+	}
+	.navbar-default .navbar-toggle .icon-bar {
+	    background-color: #fff;
+	}
+	.navbar-default .navbar-nav>li>a {
+	    color: #333;
+	}
+	.navbar-nav>li.ebay{
+		margin-top: -3px;
+	}
+	.navbar-nav>li i.ebay-logo{
+		content:url(/images/common/ebaylogo−b.png);
+		width: 32px;
+		height: auto;
+	    margin: 0 auto;
+	    margin-bottom: -3px;
+	    margin-right: 5px;
+	}
+	.navbar-nav>li.amazon i.fa:before{
+		margin-right: 5px;
+    	font-size: 12px;
+	}
+	.header-h1 {
+	    margin: 0;
+	    font-size: 11px;
+	    position: absolute;
+	    top: 72px;
+	    left: 50%;
+	    margin-left: -11.8em;
+	    letter-spacing: -.3px;
+	}
+}
+/* タブレット以下 */
+@media (max-width: 800px){
+	
+}
+/* スマホ以外 */
+@media (min-width: 640px){
+	.span-br-pctab:after {
+		content: "\A" ;
+		white-space: pre ;
+	}
+}
+/* スマホ */
+@media (max-width: 640px){
+	.span-br640:after {
+		content: "\A" ;
+		white-space: pre ;
+	}
+	section#page-header .page-header-catchbox h2{
+		font-size: 30px;
+	}
+	form.search-form label{
+	    margin: 0 auto;
+	    display: inherit;
+	    margin-bottom: 5px;
+	}
+	.search-form select, .search-form input {
+	    margin-left: 0!important;
+	    margin-right: 0!important;
+	}
+	.search-form select#category {
+	    margin-bottom: 20px;
+	}
+	.search-form .form-control{
+	    width: 100%;
+	}
+	form.search-form input[type="submit"]{
+	    width: 100%;
+	}
+}
