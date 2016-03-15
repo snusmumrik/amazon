@@ -1,5 +1,5 @@
 !!!
-%html
+%html{:lang => "ja"}
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
     %meta{:charset => "utf-8"}
@@ -23,13 +23,13 @@
             .container
               %a{:href => "/", data:{no_turbolink: true}}
                 .logo
-              .navbar-header
+              -# .navbar-header
                 %button.navbar-toggle.collapsed{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
                   %span.sr-only Toggle navigation
                   %span.icon-bar
                   %span.icon-bar
                   %span.icon-bar
-                %h1.header-h1.pull-left アマゾン輸出のための日米amazonの価格比較サイト。
+              %h1.header-h1.pull-left アマゾン輸出のための日米amazonの価格比較サイト。
               -# #navbar.collapse.navbar-collapse
               -#   %ul.nav.navbar-nav.pull-right
               -#     %li.ebay.text-center
@@ -58,7 +58,7 @@
     .container.w100-p0
       = yield
 
-      .row
+      -#.row
         .col-lg-12
           .ad
             %script{:async => "", :src => "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"}

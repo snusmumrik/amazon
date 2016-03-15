@@ -1,139 +1,140 @@
-.row
-  .col-lg-12
-    %h1.page-header
-      %strong
-        %small= link_to @product.title, "#{products_path}?keyword=#{@product.title}"
-      %br
-      %h2
-        %small= link_to @product.category, "#{products_path}/category/#{@product.category}"
-/ /.row
-/ Portfolio Product Row
-.row
-  .col-md-8
-    - if @product.image_url5
-      = image_tag @product.image_url5, class: "img-responsive"
-    - elsif @product.image_url4
-      = image_tag @product.image_url4, class: "img-responsive"
-    - elsif @product.image_url3
-      = image_tag @product.image_url3, class: "img-responsive"
-    - elsif @product.image_url2
-      = image_tag @product.image_url2, class: "img-responsive"
-    - elsif @product.image_url1
-      = image_tag @product.image_url1, class: "img-responsive"
+.container.mt90.show
+  .row
+    .col-lg-12
+      %h1.page-header
+        %strong
+          = link_to @product.title, "#{products_path}?keyword=#{@product.title}"
+        %br
+        %h2
+          %small= link_to @product.category, "#{products_path}/category/#{@product.category}"
+  / /.row
+  / Portfolio Product Row
+  .row
+    .col-md-8.item-img
+      - if @product.image_url5
+        = image_tag @product.image_url5, class: "img-responsive"
+      - elsif @product.image_url4
+        = image_tag @product.image_url4, class: "img-responsive"
+      - elsif @product.image_url3
+        = image_tag @product.image_url3, class: "img-responsive"
+      - elsif @product.image_url2
+        = image_tag @product.image_url2, class: "img-responsive"
+      - elsif @product.image_url1
+        = image_tag @product.image_url1, class: "img-responsive"
 
-    = link_to image_tag(@product.image_url1.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url1, "data-lightbox" => @product.image_url1 rescue nil
-    = link_to image_tag(@product.image_url2.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url2, "data-lightbox" => @product.image_url2 rescue nil
-    = link_to image_tag(@product.image_url3.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url3, "data-lightbox" => @product.image_url3 rescue nil
-    = link_to image_tag(@product.image_url4.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url4, "data-lightbox" => @product.image_url4 rescue nil
-    = link_to image_tag(@product.image_url5.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url5, "data-lightbox" => @product.image_url5 rescue nil
+      = link_to image_tag(@product.image_url1.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url1, "data-lightbox" => @product.image_url1 rescue nil
+      = link_to image_tag(@product.image_url2.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url2, "data-lightbox" => @product.image_url2 rescue nil
+      = link_to image_tag(@product.image_url3.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url3, "data-lightbox" => @product.image_url3 rescue nil
+      = link_to image_tag(@product.image_url4.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url4, "data-lightbox" => @product.image_url4 rescue nil
+      = link_to image_tag(@product.image_url5.sub(/.jpg$/, "._SL120_.jpg")), @product.image_url5, "data-lightbox" => @product.image_url5 rescue nil
 
-    .clear.download
-      = link_to t("links.product.download_images"), "#{products_path}/download_images/#{@product.id}", remote: true, class: "btn btn-default"
+      .clear.download
+        = link_to t("links.product.download_images"), "#{products_path}/download_images/#{@product.id}", remote: true, class: "btn btn-default"
 
-  .col-md-4
-    %h3 商品詳細
-    %ul
-      %li
-        %h4
-          = "#{t('activerecord.attributes.product.price')}:"
-          %p
-          = "US #{number_to_currency @product.price, locale: :en}"
-          - if @product.price
-            %small= "#{number_to_currency @product.price * @exchange_rate}@#{number_to_currency @exchange_rate, locale: :en}"
-          %p
-          = "JP #{number_to_currency(@product.cost)}"
-      %li
-        %h5= "#{t('activerecord.attributes.product.shipping_cost')}: #{number_to_currency @product.shipping_cost}〜"
-
-      %li.profit
-        = "#{t('activerecord.attributes.product.profit')}:"
-        - if @product.profit && @product.cost
+    .col-md-4
+      %h3 商品詳細
+      %ul
+        %li
           %h4
-            %small amazon
-            - if @product.profit/@product.cost.to_f >= 0.1
-              %span.green
+            = "#{t('activerecord.attributes.product.price')}:"
+            %p
+            = "US #{number_to_currency @product.price, locale: :en}"
+            - if @product.price
+              %small= "#{number_to_currency @product.price * @exchange_rate}@#{number_to_currency @exchange_rate, locale: :en}"
+            %p
+            = "JP #{number_to_currency(@product.cost)}"
+        %li
+          %h5= "#{t('activerecord.attributes.product.shipping_cost')}: #{number_to_currency @product.shipping_cost}〜"
+
+        %li.profit
+          = "#{t('activerecord.attributes.product.profit')}:"
+          - if @product.profit && @product.cost
+            %h4
+              %small amazon
+              - if @product.profit/@product.cost.to_f >= 0.1
+                %span.green
+                  = number_to_currency @product.profit
+                  = "(#{number_to_percentage(100*@product.profit/@product.cost, precision: 1)})"
+              - elsif @product.profit < 0
+                %span.red
+                  = number_to_currency @product.profit
+              - else
                 = number_to_currency @product.profit
                 = "(#{number_to_percentage(100*@product.profit/@product.cost, precision: 1)})"
-            - elsif @product.profit < 0
-              %span.red
-                = number_to_currency @product.profit
-            - else
-              = number_to_currency @product.profit
-              = "(#{number_to_percentage(100*@product.profit/@product.cost, precision: 1)})"
-        - if @product.cost && @ebay_profit
-          %h4
-            %small ebay
-            - if @ebay_profit.to_f > 0.2
-              %span.green
+          - if @product.cost && @ebay_profit
+            %h4
+              %small ebay
+              - if @ebay_profit.to_f > 0.2
+                %span.green
+                  = number_to_currency @ebay_profit
+                  = "(#{number_to_percentage(100*@ebay_profit/@product.cost, precision: 1)})"
+              - elsif @ebay_profit < 0
+                %span.red
+                  = number_to_currency @ebay_profit
+              - else
                 = number_to_currency @ebay_profit
                 = "(#{number_to_percentage(100*@ebay_profit/@product.cost, precision: 1)})"
-            - elsif @ebay_profit < 0
-              %span.red
-                = number_to_currency @ebay_profit
-            - else
-              = number_to_currency @ebay_profit
-              = "(#{number_to_percentage(100*@ebay_profit/@product.cost, precision: 1)})"
 
-      %li= "#{t('activerecord.attributes.product.asin')}: #{@product.asin}"
-      %li
-        = "#{t('activerecord.attributes.product.manufacturer')}: "
-        - if @product.manufacturer
-          = link_to @product.manufacturer, "/products/manufacturers/#{@product.manufacturer}"
-      %li= "#{t('activerecord.attributes.product.model')}: #{@product.model}"
-      %li= "#{t('activerecord.attributes.product.color')}: #{@product.color}"
-      %li= "#{t('activerecord.attributes.product.size')}: #{@product.size}"
-      %li= "#{t('activerecord.attributes.product.weight')}: #{(@product.weight.to_f / 100 * 0.454).round(2)}kg"
-      %li= "#{t('activerecord.attributes.product.features')}: #{@product.features}"
-      %li= "#{t('activerecord.attributes.product.sales_rank')}: #{number_with_delimiter @product.sales_rank}"
+        %li= "#{t('activerecord.attributes.product.asin')}: #{@product.asin}"
+        %li
+          = "#{t('activerecord.attributes.product.manufacturer')}: "
+          - if @product.manufacturer
+            = link_to @product.manufacturer, "/products/manufacturers/#{@product.manufacturer}"
+        %li= "#{t('activerecord.attributes.product.model')}: #{@product.model}"
+        %li= "#{t('activerecord.attributes.product.color')}: #{@product.color}"
+        %li= "#{t('activerecord.attributes.product.size')}: #{@product.size}"
+        %li= "#{t('activerecord.attributes.product.weight')}: #{(@product.weight.to_f / 100 * 0.454).round(2)}kg"
+        %li= "#{t('activerecord.attributes.product.features')}: #{@product.features}"
+        %li= "#{t('activerecord.attributes.product.sales_rank')}: #{number_with_delimiter @product.sales_rank}"
 
-    - if @product.price
-      = link_to "Amazon US", @product.url, class: "btn btn-default", target: :blank
-    - if @product.cost
-      = link_to "Amazon JP", @product.url_jp, class: "btn btn-default", target: :blank
-      = link_to "ebay US", "http://rover.ebay.com/rover/1/711-53200-19255-0/1?icep_ff3=9&pub=5575129667&toolid=10001&campid=5337713314&customid=&icep_uq=#{URI.escape(@product.title)}&icep_sellerId=&icep_ex_kw=&icep_sortBy=12&icep_catId=&icep_minPrice=&icep_maxPrice=&ipn=psmain&icep_vectorid=229466&kwid=902099&mtid=824&kw=lg", class: "btn btn-default", target: :blank
-      = image_tag "http://rover.ebay.com/roverimp/1/711-53200-19255-0/1?ff3=4&pub=5575129667&toolid=10001&campid=5337712152&customid=&mpt=[CACHEBUSTER]", style: "text-decoration:none;border:0;padding:0;margin:0;"
-    - if user_signed_in?
-      - if @product_to_sells.include? @product.id
-        %span.btn.btn-info Added
-      - else
-        = link_to 'Add', product_to_sells_path, method: "post", data: { confirm: 'Are you sure?', params: { product_to_sell: { product_id: @product.id } } }, remote: true, class: "btn btn-success btn-sm"
+      - if @product.price
+        = link_to "Amazon US", @product.url, class: "btn btn-default", target: :blank
+      - if @product.cost
+        = link_to "Amazon JP", @product.url_jp, class: "btn btn-default", target: :blank
+        = link_to "ebay US", "http://rover.ebay.com/rover/1/711-53200-19255-0/1?icep_ff3=9&pub=5575129667&toolid=10001&campid=5337713314&customid=&icep_uq=#{URI.escape(@product.title)}&icep_sellerId=&icep_ex_kw=&icep_sortBy=12&icep_catId=&icep_minPrice=&icep_maxPrice=&ipn=psmain&icep_vectorid=229466&kwid=902099&mtid=824&kw=lg", class: "btn btn-default", target: :blank
+        = image_tag "http://rover.ebay.com/roverimp/1/711-53200-19255-0/1?ff3=4&pub=5575129667&toolid=10001&campid=5337712152&customid=&mpt=[CACHEBUSTER]", style: "text-decoration:none;border:0;padding:0;margin:0;"
+      - if user_signed_in?
+        - if @product_to_sells.include? @product.id
+          %span.btn.btn-info Added
+        - else
+          = link_to 'Add', product_to_sells_path, method: "post", data: { confirm: 'Are you sure?', params: { product_to_sell: { product_id: @product.id } } }, remote: true, class: "btn btn-success btn-sm"
 
-        = link_to 'Edit', edit_product_path(@product), :class => "btn btn-default"
-        = link_to 'Refresh', "#{refresh_products_path}/#{@product.id}", :class => "btn btn-default"
-        = link_to 'Destroy', @product, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger"
+          = link_to 'Edit', edit_product_path(@product), :class => "btn btn-default"
+          = link_to 'Refresh', "#{refresh_products_path}/#{@product.id}", :class => "btn btn-default"
+          = link_to 'Destroy', @product, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-danger"
 
-/ /.row
-.row
-  .col-lg-12
-    %h3.page-header= t("activerecord.models.ebay_item")
-    %ul
-      %li
-        = t("views.product.all_count")
-        = @ebay_items.count
-        %br
-        = t("views.product.sold_count")
-        = number_with_delimiter @sold_items.count
-        - if @average
+  / /.row
+  .row
+    .col-lg-12
+      %h3.page-header= t("activerecord.models.ebay_item")
+      %ul
+        %li
+          = t("views.product.all_count")
+          = @ebay_items.count
           %br
-          = t("views.product.average")
-          = "#{@locale} #{number_with_delimiter @average}"
-      %li
-        - @ebay_items.each do |item|
-          %li
-            = link_to item.title, "http://rover.ebay.com/rover/1/711-53200-19255-0/1?icep_ff3=2&pub=5575129667&toolid=10001&campid=5337714063&customid=&icep_item=#{item.item_id}&ipn=psmain&icep_vectorid=229466&kwid=902099&mtid=824&kw=lg", target: :blank
-            - if item.selling_state == "EndedWithSales"
-              %b.green= item.selling_state
-            - elsif item.selling_state == "EndedWithoutSales"
-              %span.red= item.selling_state
-            = link_to "(#{item.current_price_currency_id} #{item.current_price_value}@#{item.end_time.strftime('%Y/%m/%d')})", item.view_item_url
-      %p.right
-        = link_to t("links.product.more"), "http://rover.ebay.com/rover/1/711-53200-19255-0/1?icep_ff3=9&pub=5575129667&toolid=10001&campid=5337713314&customid=&icep_uq=#{URI.escape(@product.title)}&LH_Complete=1&LH_Sold=1&icep_sellerId=&icep_ex_kw=&icep_sortBy=12&icep_catId=&icep_minPrice=&icep_maxPrice=&ipn=psmain&icep_vectorid=229466&kwid=902099&mtid=824&kw=lg", class: "btn btn-default", target: :blank
+          = t("views.product.sold_count")
+          = number_with_delimiter @sold_items.count
+          - if @average
+            %br
+            = t("views.product.average")
+            = "#{@locale} #{number_with_delimiter @average}"
+        %li
+          - @ebay_items.each do |item|
+            %li
+              = link_to item.title, "http://rover.ebay.com/rover/1/711-53200-19255-0/1?icep_ff3=2&pub=5575129667&toolid=10001&campid=5337714063&customid=&icep_item=#{item.item_id}&ipn=psmain&icep_vectorid=229466&kwid=902099&mtid=824&kw=lg", target: :blank
+              - if item.selling_state == "EndedWithSales"
+                %b.green= item.selling_state
+              - elsif item.selling_state == "EndedWithoutSales"
+                %span.red= item.selling_state
+              = link_to "(#{item.current_price_currency_id} #{item.current_price_value}@#{item.end_time.strftime('%Y/%m/%d')})", item.view_item_url
+        %p.right
+          = link_to t("links.product.more"), "http://rover.ebay.com/rover/1/711-53200-19255-0/1?icep_ff3=9&pub=5575129667&toolid=10001&campid=5337713314&customid=&icep_uq=#{URI.escape(@product.title)}&LH_Complete=1&LH_Sold=1&icep_sellerId=&icep_ex_kw=&icep_sortBy=12&icep_catId=&icep_minPrice=&icep_maxPrice=&ipn=psmain&icep_vectorid=229466&kwid=902099&mtid=824&kw=lg", class: "btn btn-default", target: :blank
 
-/ Related Projects Row
-.row
-  .col-lg-12
-    %h3.page-header 関連商品
-    = render @related_products
+  / Related Projects Row
+  .row
+    .col-lg-12
+      %h3.page-header 関連商品
+      = render @related_products
 
-.row
-  .col-lg-12.page-header{data:{no_turbolink: true}}= link_to t("links.back"), :back, class: "btn btn-default"
+  .row
+    .col-lg-12.page-header{data:{no_turbolink: true}}= link_to t("links.back"), :back, class: "btn btn-default"

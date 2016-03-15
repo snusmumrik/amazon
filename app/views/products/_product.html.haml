@@ -13,11 +13,11 @@
     = image_tag("/missing_120.png", alt: "No large image: #{product.title}", class: "img-circle img-responsive img-center")
   %ul
     %li
-      %h4= link_to product.title, product
+      %h2.item-h2= link_to product.title, product
     %li
-      %h4{data:{no_turbolink: true}}= link_to product.category, "#{products_path}/category/#{product.category}"
+      %h3.item-h3{data:{no_turbolink: true}}= link_to product.category, "#{products_path}/category/#{product.category}"
     %li
-      %h4
+      %h4.item-h4
         %p
         = "US #{number_to_currency product.price, locale: :en}"
         - if product.price
